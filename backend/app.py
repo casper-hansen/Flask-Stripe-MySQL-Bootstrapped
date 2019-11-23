@@ -12,13 +12,20 @@ app = Flask(__name__,
             static_folder=static_dir)
 
 @app.route("/")
-def hello():
+def home():
     return render_template('index.ejs')
-
     
 @app.route("/login-page")
-def login():
+def login_page():
     return render_template('login-page.ejs')
+
+@app.route("/billing")
+def billing():
+    return render_template('billing.ejs')
+
+@app.route("/dashboard")
+def dashboard():
+    return render_template('dashboard.ejs')
 
 if __name__ == '__main__':
     app.debug = True
