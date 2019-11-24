@@ -1,5 +1,6 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, escape
 from flask_login import LoginManager, login_required, login_user, logout_user 
+from db_access import DbAccess
 import os
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
@@ -15,14 +16,17 @@ app = Flask(__name__,
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+db = DbAccess()
+#db.create_db_and_tables_if_not_exists()
+
 @app.route("/")
 def home():
     return render_template('index.html')
 
 @app.route("/signup", methods=["POST"])
 def signup():
-    email = request.form['email']
-    password = request.form['password']
+    email = escape(request.form['email'])
+    password = escape(request.form['password'])
 
     return redirect('/login-page', code=302)
     
@@ -32,8 +36,8 @@ def login_page():
 
 @app.route("/login", methods=["POST"])
 def login():
-    email = request.form['email']
-    password = request.form['password']
+    email = escape(request.form['email'])
+    password = escape(request.form['password'])
 
     return redirect('/dashboard', code=302)
 
