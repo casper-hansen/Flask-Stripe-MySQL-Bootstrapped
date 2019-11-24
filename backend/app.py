@@ -30,8 +30,8 @@ def login_page():
 def login():
     email = request.form['email']
     password = request.form['password']
-    
-    return redirect('/login-page', code=302)
+
+    return redirect('/dashboard', code=302)
 
 @app.route("/dashboard")
 def dashboard():
@@ -39,7 +39,7 @@ def dashboard():
 
 @app.route("/billing")
 def billing():
-    return render_template('billing.ejs')
+    return render_template('billing.ejs', title='Billing', subscription_active='True')
 
 @app.route("/logout")
 def logout():

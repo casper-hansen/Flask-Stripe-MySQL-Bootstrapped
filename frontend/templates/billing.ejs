@@ -58,11 +58,6 @@
           <span>Logout</span></a>
       </li>
 
-      <!-- Sidebar Toggler (Sidebar) -->
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
-
     </ul>
     <!-- End of Sidebar -->
 
@@ -77,12 +72,14 @@
 
           <!-- Page Heading -->
           <h1 class="h3 mt-3 mb-4 text-gray-800">Billing Page</h1>
-          <% if (subscriptionActive) { %>
+          {{ name }}
+          {% if subscription_active %}
             <p>Thanks for subbing!</p>
-          <% } else { %>
+          {% else %}
             <button onclick="gotoCheckout()" class="btn btn-lg btn-success">Subscribe for $10/Month</button>
-          <% } %>
-          <script src="https://js.stripe.com/v3/"></script>
+            <script src="https://js.stripe.com/v3/"></script>
+          {% endif %}
+          
 
           <script>
             var stripe = Stripe('<%= STRIPE_PUBLIC_KEY %>');
