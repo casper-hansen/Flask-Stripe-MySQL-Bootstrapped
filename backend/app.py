@@ -43,7 +43,8 @@ def dashboard():
 
 @app.route("/billing")
 def billing():
-    return render_template('billing.html', title='Billing', subscription_active=False)
+    variables = dict(subscription_active=True)
+    return render_template('billing.html', **variables)
 
 @app.route("/logout")
 def logout():
