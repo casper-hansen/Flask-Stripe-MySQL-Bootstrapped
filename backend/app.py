@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
 import os
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
@@ -17,6 +17,9 @@ def home():
 
 @app.route("/signup", methods=["POST"])
 def signup():
+    email = request.form['email']
+    password = request.form['password']
+
     return redirect('/login-page', code=302)
     
 @app.route("/login-page")
@@ -25,6 +28,9 @@ def login_page():
 
 @app.route("/login", methods=["POST"])
 def login():
+    email = request.form['email']
+    password = request.form['password']
+    
     return redirect('/login-page', code=302)
 
 @app.route("/dashboard")
