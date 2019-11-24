@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 import os
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
@@ -14,18 +14,31 @@ app = Flask(__name__,
 @app.route("/")
 def home():
     return render_template('index.ejs')
+
+@app.route("/signup", methods=["POST"])
+def signup():
+    return redirect('/login-page', code=302)
     
 @app.route("/login-page")
 def login_page():
     return render_template('login-page.ejs')
 
-@app.route("/billing")
-def billing():
-    return render_template('billing.ejs')
+@app.route("/login", methods=["POST"])
+def login():
+    return redirect('/login-page', code=302)
 
 @app.route("/dashboard")
 def dashboard():
     return render_template('dashboard.ejs')
+
+@app.route("/billing")
+def billing():
+    return render_template('billing.ejs')
+
+@app.route("/logout")
+def logout():
+    return redirect('/', code=302)
+
 
 if __name__ == '__main__':
     app.debug = True
