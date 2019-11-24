@@ -16,3 +16,14 @@ conn = connect(
     passwd="rootpw"
 )
 ```
+
+# Technologies and features
+
+- [x] Python & MySQL Database
+- [x] Simplistic REST API with Flask
+- [x] Flask Serving Frontend, using MySQL Database
+- [x] Reusing HTML files, including scripts, for performance
+- [ ] User data from signup stored in MySQL Database
+- [ ] Login page that checks MySQL Database with credentials
+- [ ] Error handling
+- [ ] Billing using Stripe for subscriptions
