@@ -39,7 +39,7 @@ def dashboard():
 
 @app.route("/billing")
 def billing():
-    return render_template('billing.ejs', title='Billing', subscription_active='True')
+    return render_template('billing.ejs', title='Billing', subscription_active=False)
 
 @app.route("/logout")
 def logout():
