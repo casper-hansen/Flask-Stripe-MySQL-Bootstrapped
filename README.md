@@ -21,8 +21,9 @@ conn = connect(
 
 - [x] Python & MySQL Database
 - [x] Simplistic REST API with Flask
-- [x] Flask Serving Frontend, using MySQL Database
-- [x] Reusing HTML files, including scripts, for performance
+- [x] Flask as Backend, serving HTML, CSS and JS
+- [x] Reusing HTML files when loading pages, including scripts, for performance
+- [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
 - [ ] User data from signup stored in MySQL Database
 - [ ] Login page that checks MySQL Database with credentials
 - [ ] Error handling
