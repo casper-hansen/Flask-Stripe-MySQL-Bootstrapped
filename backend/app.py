@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, request
+from flask_login import LoginManager, login_required, login_user, logout_user 
 import os
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
@@ -11,9 +12,12 @@ app = Flask(__name__,
             static_url_path='', 
             static_folder=static_dir)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 @app.route("/")
 def home():
-    return render_template('index.ejs')
+    return render_template('index.html')
 
 @app.route("/signup", methods=["POST"])
 def signup():
@@ -24,7 +28,7 @@ def signup():
     
 @app.route("/login-page")
 def login_page():
-    return render_template('login-page.ejs')
+    return render_template('login-page.html')
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -35,11 +39,11 @@ def login():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template('dashboard.ejs')
+    return render_template('dashboard.html')
 
 @app.route("/billing")
 def billing():
-    return render_template('billing.ejs', title='Billing', subscription_active=False)
+    return render_template('billing.html', title='Billing', subscription_active=False)
 
 @app.route("/logout")
 def logout():
