@@ -1,30 +1,14 @@
+import json
+
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
-from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import generate_password_hash, check_password_hash
-from sqlalchemy import create_engine
-import json
-import os
 from setup_app import SetupApp
+from flask_sqlalchemy import SQLAlchemy
 
 app = SetupApp().run()
-
-mysql_engine = create_engine(app.config['CONN_STR'])
-mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0}".format(app.config['MYSQL_DB_NAME']))
-
-app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
+from user import User, db
 db = SQLAlchemy(app)
-
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), unique=False, nullable=False)
-    is_subscribed = False
-    is_authenticated = True
-
-    def __repr__(self):
-        return 'id: '.join([id])
-
 db.create_all()
 
 login_manager = LoginManager()

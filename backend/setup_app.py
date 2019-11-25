@@ -1,7 +1,9 @@
 import os
 from flask import Flask
+from sqlalchemy import create_engine
 
 class SetupApp():
+
     def run(self):
         base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
         frontend_dir = os.path.join(base_dir, 'frontend')
@@ -22,5 +24,10 @@ class SetupApp():
                         .format(app.config['MYSQL_USER'], app.config['MYSQL_PASSWORD'], app.config['MYSQL_HOST'], app.config['MYSQL_PORT'], app.config['MYSQL_DB_NAME'])        
         app.config['CONN_STR'] = CONN_STR
         app.config['CONN_STR_W_DB'] = CONN_STR_W_DB
+
+        mysql_engine = create_engine(app.config['CONN_STR'])
+        mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0}".format(app.config['MYSQL_DB_NAME']))
+
+        app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 
         return app
