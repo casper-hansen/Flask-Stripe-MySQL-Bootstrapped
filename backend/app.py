@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import generate_password_hash, check_password_hash
 from sqlalchemy import create_engine
 import json
 import os
@@ -37,7 +38,8 @@ db = SQLAlchemy(app)
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
+    password_hash = db.Column(db.String(256), unique=False, nullable=False)
+    is_subscribed = False
     is_authenticated = True
 
     def __repr__(self):
@@ -47,7 +49,6 @@ db.create_all()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(id):
@@ -62,7 +63,9 @@ def signup():
     email = escape(request.form['email'])
     password = escape(request.form['password'])
     
-    new_user = User(email=email, password=password)
+    pw_hash = generate_password_hash(password, 10)
+
+    new_user = User(email=email, password_hash=pw_hash)
     db.session.add(new_user)
     db.session.commit()
 
@@ -80,7 +83,10 @@ def login():
     email = data[0]['value']
     password = data[1]['value']
     user = User.query.filter_by(email=email).first()
-    if user != None and user.email == email and user.password == password:
+
+    check_pw = check_password_hash(user.password_hash, password)
+
+    if user != None and user.email == email and check_pw:
         login_user(user, remember=True)
         return json.dumps({'message':'/dashboard'}), 200
     else:
@@ -89,12 +95,13 @@ def login():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    variables = dict(email=current_user.email)
+    return render_template('dashboard.html', **variables)
 
 @app.route("/billing")
 @login_required
 def billing():
-    variables = dict(subscription_active=True)
+    variables = dict(subscription_active=current_user.is_subscribed)
     return render_template('billing.html', **variables)
 
 @app.route("/logout")
@@ -104,8 +111,11 @@ def logout():
 
 @app.route("/test")
 def users():
-    user = User.query.filter_by(email='q@q.q').first()
-    return user.email + '/' + user.password
+    user = User.query.all()
+    all_users = ''
+    for u in user:
+        all_users += u.email + ' / ' + u.password_hash + '<br>'
+    return all_users
 
 @app.errorhandler(404)
 def not_logged_in(e):

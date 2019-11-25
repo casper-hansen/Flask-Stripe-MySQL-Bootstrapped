@@ -3334,7 +3334,11 @@ readers do not read off random characters that represent icons */
   content: "\f2a7"; }
 
 .fa-sign-out-alt:before {
-  content: "\f2f5"; }
+  content: "\f2f5";
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1); }
 
 .fa-signal:before {
   content: "\f012"; }
@@ -4394,3 +4398,9 @@ readers do not read off random characters that represent icons */
 .fas {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900; }
+
+#signout-icon{
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1); }
