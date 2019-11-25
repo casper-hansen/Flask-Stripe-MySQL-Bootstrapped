@@ -8,7 +8,6 @@ import os
 from setup_app import SetupApp
 
 app = SetupApp().run()
-print(app.config['CONN_STR'])
 
 mysql_engine = create_engine(app.config['CONN_STR'])
 mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0}".format(app.config['MYSQL_DB_NAME']))

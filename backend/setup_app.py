@@ -9,11 +9,10 @@ class SetupApp():
         static_dir = os.path.join(frontend_dir, 'static')
 
         app = Flask(__name__, 
+                    root_path=base_dir,
                     template_folder=template_dir,
                     static_url_path='', 
-                    static_folder=static_dir,
-                    instance_path=base_dir,
-                    instance_relative_config=True)
+                    static_folder=static_dir)
 
         app.config.from_pyfile('env_variables.cfg')
 
