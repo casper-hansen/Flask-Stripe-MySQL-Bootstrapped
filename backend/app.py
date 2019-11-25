@@ -84,5 +84,4 @@ def not_logged_in(e):
     return redirect('/login-page', code=302)
 
 if __name__ == '__main__':
-    app.debug = True
     app.run(host='0.0.0.0')

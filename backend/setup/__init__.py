@@ -18,8 +18,9 @@ app.config.from_pyfile('env_variables.cfg')
 
 CONN_STR = "mysql+mysqlconnector://{0}:{1}@{2}:{3}" \
     .format(app.config['MYSQL_USER'], app.config['MYSQL_PASSWORD'], app.config['MYSQL_HOST'], app.config['MYSQL_PORT'])
-CONN_STR_W_DB = "mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}" \
-                .format(app.config['MYSQL_USER'], app.config['MYSQL_PASSWORD'], app.config['MYSQL_HOST'], app.config['MYSQL_PORT'], app.config['MYSQL_DB_NAME'])        
+
+CONN_STR_W_DB = CONN_STR + '/' + app.config['MYSQL_DB_NAME']
+
 app.config['CONN_STR'] = CONN_STR
 app.config['CONN_STR_W_DB'] = CONN_STR_W_DB
 
