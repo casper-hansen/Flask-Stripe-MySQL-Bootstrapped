@@ -65,8 +65,11 @@ def login_page():
 def login():
     email = escape(request.form['email'])
     password = escape(request.form['password'])
-
-    return redirect('/dashboard', code=302)
+    user = User.query.filter_by(email=email).first()
+    if user != None and user.password == password:
+        return redirect('/dashboard', code=302)
+    else:
+        return 'Wrong email or password'
 
 @app.route("/dashboard")
 def dashboard():
@@ -83,9 +86,9 @@ def logout():
 
 @app.route("/getusers")
 def users():
-    users = User.query.all()
-    print(users)
-    return 'Hello'
+    
+    print(user == None)
+    return ''
 
 if __name__ == '__main__':
     app.debug = True
