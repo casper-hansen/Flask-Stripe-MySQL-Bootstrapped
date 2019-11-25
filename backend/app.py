@@ -1,5 +1,5 @@
-from flask import Flask, render_template, redirect, request, escape, jsonify
-from flask_login import LoginManager, login_required, login_user, logout_user 
+from flask import Flask, render_template, redirect, request, escape, jsonify, flash
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 import json
@@ -14,6 +14,7 @@ app = Flask(__name__,
             template_folder=template_dir,
             static_url_path='', 
             static_folder=static_dir)
+app.secret_key = 'super secret string'
 
 host="localhost"
 port='5001'
@@ -33,7 +34,7 @@ conn_str = "mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}" \
 app.config['SQLALCHEMY_DATABASE_URI'] = conn_str
 db = SQLAlchemy(app)
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
@@ -42,6 +43,14 @@ class User(db.Model):
         return 'id: '.join([id])
 
 db.create_all()
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 @app.route("/")
 def home():
@@ -69,21 +78,25 @@ def login():
     password = data[1]['value']
     user = User.query.filter_by(email=email).first()
     if user != None and user.email == email and user.password == password:
+        login_user(user)
         return json.dumps({'message':'/dashboard'}), 200
     else:
         return json.dumps({'message':'User data incorrect'}), 401
 
-@app.route("/dashboard", methods=["GET"])
+@app.route("/dashboard")
+@login_required
 def dashboard():
     return render_template('dashboard.html')
 
 @app.route("/billing")
+@login_required
 def billing():
     variables = dict(subscription_active=True)
     return render_template('billing.html', **variables)
 
 @app.route("/logout")
 def logout():
+    logout_user()
     return redirect('/', code=302)
 
 @app.route("/test")
