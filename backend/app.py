@@ -1,7 +1,8 @@
-from flask import Flask, render_template, redirect, request, escape
+from flask import Flask, render_template, redirect, request, escape, jsonify
 from flask_login import LoginManager, login_required, login_user, logout_user 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
+import json
 import os
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
@@ -63,17 +64,20 @@ def login_page():
 
 @app.route("/login", methods=["POST"])
 def login():
-    email = escape(request.form['email'])
-    password = escape(request.form['password'])
+    data = request.get_json(force=True)
+    email = data[0]['value']
+    email = data[1]['value']
     user = User.query.filter_by(email=email).first()
-    if user != None and user.password == password:
-        return redirect('/dashboard', code=302)
-    else:
-        return 'Wrong email or password'
+    #if user != None and user.email == email and user.password == password:
+    #    print('passed tha test')
+    #    #dashboard(email)
+    #    return json.dumps({'status':'OK','user':"dsada",'pass':"yoyo"});
+    #else:
+    return jsonify("{'status':'OK','user':'dsada','pass':'yoyo'}"), 401
 
 @app.route("/dashboard")
-def dashboard():
-    return render_template('dashboard.html')
+def dashboard(email):
+    return render_template('dashboard.html', email=email)
 
 @app.route("/billing")
 def billing():
@@ -84,10 +88,8 @@ def billing():
 def logout():
     return redirect('/', code=302)
 
-@app.route("/getusers")
+@app.route("/test")
 def users():
-    
-    print(user == None)
     return ''
 
 if __name__ == '__main__':

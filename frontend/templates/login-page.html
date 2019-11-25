@@ -31,13 +31,14 @@ class="bg-gradient-primary"
                 <div class="text-center">
                   <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                 </div>
-                <form class="user" action="/login" method="post">
+                <form id="login-form" class="user" role="form"> <!-- action="/login" method="post" -->
                   <div class="form-group">
                     <input type="email" name="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
                   </div>
                   <div class="form-group">
                     <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
                   </div>
+                  <div id="output"></div>
                   <div class="form-group">
                     <input type="submit" value="Login" class="btn btn-primary btn-user btn-block"/>
                   </div>
@@ -63,4 +64,29 @@ class="bg-gradient-primary"
 {% block scripts %}
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
+
+<script>
+  
+$(function(){
+  $("#login-form").submit(function(e) {
+    e.preventDefault();
+  });
+  $('.btn.btn-primary.btn-user.btn-block').click(function(){
+  data = JSON.stringify( $('#login-form').serializeArray() );
+
+  $.ajax({
+    url: '/login',
+    data: data,
+    type: 'POST',
+    success: function(response){
+      console.log(response);
+    },
+    error: function(error){
+      $('#output').html(error)
+      console.log(error)
+    }
+    });
+  });
+});
+</script>
 {% endblock %}
