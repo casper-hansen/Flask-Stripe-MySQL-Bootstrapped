@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, escape
 from flask_login import LoginManager, login_required, login_user, logout_user 
-from db_access import DbAccess
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 import os
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
@@ -13,11 +14,33 @@ app = Flask(__name__,
             static_url_path='', 
             static_folder=static_dir)
 
-login_manager = LoginManager()
-login_manager.init_app(app)
+host="localhost"
+port='5001'
+user="root"
+password="rootpw"
+db_name = "UserDB"
 
-db = DbAccess()
-#db.create_db_and_tables_if_not_exists()
+conn_str = "mysql+mysqlconnector://{0}:{1}@{2}:{3}" \
+            .format(user, password, host, port)
+
+mysql_engine = create_engine(conn_str)
+mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0}".format(db_name))
+
+conn_str = "mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}" \
+           .format(user, password, host, port, db_name)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = conn_str
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(80), unique=False, nullable=False)
+
+    def __repr__(self):
+        return 'id: '.join([id])
+
+db.create_all()
 
 @app.route("/")
 def home():
@@ -27,6 +50,10 @@ def home():
 def signup():
     email = escape(request.form['email'])
     password = escape(request.form['password'])
+    
+    new_user = User(email=email, password=password)
+    db.session.add(new_user)
+    db.session.commit()
 
     return redirect('/login-page', code=302)
     
@@ -54,6 +81,11 @@ def billing():
 def logout():
     return redirect('/', code=302)
 
+@app.route("/getusers")
+def users():
+    users = User.query.all()
+    print(users)
+    return 'Hello'
 
 if __name__ == '__main__':
     app.debug = True
