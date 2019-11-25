@@ -38,7 +38,7 @@ class="bg-gradient-primary"
                   <div class="form-group">
                     <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
                   </div>
-                  <div id="output"></div>
+                  <div id="output" class="pb-2 row align-items-center justify-content-center text-danger"></div>
                   <div class="form-group">
                     <input type="submit" value="Login" class="btn btn-primary btn-user btn-block"/>
                   </div>
@@ -77,13 +77,14 @@ $(function(){
   $.ajax({
     url: '/login',
     data: data,
+    dataType: 'application/json; charset=utf-8',
     type: 'POST',
     success: function(response){
       console.log(response);
     },
     error: function(error){
-      $('#output').html(error)
-      console.log(error)
+      json_obj = JSON.parse(error.responseText);
+      $('#output').html(json_obj.message);
     }
     });
   });

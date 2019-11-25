@@ -66,14 +66,12 @@ def login_page():
 def login():
     data = request.get_json(force=True)
     email = data[0]['value']
-    email = data[1]['value']
+    password = data[1]['value']
     user = User.query.filter_by(email=email).first()
-    #if user != None and user.email == email and user.password == password:
-    #    print('passed tha test')
-    #    #dashboard(email)
-    #    return json.dumps({'status':'OK','user':"dsada",'pass':"yoyo"});
-    #else:
-    return jsonify("{'status':'OK','user':'dsada','pass':'yoyo'}"), 401
+    if user != None and user.email == email and user.password == password:
+        return redirect('/dashboard', code=201)
+    else:
+        return json.dumps({'message':'User data incorrect'})
 
 @app.route("/dashboard")
 def dashboard(email):
@@ -90,7 +88,8 @@ def logout():
 
 @app.route("/test")
 def users():
-    return ''
+    user = User.query.filter_by(email='q@q.q').first()
+    return user.email
 
 if __name__ == '__main__':
     app.debug = True
