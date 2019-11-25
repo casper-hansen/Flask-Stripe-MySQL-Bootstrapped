@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user 
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 import json
@@ -38,6 +38,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
+    is_authenticated = True
 
     def __repr__(self):
         return 'id: '.join([id])
@@ -69,6 +70,8 @@ def signup():
     
 @app.route("/login-page")
 def login_page():
+    if current_user.is_authenticated:
+        return redirect('/dashboard', code=302)
     return render_template('login-page.html')
 
 @app.route("/login", methods=["POST"])
@@ -78,7 +81,7 @@ def login():
     password = data[1]['value']
     user = User.query.filter_by(email=email).first()
     if user != None and user.email == email and user.password == password:
-        login_user(user)
+        login_user(user, remember=True)
         return json.dumps({'message':'/dashboard'}), 200
     else:
         return json.dumps({'message':'User data incorrect'}), 401
@@ -103,6 +106,10 @@ def logout():
 def users():
     user = User.query.filter_by(email='q@q.q').first()
     return user.email + '/' + user.password
+
+@app.errorhandler(404)
+def not_logged_in(e):
+    return redirect('/login-page', code=302)
 
 if __name__ == '__main__':
     app.debug = True
