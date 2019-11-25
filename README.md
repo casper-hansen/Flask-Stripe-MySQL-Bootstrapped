@@ -79,7 +79,6 @@ This is assuming you are running a Linux Server.
 5. Setup a non-root user in mysql server, with limited privileges
 6. Run mysql server
 7. Setup a reverse proxy in nginx.conf file. Add the following under http. Note that the server_name variable can be switched to a domain of yours, or a public ip address.
-- 
 ```
 server {
 		listen 0.0.0.0:80;
