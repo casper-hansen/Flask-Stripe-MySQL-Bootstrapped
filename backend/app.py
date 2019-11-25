@@ -15,7 +15,7 @@ app = Flask(__name__,
             template_folder=template_dir,
             static_url_path='', 
             static_folder=static_dir)
-app.secret_key = 'super secret string'
+app.secret_key = 'super secret string' # for sqlalchemy
 
 host="localhost"
 port='5001'

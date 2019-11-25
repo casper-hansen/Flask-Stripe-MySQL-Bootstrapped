@@ -67,3 +67,28 @@ You can always restart or stop the service, e.g. if the service is running and y
 
 - `brew services restart mysql`
 - `brew services stop mysql`
+
+## Production Install
+
+This is assuming you are running a Linux Server.
+
+1. Update apt-get
+2. Download docker
+3. Download nginx
+4. Download mysql
+5. Setup a non-root user in mysql server, with limited privileges
+6. Run mysql server
+7. Setup a reverse proxy in nginx.conf file. Add the following under http. Note that the server_name variable can be switched to a domain of yours, or a public ip address.
+- 
+```
+server {
+		listen 0.0.0.0:80;
+		server_name localhost;
+		
+		location / {
+			proxy_pass http://localhost:5000;
+		}
+	}
+```
+8. Run docker container
+
