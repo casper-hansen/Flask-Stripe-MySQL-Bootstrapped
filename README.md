@@ -1,6 +1,19 @@
 # docker-flask-startup-template
 Serving a pretty bootstrapped frontend with login page and payment integration. Using docker, flask and stripe in Python.
 
+# Technologies and features
+
+- [x] Python & MySQL Database
+- [x] Simplistic REST API with Flask
+- [x] Flask as Backend, serving HTML, CSS and JS
+- [x] Reusing HTML files when loading pages, including scripts, for performance
+- [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
+- [x] User data from signup stored in MySQL Database
+- [x] Login page that checks MySQL Database with credentials
+- [ ] 7-day Trial Period For Subscribers
+- [ ] Error handling
+- [ ] Billing using Stripe for subscriptions
+
 # Installation
 
 1. Install Python (3.7 was used for this project)
@@ -31,6 +44,13 @@ A tip that makes your life easier:
 2. In the upper section, double click path. Then click new. Then find your installation folder for mysql, e.g. mine was under `C:\Program Files\MySQL\MySQL Server 8.0\bin`. Add it as your path and click ok.
 3. Now you can use mysql, mysqld and mysqladmin commands which will be helpful for debugging.
 
+You can also open the MySQL vXX Command Line Prompt (e.g. MySQL 8.0 Command Line Prompt) and sign in. Here is a few steps to look at the database generated in the database, once you have run the application one time:
+
+1. Open the MySQL Command Prompt and enter your password, e.g. `rootpw` is used in this repo.
+2. Once logged in, you can do `USE UserDB;`
+3. Then you can do `DESCRIBE user;`
+4. And you can also look at all your users `SELECT * FROM user;`
+
 ## Mac and Linux
 
 Use Homebrew to install mysql. Installing homebrew is the first step:
@@ -47,15 +67,3 @@ You can always restart or stop the service, e.g. if the service is running and y
 
 - `brew services restart mysql`
 - `brew services stop mysql`
-
-# Technologies and features
-
-- [x] Python & MySQL Database
-- [x] Simplistic REST API with Flask
-- [x] Flask as Backend, serving HTML, CSS and JS
-- [x] Reusing HTML files when loading pages, including scripts, for performance
-- [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
-- [ ] User data from signup stored in MySQL Database
-- [ ] Login page that checks MySQL Database with credentials
-- [ ] Error handling
-- [ ] Billing using Stripe for subscriptions
