@@ -81,13 +81,13 @@ This is assuming you are running a Linux Server.
 7. Setup a reverse proxy in nginx.conf file. Add the following under http. Note that the server_name variable can be switched to a domain of yours, or a public ip address.
 ```
 server {
-		listen 0.0.0.0:80;
-		server_name localhost;
-		
-		location / {
-			proxy_pass http://localhost:5000;
-		}
+	listen 0.0.0.0:80;
+	server_name localhost;
+	
+	location / {
+		proxy_pass http://localhost:5000;
 	}
+}
 ```
 8. Run docker container
 
