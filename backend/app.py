@@ -1,38 +1,19 @@
-from flask import Flask, render_template, redirect, request, escape, jsonify, flash
+from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import generate_password_hash, check_password_hash
 from sqlalchemy import create_engine
 import json
 import os
+from setup_app import SetupApp
 
-base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
-frontend_dir = os.path.join(base_dir, 'frontend')
-template_dir = os.path.join(frontend_dir, 'templates')
-static_dir = os.path.join(frontend_dir, 'static')
+app = SetupApp().run()
+print(app.config['CONN_STR'])
 
-app = Flask(__name__, 
-            template_folder=template_dir,
-            static_url_path='', 
-            static_folder=static_dir)
-app.secret_key = 'super secret string' # for sqlalchemy
+mysql_engine = create_engine(app.config['CONN_STR'])
+mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0}".format(app.config['MYSQL_DB_NAME']))
 
-host="localhost"
-port='5001'
-user="root"
-password="rootpw"
-db_name = "UserDB"
-
-conn_str = "mysql+mysqlconnector://{0}:{1}@{2}:{3}" \
-            .format(user, password, host, port)
-
-mysql_engine = create_engine(conn_str)
-mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0}".format(db_name))
-
-conn_str = "mysql+mysqlconnector://{0}:{1}@{2}:{3}/{4}" \
-           .format(user, password, host, port, db_name)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = conn_str
+app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 db = SQLAlchemy(app)
 
 class User(UserMixin, db.Model):
