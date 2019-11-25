@@ -6,7 +6,7 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 1. Install Python (3.7 was used for this project)
 2. Install the package requirements `pip install requirements.txt`
 3. Download and install MySQL server and run it
-- Windows: [MySQL server](https://dev.mysql.com/downloads/mysql/) and start it
+- Windows: See Windows section below
 - Mac/Linux: See Mac and Linux section below
 4. Configure your connector in `backend/db_access.py`. I configured MySQL to run on port 5001, but the default port is 3306, which you can easily switch the port to in the code.
 
@@ -18,6 +18,18 @@ conn = connect(
     passwd="rootpw"
 )
 ```
+
+## Windows
+
+Download [MySQL server](https://dev.mysql.com/downloads/mysql/) and start it.
+
+**\*\*IMPORTANT** to check the "Configure MySQL Server as a Windows Service" and "Start the MySQL server at System Startup". Check the service is configured by pressing windows key or WINDOWS KEY+R and typing `services.msc` and find MySQL (e.g. MySQL80). It should be running, also after you have restarted your computer. Always check back here if something is not running.
+
+A tip that makes your life easier:
+
+1. Press the windows key and search for 'edit environment variables'
+2. In the upper section, double click path. Then click new. Then find your installation folder for mysql, e.g. mine was under `C:\Program Files\MySQL\MySQL Server 8.0\bin`. Add it as your path and click ok.
+3. Now you can use mysql, mysqld and mysqladmin commands which will be helpful for debugging.
 
 ## Mac and Linux
 
