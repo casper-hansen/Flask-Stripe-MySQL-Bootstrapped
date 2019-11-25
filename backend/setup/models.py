@@ -1,4 +1,4 @@
-from flask_login import LoginManager, UserMixin
+from flask_login import UserMixin
 from setup import db
 
 class User(UserMixin, db.Model):

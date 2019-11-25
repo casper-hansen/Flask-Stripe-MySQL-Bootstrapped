@@ -45,11 +45,12 @@ def login():
     password = data[1]['value']
     user = User.query.filter_by(email=email).first()
 
-    check_pw = check_password_hash(user.password_hash, password)
+    if user != None:
+        check_pw = check_password_hash(user.password_hash, password)
 
-    if user != None and user.email == email and check_pw:
-        login_user(user, remember=True)
-        return json.dumps({'message':'/dashboard'}), 200
+        if user.email == email and check_pw:
+            login_user(user, remember=True)
+            return json.dumps({'message':'/dashboard'}), 200
     else:
         return json.dumps({'message':'User data incorrect'}), 401
 
