@@ -3,16 +3,13 @@ import json
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_bcrypt import generate_password_hash, check_password_hash
-from setup_app import SetupApp
 from flask_sqlalchemy import SQLAlchemy
 
-app = SetupApp().run()
-from user import User, db
-db = SQLAlchemy(app)
-db.create_all()
-
-login_manager = LoginManager()
-login_manager.init_app(app)
+from setup import app, db, User
+with app.app_context():
+    db.create_all()
+    login_manager = LoginManager()
+    login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(id):
