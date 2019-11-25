@@ -5,7 +5,7 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 
-from setup import app, db, User
+from backend.setup import app, db, User
 with app.app_context():
     db.create_all()
     login_manager = LoginManager()

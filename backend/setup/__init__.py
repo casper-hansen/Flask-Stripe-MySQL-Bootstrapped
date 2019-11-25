@@ -31,4 +31,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 
 db = SQLAlchemy(app)
 
-from setup.models import User
+from backend.setup.models import User
