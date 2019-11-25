@@ -69,13 +69,13 @@ def login():
     password = data[1]['value']
     user = User.query.filter_by(email=email).first()
     if user != None and user.email == email and user.password == password:
-        return redirect('/dashboard', code=201)
+        return json.dumps({'message':'/dashboard'}), 200
     else:
-        return json.dumps({'message':'User data incorrect'})
+        return json.dumps({'message':'User data incorrect'}), 401
 
-@app.route("/dashboard")
-def dashboard(email):
-    return render_template('dashboard.html', email=email)
+@app.route("/dashboard", methods=["GET"])
+def dashboard():
+    return render_template('dashboard.html')
 
 @app.route("/billing")
 def billing():
@@ -89,7 +89,7 @@ def logout():
 @app.route("/test")
 def users():
     user = User.query.filter_by(email='q@q.q').first()
-    return user.email
+    return user.email + '/' + user.password
 
 if __name__ == '__main__':
     app.debug = True

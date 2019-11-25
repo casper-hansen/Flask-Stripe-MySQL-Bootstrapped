@@ -77,14 +77,20 @@ $(function(){
   $.ajax({
     url: '/login',
     data: data,
-    dataType: 'application/json; charset=utf-8',
     type: 'POST',
     success: function(response){
-      console.log(response);
+      json_obj = JSON.parse(response);
+      url = json_obj.message;
+      window.location.replace(url);
     },
     error: function(error){
-      json_obj = JSON.parse(error.responseText);
-      $('#output').html(json_obj.message);
+      if (error.status == '401'){
+        json_obj = JSON.parse(error.responseText);
+        $('#output').html(json_obj.message);
+      }
+      else {
+        $('#output').html('');
+      }
     }
     });
   });
