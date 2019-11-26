@@ -10,8 +10,8 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
 - [x] User data from signup stored in MySQL Database
 - [x] Login page that checks MySQL Database with credentials
+- [x] Error handling
 - [ ] 7-day Trial Period For Subscribers
-- [ ] Error handling
 - [ ] Billing using Stripe for subscriptions
 
 # Installation
