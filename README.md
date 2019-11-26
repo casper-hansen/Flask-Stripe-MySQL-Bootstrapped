@@ -4,15 +4,22 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 # Technologies and features
 
 - [x] Python & MySQL Database
-- [x] Simplistic REST API with Flask
-- [x] Flask as Backend, serving HTML, CSS and JS
-- [x] Reusing HTML files when loading pages, including scripts, for performance
 - [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
-- [x] User data from signup stored in MySQL Database
-- [x] Login page that checks MySQL Database with credentials
+- [x] Flask as Backend, serving HTML, CSS and JS
+- [x] Simplistic REST API with Flask
+- [x] Reusing HTML files when loading pages, including scripts, for performance
+- [x] Complete signup and login system, user data stored in MySQL database
 - [x] Error handling
 - [ ] 7-day Trial Period For Subscribers
 - [ ] Billing using Stripe for subscriptions
+- [ ] Feedback button to store feedback in database
+- [ ] Account Details (update account, disable account)
+- [ ] Settings for app
+- [ ] Signup and Login with Facebook / Google
+- [ ] Multiprocessing with Gunicorn, for SQLAlchemy and MySQL
+- [ ] Automatic in-app notifications — offer annual payment after 1 months use, notify user of credit card expiring soon.
+- [ ] Easy pricing strategy provided. Monthly for $xx and annual for $xx, get 2 months free. Extremely transparent pricing strategy, annual being standard and opt-of, with the benefits you lose if you switch to monthly.
+- [ ] Privacy policy, Terms of service, Return policy pages
 
 # Installation
 

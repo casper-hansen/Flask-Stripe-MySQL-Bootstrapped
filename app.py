@@ -5,7 +5,10 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 
+# Upon importing, run backend/setup/__init__.py
 from backend.setup import app, db, User
+
+# Within our app context, create all missing tables
 with app.app_context():
     db.create_all()
     login_manager = LoginManager()
