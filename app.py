@@ -17,7 +17,8 @@ def load_user(id):
 
 @app.route("/")
 def home():
-    return render_template('index.html')
+    variables = dict(is_authenticated=current_user.is_authenticated)
+    return render_template('index.html', **variables)
 
 @app.route("/signup", methods=["POST"])
 def signup():
@@ -68,6 +69,7 @@ def billing():
 
 @app.route("/logout")
 def logout():
+    current_user.is_authenticated = False
     logout_user()
     return redirect('/', code=302)
 

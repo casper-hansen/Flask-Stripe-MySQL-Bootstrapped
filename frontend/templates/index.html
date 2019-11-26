@@ -24,9 +24,16 @@ id="page-top"
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto my-2 my-lg-0">
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="/login-page">Login</a>
-        </li>
+          {% if is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="/dashboard">Back To Dashboard</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="/login-page">Login</a>
+          </li>
+          {% endif %}
+        
       </ul>
     </div>
   </div>
