@@ -30,6 +30,7 @@ def signup():
     new_user = User(email=email, password_hash=pw_hash)
     db.session.add(new_user)
     db.session.commit()
+    db.engine.dispose()
 
     return redirect('/login-page', code=302)
     
@@ -45,6 +46,7 @@ def login():
     email = data[0]['value']
     password = data[1]['value']
     user = User.query.filter_by(email=email).first()
+    db.engine.dispose()
 
     if user != None:
         check_pw = check_password_hash(user.password_hash, password)
