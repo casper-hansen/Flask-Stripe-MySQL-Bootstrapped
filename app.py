@@ -81,9 +81,19 @@ def users():
         all_users += u.email + ' / ' + u.password_hash + '<br>'
     return all_users
 
+@app.errorhandler(401)
+def not_logged_in(e):
+    variables = dict(message='Please login first')
+    
+    return render_template('login-page.html', **variables)
+
 @app.errorhandler(404)
 def not_logged_in(e):
-    return redirect('/login-page', code=302)
+    variables = dict(is_authenticated=current_user.is_authenticated,
+                     message = '404 Page Not Found',
+                     stacktrace = str(e))
+    
+    return render_template('error.html', **variables)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

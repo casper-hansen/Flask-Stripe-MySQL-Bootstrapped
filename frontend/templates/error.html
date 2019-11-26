@@ -1,3 +1,7 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<h1>{{ message }}</h1>
+{% if is_authenticated %}
+<a href="/dashboard"><h2>Back To Dashboard</h2></a>
+{% else %}
+<a href="/"><h2>Back To Homepage</h2></a>
+{% endif %}
+<pre>{{ stacktrace }}</pre>
