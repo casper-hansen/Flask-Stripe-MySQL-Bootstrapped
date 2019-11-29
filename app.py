@@ -4,16 +4,10 @@ from flask import Flask, render_template, redirect, request, escape, jsonify, fl
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import CSRFProtect
+from sqlalchemy import exc
 
 # Upon importing, run backend/setup/__init__.py
-from backend.setup import app, db, User
-
-# Within our app context, create all missing tables
-with app.app_context():
-    db.create_all()
-    login_manager = LoginManager(app)
-    csrf = CSRFProtect(app)
+from backend.setup import app, db, User, login_manager
 
 @login_manager.user_loader
 def load_user(id):
@@ -26,17 +20,23 @@ def home():
 
 @app.route("/signup", methods=["POST"])
 def signup():
-    email = escape(request.form['email'])
-    password = escape(request.form['password'])
-    
-    pw_hash = generate_password_hash(password, 10)
+    try:
+        data = request.get_json(force=True)
+        email = data['email']
+        password = data['password']
 
-    new_user = User(email=email, password_hash=pw_hash)
-    db.session.add(new_user)
-    db.session.commit()
-    db.engine.dispose()
+        pw_hash = generate_password_hash(password, 10)
 
-    return redirect('/login-page', code=302)
+        new_user = User(email=email, password_hash=pw_hash)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return json.dumps({'message':'/login-page'}), 200
+    except exc.IntegrityError as ex:
+        db.session.rollback()
+        return json.dumps({'message':'Email already in use, tried logging in?'}), 403
+    except Exception as ex:
+        return json.dumps({'message':'Something went wrong'}), 401
     
 @app.route("/login-page")
 def login_page():
@@ -50,7 +50,6 @@ def login():
     email = data['email']
     password = data['password']
     user = User.query.filter_by(email=email).first()
-    db.engine.dispose()
 
     if user != None:
         check_pw = check_password_hash(user.password_hash, password)

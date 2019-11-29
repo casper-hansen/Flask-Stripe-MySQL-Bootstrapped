@@ -49,10 +49,12 @@ id="page-top"
       </div>
       <div class="col-lg-8 align-self-baseline">
         <p class="text-white-75 font-weight-light mb-5">Claim Your Free Trial of Template</p>
-        <form action="/signup" method="post">
-          <input class="mb-3 form-control" required type="email" name="email" placeholder="Your email"/>
-          <input class="mb-3 form-control" required type="password" name="password" placeholder="Enter a password"/>
+        <form id="signup-form" action="/signup" method="post">
+          <input class="mb-3 form-control" required id="emailField" type="email" name="email" placeholder="Your email"/>
+          <input class="mb-3 form-control" required id="passwordField" type="password" name="password" placeholder="Enter a password"/>
+          <div id="output" class="pb-2 row align-items-center justify-content-center text-danger font-weight-bold">{{ message }}</div>
           <input class="btn btn-primary btn-xl" type="submit" value="Signup for a free trial"/>
+          
         </form>
       </div>
     </div>
@@ -71,4 +73,39 @@ id="page-top"
 
 <!-- Custom scripts for this template -->
 <script src="js/creative.min.js"></script>
+
+<script>
+  $(function(){
+    $("#signup-form").submit(function(e) {
+      e.preventDefault();
+    });
+    $('.btn.btn-primary.btn-xl').click(function(){
+    data = JSON.stringify({
+      email: $('#emailField').val(), 
+      password: $('#passwordField').val()
+    })
+    
+    $.ajax({
+      url: '/signup',
+      type: 'POST',
+      contentType: "application/json",
+      data: data, 
+      success: function(response){
+        json_obj = JSON.parse(response);
+        url = json_obj.message;
+        window.location.replace(url);
+      },
+      error: function(error){
+        if (error.status == '401' || error.status == '403'){
+          json_obj = JSON.parse(error.responseText);
+          $('#output').html(json_obj.message);
+        }
+        else {
+          $('#output').html('');
+        }
+      }
+      });
+    });
+  });
+  </script>
 {% endblock %}

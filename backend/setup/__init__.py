@@ -2,6 +2,8 @@ import os
 from sqlalchemy import create_engine
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_wtf import CSRFProtect
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..'))
 frontend_dir = os.path.join(base_dir, 'frontend')
@@ -31,4 +33,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 
 db = SQLAlchemy(app)
 
+# Import user after setup (important)
 from backend.setup.models import User
+
+# Within our app context, create all missing tables
+db.create_all()
+login_manager = LoginManager(app)
+login_manager.session_protection = 'basic'
+csrf = CSRFProtect(app)
