@@ -64,7 +64,17 @@ class="bg-gradient-primary"
 {% block scripts %}
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
+<script type="text/javascript">
+  var csrf_token = "{{ csrf_token() }}";  // the token is set by Jinja2
 
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrf_token);  // insert custom header
+          }
+      }
+  });
+</script>
 <script>
   
 $(function(){
@@ -72,12 +82,16 @@ $(function(){
     e.preventDefault();
   });
   $('.btn.btn-primary.btn-user.btn-block').click(function(){
-  data = JSON.stringify( $('#login-form').serializeArray() );
-
+  data = JSON.stringify({
+    email: $('#exampleInputEmail').val(), 
+    password: $('#exampleInputPassword').val()
+  })
+  
   $.ajax({
     url: '/login',
-    data: data,
     type: 'POST',
+    contentType: "application/json",
+    data: data, 
     success: function(response){
       json_obj = JSON.parse(response);
       url = json_obj.message;

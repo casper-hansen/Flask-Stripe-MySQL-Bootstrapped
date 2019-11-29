@@ -4,6 +4,7 @@ from flask import Flask, render_template, redirect, request, escape, jsonify, fl
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 
 # Upon importing, run backend/setup/__init__.py
 from backend.setup import app, db, User
@@ -11,8 +12,8 @@ from backend.setup import app, db, User
 # Within our app context, create all missing tables
 with app.app_context():
     db.create_all()
-    login_manager = LoginManager()
-    login_manager.init_app(app)
+    login_manager = LoginManager(app)
+    csrf = CSRFProtect(app)
 
 @login_manager.user_loader
 def load_user(id):
@@ -46,8 +47,8 @@ def login_page():
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json(force=True)
-    email = data[0]['value']
-    password = data[1]['value']
+    email = data['email']
+    password = data['password']
     user = User.query.filter_by(email=email).first()
     db.engine.dispose()
 
