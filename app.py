@@ -69,7 +69,8 @@ def dashboard():
 @app.route("/billing")
 @login_required
 def billing():
-    variables = dict(subscription_active=current_user.is_subscribed)
+    variables = dict(subscription_active=current_user.is_subscribed,
+                     email=current_user.email)
     return render_template('billing.html', **variables)
 
 @app.route("/logout")
@@ -93,7 +94,7 @@ def not_logged_in(e):
     return render_template('login-page.html', **variables)
 
 @app.errorhandler(404)
-def not_logged_in(e):
+def not_found(e):
     variables = dict(is_authenticated=current_user.is_authenticated,
                      message = '404 Page Not Found',
                      stacktrace = str(e))

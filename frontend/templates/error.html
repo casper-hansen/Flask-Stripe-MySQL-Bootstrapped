@@ -1,7 +1,21 @@
-<h1>{{ message }}</h1>
 {% if is_authenticated %}
-<a href="/dashboard"><h2>Back To Dashboard</h2></a>
+  {% extends "dashboard-base.html" %}
+
+  {% block title %}
+  Page Not Found
+  {% endblock %}
+
+  {% block content %}
+  <!-- 404 Error Text -->
+  <div class="text-center mt-4">
+    <div class="error mx-auto" data-text="404">404</div>
+    <p class="lead text-gray-800 mb-5">Page Not Found</p>
+    <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
+    <a href="/dashboard">&larr; Back to Dashboard</a>
+  </div>
+  {% endblock %}
 {% else %}
+<h1>{{ message }}</h1>
 <a href="/"><h2>Back To Homepage</h2></a>
-{% endif %}
 <pre>{{ stacktrace }}</pre>
+{% endif %}

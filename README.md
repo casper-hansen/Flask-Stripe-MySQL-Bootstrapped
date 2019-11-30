@@ -10,6 +10,7 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - [x] Reusing HTML files when loading pages, including scripts, for performance
 - [x] Complete signup and login system, user data stored in MySQL database
 - [x] Error handling
+- [x] Secure against XSS, CSRF attacks
 - [ ] 7-day Trial Period For Subscribers
 - [ ] Billing using Stripe for subscriptions
 - [ ] Feedback button to store feedback in database
