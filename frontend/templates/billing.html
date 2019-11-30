@@ -9,26 +9,9 @@ Billing
 <h1 class="h3 mt-3 mb-4 text-gray-800">Billing Page</h1>
 {{ name }}
 {% if subscription_active %}
-  <p>Thanks for subbing!</p>
+<p>You are a paid customer! Here is your billing information.</p>
 {% else %}
-  <button onclick="gotoCheckout()" class="btn btn-lg btn-success">Subscribe for $10/Month</button>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    var stripe = Stripe('<%= STRIPE_PUBLIC_KEY %>');
-    function gotoCheckout() {
-      stripe.redirectToCheckout({
-        // Make the id field from the Checkout Session creation API response
-        // available to this file, so you can provide it as parameter here
-        // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
-        sessionId: '<%= sessionId %>'
-      }).then(function (result) {
-        // If `redirectToCheckout` fails due to a browser or network
-        // error, display the localized error message to your customer
-        // using `result.error.message`.
-      });
-    }
-  </script>
+<p>You do not have an active subscription.</p>
 {% endif %}
-
 
 {% endblock %}

@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import timedelta
 
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
@@ -64,7 +65,8 @@ def login():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    variables = dict(email=current_user.email)
+    variables = dict(email=current_user.email,
+                     expire_date=current_user.created_date + timedelta(days=1))
     return render_template('dashboard.html', **variables)
 
 @app.route("/billing")

@@ -7,5 +7,66 @@ Dashboard
 {% block content %}
 <!-- Page Heading -->
 <h1 class="h3 mt-3 mb-4 text-gray-800">Dashboard</h1>
-<p>Logged in as {{ email }}</p>
+
+<div class="card border-left-success shadow p-3">
+<div class="row">
+    <div class="col-sm-8">
+        <h3>Time Remaining in Trial: <span id="timer" class="timer"></span></h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <p>When the timer ends, your trial period is over.</p>
+    </div>
+</div>
+<!-- TO BE IMPLEMENTED
+<div class="shift-down">
+
+    <form method="post" action="paynow">
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button active" data-key="pk_live_XZST5J1r1ekrY5CnB7bM0GUs00NPSmlE7m" data-name="UltraHosting" data-panel-label="Pay Now ($5.00)" data-email="casperbh.96@gmail.com" data-label="Pay Now" data-allow-remember-me="false">
+        </script><button type="submit" class="stripe-button-el" style="visibility: visible; display: none;"><span style="display: block; min-height: 30px;">Pay Now</span></button>
+
+        <script>
+            // Hide default stripe button, be careful there if you
+            // have more than 1 button of that class
+            document.getElementsByClassName("stripe-button-el")[0].style.display = 'none';
+        </script>
+        <button type="submit" id="paynow" class="btn btn-success">Subscribe Now For $10/Month</button>
+    </form>
+</div>
+-->
+</div>
+
+<script>
+var expiredDate = new Date("{{ expire_date }}");
+
+// Update the count down every 1 second
+var countDown = function () {
+
+    // Get todays date and time
+    var now = new Date().getTime();
+
+    // Find the distance between now an the count down date
+    var distance = expiredDate.getTime() - now;
+
+    // Time calculations for days, hours, minutes and seconds
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Display the result in the element with id="demo"
+    document.getElementById("timer").innerHTML = hours + "h " + minutes + "m " + seconds + "s";
+
+    // If the count down is finished, write some text
+    if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("timer").innerHTML = "EXPIRED";
+        document.getElementById("paynow").style.visibility = "hidden";
+    }
+
+};
+countDown();
+var x = setInterval(countDown, 1000);
+</script>
 {% endblock %}
