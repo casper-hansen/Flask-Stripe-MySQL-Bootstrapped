@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 
 # Upon importing, run backend/setup/__init__.py
-from backend.setup import app, db, User, login_manager, template_dir
+from backend.setup import app, db, User, login_manager
 
 @login_manager.user_loader
 def load_user(id):
