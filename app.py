@@ -31,18 +31,18 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return json.dumps({'message':'/login-page'}), 200
+        return json.dumps({'message':'/login_page'}), 200
     except exc.IntegrityError as ex:
         db.session.rollback()
         return json.dumps({'message':'Email already in use, tried logging in?'}), 403
     except Exception as ex:
         return json.dumps({'message':'Something went wrong'}), 401
     
-@app.route("/login-page")
+@app.route("/login_page")
 def login_page():
     if current_user.is_authenticated:
         return redirect('/dashboard', code=302)
-    return render_template('login-page.html')
+    return render_template('login_page.html')
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -73,25 +73,21 @@ def billing():
                      email=current_user.email)
     return render_template('billing.html', **variables)
 
+@app.route("/tos")
+def terms_of_service():
+    return render_template('terms_of_service.html')
+
 @app.route("/logout")
 def logout():
     current_user.is_authenticated = False
     logout_user()
     return redirect('/', code=302)
 
-@app.route("/test")
-def users():
-    user = User.query.all()
-    all_users = ''
-    for u in user:
-        all_users += u.email + ' / ' + u.password_hash + '<br>'
-    return all_users
-
 @app.errorhandler(401)
 def not_logged_in(e):
     variables = dict(message='Please login first')
     
-    return render_template('login-page.html', **variables)
+    return render_template('login_page.html', **variables)
 
 @app.errorhandler(404)
 def not_found(e):
