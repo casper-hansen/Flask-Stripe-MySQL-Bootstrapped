@@ -4,17 +4,25 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+import jinja2
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..'))
 frontend_dir = os.path.join(base_dir, 'frontend')
 template_dir = os.path.join(frontend_dir, 'templates')
 static_dir = os.path.join(frontend_dir, 'static')
+base_template_dir = os.path.join(template_dir, 'base_templates')
 
 app = Flask(__name__, 
             root_path=base_dir,
-            template_folder=template_dir,
             static_url_path='', 
             static_folder=static_dir)
+
+my_loader = jinja2.ChoiceLoader([
+        app.jinja_loader,
+        jinja2.FileSystemLoader([template_dir, 
+                                 base_template_dir]),
+    ])
+app.jinja_loader = my_loader
 
 app.config.from_pyfile('env_variables.cfg')
 
@@ -41,3 +49,4 @@ db.create_all()
 login_manager = LoginManager(app)
 login_manager.session_protection = 'basic'
 csrf = CSRFProtect(app)
+

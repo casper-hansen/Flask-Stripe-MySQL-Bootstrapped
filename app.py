@@ -1,4 +1,5 @@
 import json
+import os
 
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
@@ -7,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 
 # Upon importing, run backend/setup/__init__.py
-from backend.setup import app, db, User, login_manager
+from backend.setup import app, db, User, login_manager, template_dir
 
 @login_manager.user_loader
 def load_user(id):
