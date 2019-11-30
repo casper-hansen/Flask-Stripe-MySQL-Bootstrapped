@@ -75,7 +75,8 @@ def billing():
 
 @app.route("/tos")
 def terms_of_service():
-    return render_template('terms_of_service.html')
+    variables = dict(is_authenticated=current_user.is_authenticated)
+    return render_template('terms_of_service.html', **variables)
 
 @app.route("/logout")
 def logout():
