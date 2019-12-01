@@ -20,22 +20,18 @@ Dashboard
         <p>When the timer ends, your trial period is over.</p>
     </div>
 </div>
-<!-- TO BE IMPLEMENTED
-<div class="shift-down">
-
-    <form method="post" action="paynow">
-        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button active" data-key="pk_live_XZST5J1r1ekrY5CnB7bM0GUs00NPSmlE7m" data-name="UltraHosting" data-panel-label="Pay Now ($5.00)" data-email="casperbh.96@gmail.com" data-label="Pay Now" data-allow-remember-me="false">
-        </script><button type="submit" class="stripe-button-el" style="visibility: visible; display: none;"><span style="display: block; min-height: 30px;">Pay Now</span></button>
-
-        <script>
-            // Hide default stripe button, be careful there if you
-            // have more than 1 button of that class
-            document.getElementsByClassName("stripe-button-el")[0].style.display = 'none';
+<div class="col-sm-12">
+    <form action="/charge" method="post">
+        <script
+            src="https://checkout.stripe.com/checkout.js"
+            class="stripe-button active"
+            data-key="{{ STRIPE_PUBLIC_KEY }}"
+            data-description="A Subscription Service"
+            data-amount="1000"
+            data-locale="auto"
+            data-allow-remember-me="false">
         </script>
-        <button type="submit" id="paynow" class="btn btn-success">Subscribe Now For $10/Month</button>
     </form>
-</div>
--->
 </div>
 
 <script>

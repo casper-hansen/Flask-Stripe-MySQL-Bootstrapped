@@ -7,6 +7,7 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
+import stripe
 
 # Upon importing, run backend/setup/__init__.py
 from backend.setup import app, db, User, login_manager
@@ -68,7 +69,9 @@ def dashboard():
     trial_period = timedelta(days=7)
 
     variables = dict(email=current_user.email,
-                     expire_date=current_user.created_date + trial_period)
+                     expire_date=current_user.created_date + trial_period,
+                     STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'])
+
     return render_template('dashboard.html', **variables)
 
 @app.route("/billing")
@@ -88,7 +91,7 @@ def logout():
     current_user.is_authenticated = False
     logout_user()
     return redirect('/', code=302)
-
+    
 @app.errorhandler(401)
 def not_logged_in(e):
     variables = dict(message='Please login first')
