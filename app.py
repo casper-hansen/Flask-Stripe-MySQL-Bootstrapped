@@ -10,7 +10,7 @@ from sqlalchemy import exc
 import stripe
 
 # Upon importing, run backend/setup/__init__.py
-from backend.setup import app, db, User, login_manager
+from backend.setup import app, db, User, login_manager, csrf
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
 @login_manager.user_loader
@@ -76,7 +76,8 @@ def dashboard():
     return render_template('dashboard.html', **variables)
 
 @app.route("/paynow", methods=["POST"])
-#@login_required
+@login_required
+@csrf.exempt
 def paynow():
     data = request.get_json(force=True)
     email = data['email']
@@ -97,7 +98,8 @@ def paynow():
 
     print(session)
 
-    variables = dict(CHECKOUT_SESSION_ID=session.id,
+    variables = dict(email=current_user.email,
+                     expire_date=current_user.created_date + trial_period,
                      STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'])
 
     return render_template('dashboard.html', **variables)
