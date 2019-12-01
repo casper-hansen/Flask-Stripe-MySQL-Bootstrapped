@@ -96,11 +96,11 @@
   <script src="js/sb-admin-2.min.js"></script>
 
   <script>
-    $(document).ready(function() {
-      $.each($('#accordionSidebar').find('li'), function() {
-          $(this).toggleClass('active', 
-              window.location.pathname.indexOf($(this).find('a').attr('href')) > -1);
-      }); 
+  $(document).ready(function() {
+    $.each($('#accordionSidebar').find('li'), function() {
+      $(this).toggleClass('active', 
+        window.location.pathname.indexOf($(this).find('a').attr('href')) > -1);
+    }); 
   });
   </script>
 </body>
