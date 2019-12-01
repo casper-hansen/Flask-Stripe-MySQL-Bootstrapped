@@ -12,6 +12,7 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - [x] Error handling
 - [x] Secure against XSS, CSRF attacks (i.e. you cannot send POST requests to the /signup endpoint, because it will be rejected with no CSRF token)
 - [x] 7-day Trial Period For Subscribers
+- [x] Page-template with an included Terms of Service (TOS) page
 - [ ] Email validation
 - [ ] Billing using Stripe for subscriptions
 - [ ] Feedback button to store feedback in database
@@ -21,7 +22,7 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - [ ] Multiprocessing with Gunicorn, for SQLAlchemy and MySQL
 - [ ] Automatic in-app notifications — offer annual payment after 1 months use, notify user of credit card expiring soon.
 - [ ] Easy pricing strategy provided. Monthly for $xx and annual for $xx, get 2 months free. Extremely transparent pricing strategy, annual being standard and opt-of, with the benefits you lose if you switch to monthly.
-- [ ] Privacy policy, Terms of service, Return policy pages
+
 
 # Installation
 
