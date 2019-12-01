@@ -78,8 +78,13 @@ def dashboard():
 @app.route("/paynow", methods=["POST"])
 #@login_required
 def paynow():
+    data = request.get_json(force=True)
+    email = data['email']
+
+    #stripe.Subscription.create
+
     session = stripe.checkout.Session.create(
-        customer_email=current_user.email,
+        customer_email=email,
         payment_method_types=['card'],
         subscription_data={
             'items': [{
