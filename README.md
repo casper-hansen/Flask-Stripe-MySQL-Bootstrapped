@@ -11,8 +11,8 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - [x] Complete signup and login system, user data stored in MySQL database
 - [x] Error handling
 - [x] Secure against XSS, CSRF attacks
-- [x] Email validation
-- [ ] 7-day Trial Period For Subscribers
+- [x] 7-day Trial Period For Subscribers
+- [ ] Email validation
 - [ ] Billing using Stripe for subscriptions
 - [ ] Feedback button to store feedback in database
 - [ ] Account Details (update account, disable account)

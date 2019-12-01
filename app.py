@@ -65,8 +65,10 @@ def login():
 @app.route("/dashboard")
 @login_required
 def dashboard():
+    trial_period = timedelta(days=7)
+
     variables = dict(email=current_user.email,
-                     expire_date=current_user.created_date + timedelta(days=1))
+                     expire_date=current_user.created_date + trial_period)
     return render_template('dashboard.html', **variables)
 
 @app.route("/billing")
