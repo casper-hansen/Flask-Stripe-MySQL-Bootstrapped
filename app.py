@@ -74,6 +74,18 @@ def dashboard():
 
     return render_template('dashboard.html', **variables)
 
+@app.route("/paynow", methods=["POST"])
+@login_required
+def paynow():
+    data = request.get_json(force=True)
+    trial_period = timedelta(days=7)
+
+    variables = dict(email=current_user.email,
+                     expire_date=current_user.created_date + trial_period,
+                     STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'])
+
+    return render_template('dashboard.html', **variables)
+
 @app.route("/billing")
 @login_required
 def billing():

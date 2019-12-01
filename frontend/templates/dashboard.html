@@ -20,20 +20,9 @@ Dashboard
         <p>When the timer ends, your trial period is over.</p>
     </div>
 </div>
-<div class="col-sm-12">
-    <form action="/charge" method="post">
-        <script
-            src="https://checkout.stripe.com/checkout.js"
-            class="stripe-button active"
-            data-key="{{ STRIPE_PUBLIC_KEY }}"
-            data-description="A Subscription Service"
-            data-amount="1000"
-            data-locale="auto"
-            data-allow-remember-me="false">
-        </script>
-    </form>
+<div class="shift-down">
+    <p>Subscribe form to be added</p>
 </div>
-
 <script>
 var expiredDate = new Date("{{ expire_date }}");
 
