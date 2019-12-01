@@ -17,9 +17,9 @@ id="page-top"
 
 {% block content %}
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3" id="mainNav">
+<nav class="navbar navbar-expand-lg navbar-dark py-3" id="mainNav">
   <div class="container">
-    <a class="navbar-brand js-scroll-trigger" href="/">ML SaaS Tutorial</a>
+    <a class="navbar-brand js-scroll-trigger text-dark" href="/">ML SaaS Tutorial</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -27,11 +27,11 @@ id="page-top"
       <ul class="navbar-nav ml-auto my-2 my-lg-0">
           {% if is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="/dashboard">Back To Dashboard</a>
+            <a class="nav-link text-dark" href="/dashboard">Back To Dashboard</a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="/login_page">Login</a>
+            <a class="nav-link text-dark" href="/login_page">Login</a>
           </li>
           {% endif %}
         
