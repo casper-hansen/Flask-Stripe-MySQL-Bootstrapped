@@ -11,6 +11,7 @@ import stripe
 
 # Upon importing, run backend/setup/__init__.py
 from backend.setup import app, db, User, login_manager
+stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
 @login_manager.user_loader
 def load_user(id):
@@ -75,13 +76,23 @@ def dashboard():
     return render_template('dashboard.html', **variables)
 
 @app.route("/paynow", methods=["POST"])
-@login_required
+#@login_required
 def paynow():
-    data = request.get_json(force=True)
-    trial_period = timedelta(days=7)
+    session = stripe.checkout.Session.create(
+        customer_email=current_user.email,
+        payment_method_types=['card'],
+        subscription_data={
+            'items': [{
+                'plan': app.config['STRIPE_PLAN'],
+            }],
+        },
+        success_url=app.config['BASE_URL'] + '/billing?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url=app.config['BASE_URL'] + '/billing',
+    )
 
-    variables = dict(email=current_user.email,
-                     expire_date=current_user.created_date + trial_period,
+    print(session)
+
+    variables = dict(CHECKOUT_SESSION_ID=session.id,
                      STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'])
 
     return render_template('dashboard.html', **variables)

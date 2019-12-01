@@ -21,7 +21,18 @@ Dashboard
     </div>
 </div>
 <div class="shift-down">
-    <p>Subscribe form to be added</p>
+<form action="/paynow" method="POST">
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="{{ STRIPE_PUBLIC_KEY }}"
+    data-name="SaaS ML App"
+    data-description="ML Service Subscription"
+    data-amount="2000"
+    data-label="Pay Now!"
+    data-email="{{ email }}" 
+    data-allow-remember-me="false">
+  </script>
+</form>
 </div>
 <script>
 var expiredDate = new Date("{{ expire_date }}");
