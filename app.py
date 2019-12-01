@@ -76,13 +76,16 @@ def dashboard():
     return render_template('dashboard.html', **variables)
 
 @app.route("/paynow", methods=["POST"])
-@login_required
+#@login_required
 @csrf.exempt
 def paynow():
-    data = request.get_json(force=True)
-    email = data['email']
-
-    #stripe.Subscription.create
+    data = request.form
+    email = data['stripeEmail']
+    stripe_token = data['stripeToken']
+    stripe_token_type = data['stripeTokenType']
+    
+    url = 'http://' + app.config['BASE_URL'] + ':5000/dashboard'
+    print(url)
 
     session = stripe.checkout.Session.create(
         customer_email=email,
@@ -92,17 +95,17 @@ def paynow():
                 'plan': app.config['STRIPE_PLAN'],
             }],
         },
-        success_url=app.config['BASE_URL'] + '/billing?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url=app.config['BASE_URL'] + '/billing',
+        success_url=url + '?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url=url,
     )
 
     print(session)
 
-    variables = dict(email=current_user.email,
-                     expire_date=current_user.created_date + trial_period,
-                     STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'])
+    current_user.is_authenticated = True
 
-    return render_template('dashboard.html', **variables)
+    variables = dict(is_authenticated=current_user.is_authenticated)
+
+    return render_template('dashboard.html')
 
 @app.route("/billing")
 @login_required
