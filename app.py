@@ -84,8 +84,8 @@ def paynow():
     stripe_token = data['stripeToken']
     stripe_token_type = data['stripeTokenType']
     
-    url = 'http://' + app.config['BASE_URL'] + ':5000/dashboard'
-    print(url)
+    url = app.config['BASE_URL'] + ':5000/dashboard'
+    url2 = app.config['BASE_URL'] + ':5000/billing'
 
     session = stripe.checkout.Session.create(
         customer_email=email,
@@ -96,7 +96,7 @@ def paynow():
             }],
         },
         success_url=url + '?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url=url,
+        cancel_url=url2,
     )
 
     print(session)
@@ -106,6 +106,31 @@ def paynow():
     variables = dict(is_authenticated=current_user.is_authenticated)
 
     return render_template('dashboard.html')
+
+@app.route('/pay-success', methods=["POST"])
+@csrf.exempt
+def pay_success():
+    payload = request.data.decode("utf-8")
+    received_sig = request.headers.get("Stripe-Signature", None)
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, received_sig, app.config['ENDPOINT_SECRET']
+        )
+    except ValueError:
+        print("Error while decoding event!")
+        return "Bad payload", 400
+    except stripe.error.SignatureVerificationError:
+        print("Invalid signature!")
+        return "Bad signature", 400
+
+    print(
+        "Received event: id={id}, type={type}".format(
+            id=event.id, type=event.type
+        )
+    )
+
+    return "", 200
 
 @app.route("/billing")
 @login_required
