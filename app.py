@@ -37,6 +37,7 @@ def signup():
 
         return json.dumps({'message':'/login_page'}), 200
     except exc.IntegrityError as ex:
+        print(ex)
         db.session.rollback()
         return json.dumps({'message':'Email already in use, tried logging in?'}), 403
     except Exception as ex:
@@ -76,66 +77,39 @@ def dashboard():
     return render_template('dashboard.html', **variables)
 
 @app.route("/paynow", methods=["POST"])
-#@login_required
 @csrf.exempt
 def paynow():
     data = request.form
     email = data['stripeEmail']
     stripe_token = data['stripeToken']
-    stripe_token_type = data['stripeTokenType']
-    
-    url = app.config['BASE_URL'] + ':5000/dashboard'
-    url2 = app.config['BASE_URL'] + ':5000/billing'
 
-    session = stripe.checkout.Session.create(
-        customer_email=email,
-        payment_method_types=['card'],
-        subscription_data={
-            'items': [{
-                'plan': app.config['STRIPE_PLAN'],
-            }],
-        },
-        success_url=url + '?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url=url2,
+    customer = stripe.Customer.create(
+        email=email,
+        source=stripe_token
     )
 
-    print(session)
-
-    current_user.is_authenticated = True
-
-    variables = dict(is_authenticated=current_user.is_authenticated)
-
-    return render_template('dashboard.html')
-
-@app.route('/pay-success', methods=["POST"])
-@csrf.exempt
-def pay_success():
-    payload = request.data.decode("utf-8")
-    received_sig = request.headers.get("Stripe-Signature", None)
-
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, received_sig, app.config['ENDPOINT_SECRET']
-        )
-    except ValueError:
-        print("Error while decoding event!")
-        return "Bad payload", 400
-    except stripe.error.SignatureVerificationError:
-        print("Invalid signature!")
-        return "Bad signature", 400
-
-    print(
-        "Received event: id={id}, type={type}".format(
-            id=event.id, type=event.type
-        )
+    sub = stripe.Subscription.create(
+        customer=customer.id,
+        items=[{
+            "plan": app.config['STRIPE_PLAN']
+        }]
     )
 
-    return "", 200
+    if sub.status == 'active':
+        user = User.query.filter_by(email=email).first()
+        user.subscription_active = True
+        user.subscription_id = sub.id
+        user.customer_id = customer.id
+        db.session.commit()
+
+    variables = dict(subscription_active=current_user.subscription_active)
+
+    return render_template('billing.html', **variables)
 
 @app.route("/billing")
 @login_required
 def billing():
-    variables = dict(subscription_active=current_user.is_subscribed,
+    variables = dict(subscription_active=current_user.subscription_active,
                      email=current_user.email)
     return render_template('billing.html', **variables)
 
