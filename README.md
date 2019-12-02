@@ -29,6 +29,7 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - Save more of Stripe data upon succesful payment
 - Optimize when HTML, CSS and JS is loaded
 - Finish subscription strategies
+- Update installation guide (its outdated)
 
 # Installation
 
