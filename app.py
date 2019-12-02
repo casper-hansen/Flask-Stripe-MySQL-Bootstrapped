@@ -71,8 +71,8 @@ def dashboard():
     trial_period = timedelta(days=7)
 
     variables = dict(email=current_user.email,
-                    expire_date=current_user.created_date + trial_period,
-                    user_is_paying=current_user.subscription_active)
+                     expire_date=current_user.created_date + trial_period,
+                     user_is_paying=current_user.subscription_active)
 
     if current_user.subscription_active == False:
         session = stripe.checkout.Session.create(

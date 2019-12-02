@@ -24,6 +24,12 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - [ ] Easy pricing strategy provided. Monthly for $xx and annual for $xx, get 2 months free. Extremely transparent pricing strategy, annual being standard and opt-of, with the benefits you lose if you switch to monthly.
 
 
+## Todo
+
+- Save more of Stripe data upon succesful payment
+- Optimize when HTML, CSS and JS is loaded
+- Finish subscription strategies
+
 # Installation
 
 1. Install Python (3.7 was used for this project)
