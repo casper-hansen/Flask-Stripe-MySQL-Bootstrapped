@@ -7,38 +7,33 @@ Dashboard
 {% block content %}
 <!-- Page Heading -->
 <h1 class="h3 mt-3 mb-4 text-gray-800">Dashboard</h1>
-
+{% if not user_is_paying %}
 <div class="card border-left-success shadow p-3">
-<div class="row">
-    <div class="col-sm-8">
-        <h3>Time Remaining in Trial: <span id="timer" class="timer"></span></h3>
+    <h3>Time Remaining in Trial: <span id="timer" class="timer"></span></h3>
+    <p>When the timer ends, your trial period is over.</p>
+
+    <div class="shift-down">
+        <button onclick="goToCheckout()" class="btn btn-lg btn-success">Subscribe Now</button>
+        <script src="https://js.stripe.com/v3/"></script>
+        <script>
+            var stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+            function goToCheckout() {
+                stripe.redirectToCheckout({
+                    // Make the id field from the Checkout Session creation API response
+                    // available to this file, so you can provide it as parameter here
+                    // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+                    sessionId: '{{ session_id }}'
+                }).then(function (result) {
+                    // If `redirectToCheckout` fails due to a browser or network
+                    // error, display the localized error message to your customer
+                    // using `result.error.message`.
+                });
+            }
+        </script>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-sm-12">
-        <p>When the timer ends, your trial period is over.</p>
-    </div>
-</div>
-<div class="shift-down">
-<button onclick="goToCheckout()">Subscribe Now</button>
-<script src="https://js.stripe.com/v3/"></script>
-<script>
-var stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
-function goToCheckout() {
-    stripe.redirectToCheckout({
-        // Make the id field from the Checkout Session creation API response
-        // available to this file, so you can provide it as parameter here
-        // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
-        sessionId: '{{ session_id }}'
-    }).then(function (result) {
-        // If `redirectToCheckout` fails due to a browser or network
-        // error, display the localized error message to your customer
-        // using `result.error.message`.
-    });
-}
-
-</script>
+{% else %}
+{% endif %}
 
 <!-- 
 <form action="/paynow" method="POST">

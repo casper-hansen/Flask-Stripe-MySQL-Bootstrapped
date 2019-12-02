@@ -78,14 +78,15 @@ def dashboard():
                 'plan': app.config['STRIPE_PLAN'],
             }],
         },
-        success_url='http://localhost:5000/billing?session_id={CHECKOUT_SESSION_ID}',
+        success_url='http://localhost:5000/billing',
         cancel_url='http://localhost:5000/dashboard',
     )
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
                      STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'],
-                     session_id=session.id)
+                     session_id=session.id,
+                     user_is_paying=current_user.subscription_active)
 
     return render_template('dashboard.html', **variables)
 
@@ -110,11 +111,10 @@ def succesful_payment():
     data = json.loads(payload)
     if data['type'] == 'checkout.session.completed':
         data_object = data['data']['object']
-        print(data_object)
         user = User.query.filter_by(email=data_object['customer_email']).first()
-        print(user)
 
         if user != None:
+            print(user.email)
             user.subscription_active = True
             user.subscription_id = data_object['subscription']
             user.customer_id = data_object['customer']

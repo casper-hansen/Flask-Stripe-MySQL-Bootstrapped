@@ -4,7 +4,7 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 # Technologies and features
 
 - [x] Python & MySQL Database
-- [half-done] Stripe for payments
+- [x] Stripe for payments
 - [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
 - [x] Flask as Backend, serving HTML, CSS and JS
 - [x] Simplistic REST API with Flask

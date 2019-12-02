@@ -5,7 +5,6 @@ Billing
 {% endblock %}
 
 {% block content %}
-<!-- Page Heading -->
 <h1 class="h3 mt-3 mb-4 text-gray-800">Billing Page</h1>
 {{ name }}
 {% if subscription_active %}
@@ -13,5 +12,39 @@ Billing
 {% else %}
 <p>You do not have an active subscription.</p>
 {% endif %}
+
+<div class="checkout-box w-50 p-3 mx-auto">
+    <div class="checkout-plan">
+        <header class="checkout-plan-header">
+            <h3>Monthly</h3>
+            <span>$</span><strong>0</strong> / month
+        </header>
+        <div class="checkout-plan-content">
+            <ul>
+                <li>Full access to all private posts</li>
+                <li>Regular updates with new content</li>
+                <li>Support independent publishing</li>
+                <li>Simple, secure card payment</li>
+            </ul>
+            <a class="button-checkout" href="javascript:void(0)" data-members-plan="Monthly">Choose this plan</a>
+        </div>
+    </div>
+    <div class="checkout-plan">
+        <header class="checkout-plan-header">
+            <h3>Yearly</h3>
+            <span>$</span><strong>0</strong> / year
+        </header>
+        <div class="checkout-plan-content">
+            <ul>
+                <li>Full access to all private posts</li>
+                <li>Regular updates with new content</li>
+                <li>Support independent publishing</li>
+                <li>Simple, secure card payment</li>
+                <li>One easy payment instead of 12!</li>
+            </ul>
+            <a class="button-checkout" href="javascript:void(0)" data-members-plan="Yearly">Choose this plan</a>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
