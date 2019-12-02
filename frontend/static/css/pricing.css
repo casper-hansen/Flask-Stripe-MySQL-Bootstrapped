@@ -23,6 +23,8 @@
     display: flex;
     align-items: stretch;
     justify-content: center;
+    width: 50%;
+    margin: 0 auto;
 }
 
 .checkout-plan {
@@ -134,12 +136,13 @@
     box-shadow: none;
 }
 
-@media (max-width: 740px) {
+@media (max-width: 860px) {
     .checkout-title {
         margin-top: 50px;
     }
     .checkout-box {
         flex-direction: column;
+        width: 100%;
     }
     .checkout-plan + .checkout-plan {
         margin: 5vw 0 0 0;
