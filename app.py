@@ -70,23 +70,25 @@ def login():
 def dashboard():
     trial_period = timedelta(days=7)
 
-    session = stripe.checkout.Session.create(
-        customer_email=current_user.email,
-        payment_method_types=['card'],
-        subscription_data={
-            'items': [{
-                'plan': app.config['STRIPE_PLAN'],
-            }],
-        },
-        success_url='http://localhost:5000/billing',
-        cancel_url='http://localhost:5000/dashboard',
-    )
-
     variables = dict(email=current_user.email,
-                     expire_date=current_user.created_date + trial_period,
-                     STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'],
-                     session_id=session.id,
-                     user_is_paying=current_user.subscription_active)
+                    expire_date=current_user.created_date + trial_period,
+                    user_is_paying=current_user.subscription_active)
+
+    if current_user.subscription_active == False:
+        session = stripe.checkout.Session.create(
+            customer_email=current_user.email,
+            payment_method_types=['card'],
+            subscription_data={
+                'items': [{
+                    'plan': app.config['STRIPE_PLAN'],
+                }],
+            },
+            success_url='http://localhost:5000/billing',
+            cancel_url='http://localhost:5000/dashboard',
+        )
+
+        variables['STRIPE_PUBLIC_KEY']=app.config['STRIPE_PUBLIC_KEY'],
+        variables['session_id']=session.id,
 
     return render_template('dashboard.html', **variables)
 

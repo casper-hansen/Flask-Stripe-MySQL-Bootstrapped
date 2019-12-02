@@ -32,24 +32,7 @@ Dashboard
         </script>
     </div>
 </div>
-{% else %}
-{% endif %}
 
-<!-- 
-<form action="/paynow" method="POST">
-  <script
-    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="{{ STRIPE_PUBLIC_KEY }}"
-    data-name="SaaS ML App"
-    data-description="ML Service Subscription"
-    data-amount="2000"
-    data-label="Pay Now!"
-    data-email="{{ email }}" 
-    data-allow-remember-me="false">
-  </script>
-</form>
--->
-</div>
 <script>
 var expiredDate = new Date("{{ expire_date }}");
 
@@ -89,4 +72,8 @@ var countDown = function () {
 countDown();
 var x = setInterval(countDown, 1000);
 </script>
+{% else %}
+{% endif %}
+</div>
+
 {% endblock %}
