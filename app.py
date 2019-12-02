@@ -70,41 +70,57 @@ def login():
 def dashboard():
     trial_period = timedelta(days=7)
 
+    session = stripe.checkout.Session.create(
+        customer_email=current_user.email,
+        payment_method_types=['card'],
+        subscription_data={
+            'items': [{
+                'plan': app.config['STRIPE_PLAN'],
+            }],
+        },
+        success_url='http://localhost:5000/billing?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url='http://localhost:5000/dashboard',
+    )
+
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
-                     STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'])
+                     STRIPE_PUBLIC_KEY=app.config['STRIPE_PUBLIC_KEY'],
+                     session_id=session.id)
 
     return render_template('dashboard.html', **variables)
 
-@app.route("/paynow", methods=["POST"])
+@app.route("/webhook_pay_success", methods=["POST"])
 @csrf.exempt
-def paynow():
-    data = request.form
-    email = data['stripeEmail']
-    stripe_token = data['stripeToken']
+def succesful_payment():
+    payload = request.data.decode("utf-8")
+    received_sig = request.headers.get("Stripe-Signature", None)
 
-    customer = stripe.Customer.create(
-        email=email,
-        source=stripe_token
-    )
+    try:
+        with app.app_context():
+            event = stripe.Webhook.construct_event(
+                payload, received_sig, app.config['ENDPOINT_SECRET']
+            )
+    except ValueError:
+        print("Error while decoding event!")
+        return "Bad payload", 400
+    except stripe.error.SignatureVerificationError:
+        print("Invalid signature!")
+        return "Bad signature", 400
 
-    sub = stripe.Subscription.create(
-        customer=customer.id,
-        items=[{
-            "plan": app.config['STRIPE_PLAN']
-        }]
-    )
+    data = json.loads(payload)
+    if data['type'] == 'checkout.session.completed':
+        data_object = data['data']['object']
+        print(data_object)
+        user = User.query.filter_by(email=data_object['customer_email']).first()
+        print(user)
 
-    if sub.status == 'active':
-        user = User.query.filter_by(email=email).first()
-        user.subscription_active = True
-        user.subscription_id = sub.id
-        user.customer_id = customer.id
-        db.session.commit()
+        if user != None:
+            user.subscription_active = True
+            user.subscription_id = data_object['subscription']
+            user.customer_id = data_object['customer']
+            db.session.commit()
 
-    variables = dict(subscription_active=current_user.subscription_active)
-
-    return render_template('billing.html', **variables)
+    return "", 200
 
 @app.route("/billing")
 @login_required

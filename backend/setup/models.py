@@ -8,10 +8,10 @@ class User(UserMixin, db.Model):
     email = Column(String(120), unique=True, nullable=False)
     password_hash = Column(String(256), unique=False, nullable=False)
     created_date = Column(DateTime, server_default=func.now())
-    subscription_active = Column(Boolean, default=False, unique=False, nullable=False)
+    subscription_active = Column(Boolean, default=False, nullable=False)
     subscription_id = Column(String(256), unique=False)
     customer_id = Column(String(256), unique=False)
     is_authenticated = True
 
     def __repr__(self):
-        return 'id: '.join([id])
+        return 'id: '.join([str(id)])

@@ -21,6 +21,26 @@ Dashboard
     </div>
 </div>
 <div class="shift-down">
+<button onclick="goToCheckout()">Subscribe Now</button>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+var stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+function goToCheckout() {
+    stripe.redirectToCheckout({
+        // Make the id field from the Checkout Session creation API response
+        // available to this file, so you can provide it as parameter here
+        // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+        sessionId: '{{ session_id }}'
+    }).then(function (result) {
+        // If `redirectToCheckout` fails due to a browser or network
+        // error, display the localized error message to your customer
+        // using `result.error.message`.
+    });
+}
+
+</script>
+
+<!-- 
 <form action="/paynow" method="POST">
   <script
     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
@@ -33,6 +53,7 @@ Dashboard
     data-allow-remember-me="false">
   </script>
 </form>
+-->
 </div>
 <script>
 var expiredDate = new Date("{{ expire_date }}");
