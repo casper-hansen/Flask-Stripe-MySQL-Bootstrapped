@@ -159,6 +159,12 @@
     .checkout-plan {
         margin-top: 30px;
     }
+
+    .checkout-plan-content.frontpage {
+        width: 50%;
+        margin: 0 auto;
+    }
+    
 }
 
 @media (max-width: 860px) {
@@ -171,5 +177,9 @@
     }
     .checkout-plan + .checkout-plan {
         margin: 5vw 0 0 0;
+    }
+
+    .checkout-plan {
+        margin-left: 0px;
     }
 }
