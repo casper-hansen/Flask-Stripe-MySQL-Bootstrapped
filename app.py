@@ -116,7 +116,6 @@ def succesful_payment():
         user = User.query.filter_by(email=data_object['customer_email']).first()
 
         if user != None:
-            print(user.email)
             user.subscription_active = True
             user.subscription_id = data_object['subscription']
             user.customer_id = data_object['customer']
