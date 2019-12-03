@@ -51,20 +51,24 @@ def login_page():
 
 @app.route("/login", methods=["POST"])
 def login():
-    data = request.get_json(force=True)
-    email = data['email']
-    password = data['password']
-    user = User.query.filter_by(email=email).first()
+    try:
+        data = request.get_json(force=True)
+        
+        email = data['email']
+        password = data['password']
+        user = User.query.filter_by(email=email).first()
 
-    if user != None:
-        check_pw = check_password_hash(user.password_hash, password)
-
-        if user.email == email and check_pw:
-            login_user(user, remember=True)
-            return json.dumps({'message':'/dashboard'}), 200
-    else:
-        return json.dumps({'message':'User data incorrect'}), 401
-
+        if user != None:
+            check_pw = check_password_hash(user.password_hash, password)
+            if user.email == email and check_pw:
+                login_user(user, remember=True)
+                return json.dumps({'message':'/dashboard'}), 200
+            else:
+                return json.dumps({'message':'User data incorrect'}), 401
+        else:
+            return json.dumps({'message':'Email not registered'}), 401
+    except Exception as ex:
+        return json.dumps({'message':'Unknown error, we apologize'}), 500
 @app.route("/dashboard")
 @login_required
 def dashboard():
