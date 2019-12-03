@@ -1,6 +1,8 @@
 # docker-flask-startup-template
 Serving a pretty bootstrapped frontend with login page and payment integration. Using docker, flask and stripe in Python.
 
+![Signup, Login and Stripe Demo!](demo/showcase.gif)
+
 # Technologies and features
 
 - [x] Python & MySQL Database
