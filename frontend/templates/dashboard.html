@@ -8,7 +8,7 @@ Dashboard
 <!-- Page Heading -->
 <h1 class="h3 mt-3 mb-4 text-gray-800">Dashboard</h1>
 {% if not user_is_paying %}
-<div class="card shadow p-3">
+<div class="card shadow p-3 border-primary">
     <div class="mx-auto ps-3 text-center">
         <h3>Time Remaining in Trial: <span id="timer" class="timer"></span></h3>
         <p>When the timer ends, your trial period is over.</p>
@@ -25,7 +25,7 @@ Dashboard
                     <li>Easy payment. Cancel anytime.</li>
                     <li>Simple, secure card payment</li>
                 </ul>
-                <a class="button-checkout" onclick="goToCheckout()">Choose this plan</a>
+                <a class="button-checkout" onclick="goToCheckout('STARTER')">Choose this plan</a>
             </div>
         </div>
         <div class="checkout-plan">
@@ -39,7 +39,7 @@ Dashboard
                     <li>Easy payment. Cancel anytime.</li>
                     <li>Simple, secure card payment</li>
                 </ul>
-                <a class="button-checkout" onclick="goToCheckout()">Choose this plan</a>
+                <a class="button-checkout" onclick="goToCheckout('GROWTH')">Choose this plan</a>
             </div>
         </div>
         <div class="checkout-plan">
@@ -53,7 +53,7 @@ Dashboard
                     <li>Easy payment. Cancel anytime.</li>
                     <li>Simple, secure card payment</li>
                 </ul>
-                <a class="button-checkout" onclick="goToCheckout()">Choose this plan</a>
+                <a class="button-checkout" onclick="goToCheckout('SCALE')">Choose this plan</a>
             </div>
         </div>
     </div>
@@ -61,17 +61,37 @@ Dashboard
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    var stripe = Stripe("{{ STRIPE_PUBLIC_KEY | safe}}");
-    function goToCheckout() {
-        stripe.redirectToCheckout({
-            // Make the id field from the Checkout Session creation API response
-            // available to this file, so you can provide it as parameter here
-            // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
-            sessionId: '{{ session_id }}'
-        }).then(function (result) {
-            // If `redirectToCheckout` fails due to a browser or network
-            // error, display the localized error message to your customer
-            // using `result.error.message`.
+    
+    function goToCheckout(plan) {
+        data = JSON.stringify({
+            plan: plan
+        })
+
+        $.ajax({
+            url: '/setup_payment',
+            type: 'POST',
+            contentType: "application/json",
+            data: data, 
+            success: function(response){
+                json_obj = JSON.parse(response);
+                public_key = json_obj.stripe_public_key;
+                session_id = json_obj.session_id;
+
+                var stripe = Stripe(public_key);
+                stripe.redirectToCheckout({
+                    // Make the id field from the Checkout Session creation API response
+                    // available to this file, so you can provide it as parameter here
+                    // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+                    sessionId: session_id
+                }).then(function (result) {
+                    // If `redirectToCheckout` fails due to a browser or network
+                    // error, display the localized error message to your customer
+                    // using `result.error.message`.
+                });
+            },
+            error: function(error){
+                console.log('Something went wrong' + error);
+            }
         });
     }
 </script>

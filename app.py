@@ -73,25 +73,37 @@ def dashboard():
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
                      user_is_paying=current_user.subscription_active)
+    
+    return render_template('dashboard.html', **variables)
 
-    if current_user.subscription_active == False:
+@app.route("/setup_payment", methods=["POST"])
+@csrf.exempt
+def setup_payment():
+    try:
+        data = request.get_json(force=True)
+        plan = app.config['STRIPE_PLAN_' + data['plan']]
+
         session = stripe.checkout.Session.create(
             customer_email=current_user.email,
             payment_method_types=['card'],
             subscription_data={
                 'items': [{
-                    'plan': app.config['STRIPE_PLAN'],
+                    'plan': plan,
                 }],
             },
             success_url='http://localhost:5000/billing',
             cancel_url='http://localhost:5000/dashboard',
         )
 
-        variables['STRIPE_PUBLIC_KEY']=app.config['STRIPE_PUBLIC_KEY']
-        variables['session_id']=session.id
+        variables = dict(stripe_public_key=app.config['STRIPE_PUBLIC_KEY'],
+                         session_id=session.id)
 
-    return render_template('dashboard.html', **variables)
-
+        return json.dumps(variables), 200
+    except Exception as ex:
+        print(ex)
+        return json.dumps({'message':'Something went wrong'}), 401
+    
+    
 @app.route("/webhook_pay_success", methods=["POST"])
 @csrf.exempt
 def succesful_payment():
