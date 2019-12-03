@@ -1,5 +1,5 @@
-# docker-flask-startup-template
-Serving a pretty bootstrapped frontend with login page and payment integration. Using docker, flask and stripe in Python.
+# Flask Stripe MySQL Bootstrapped
+This template is ready for scaling and is easy to deploy.
 
 ![Signup, Login and Stripe Demo!](demo/showcase.gif)
 
@@ -16,6 +16,9 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - [x] Secure against XSS, CSRF attacks (i.e. you cannot send POST requests to the /signup endpoint, because it will be rejected with no CSRF token)
 - [x] 7-day Trial Period For Subscribers
 - [x] Page-template with an included Terms of Service (TOS) page
+- [ ] Docker: Gunicorn+Docker for this web app.
+- [ ] Docker: Machine Learning sample model in Gunicorn+Docker container.
+- [ ] Docker: Make 2 docker containers interact.
 - [ ] Email validation
 - [ ] Feedback button to store feedback in database
 - [ ] Account Details (update account, disable account)
@@ -29,10 +32,7 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 ## Todo
 
 - Save more of Stripe data upon succesful payment
-- Optimize when HTML, CSS and JS is loaded
-- Finish subscription strategies
 - Update installation guide (its outdated)
-- Make it possible to define multiple plans for a product (USING STRIPE)
 
 # Installation
 
