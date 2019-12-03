@@ -78,6 +78,7 @@ def dashboard():
 
 @app.route("/setup_payment", methods=["POST"])
 @csrf.exempt
+@login_required
 def setup_payment():
     try:
         data = request.get_json(force=True)
@@ -100,7 +101,6 @@ def setup_payment():
 
         return json.dumps(variables), 200
     except Exception as ex:
-        print(ex)
         return json.dumps({'message':'Something went wrong'}), 401
     
     
