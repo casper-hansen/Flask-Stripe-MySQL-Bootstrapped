@@ -30,6 +30,7 @@ Serving a pretty bootstrapped frontend with login page and payment integration. 
 - Optimize when HTML, CSS and JS is loaded
 - Finish subscription strategies
 - Update installation guide (its outdated)
+- Use Stripe Elements
 
 # Installation
 

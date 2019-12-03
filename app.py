@@ -87,8 +87,8 @@ def dashboard():
             cancel_url='http://localhost:5000/dashboard',
         )
 
-        variables['STRIPE_PUBLIC_KEY']=app.config['STRIPE_PUBLIC_KEY'],
-        variables['session_id']=session.id,
+        variables['STRIPE_PUBLIC_KEY']=app.config['STRIPE_PUBLIC_KEY']
+        variables['session_id']=session.id
 
     return render_template('dashboard.html', **variables)
 

@@ -40,14 +40,14 @@
     box-shadow: 0 0 0 1px rgba(39,44,49,.03), 0 0 3px rgba(39,44,49,.05), 0 5px 22px -10px rgba(39,44,49,.12), 0 25px 30px -25px rgba(39,44,49,.05);
 }
 
-.checkout-plan + .checkout-plan {
-    margin-left: 30px;
+.checkout-plan {
+    margin-left: 20px;
 }
 
 .checkout-plan-header {
     position: relative;
     padding: 0 0 50px;
-    color: color: #738a94;
+    color: #738a94;
     text-align: center;
 }
 
@@ -100,7 +100,7 @@
 .checkout-plan-content li {
     position: relative;
     margin: 0;
-    padding: 0 0 15px 20px;
+    padding: 0 0 15px 30px;
     line-height: 1.4em;
 }
 
@@ -134,6 +134,17 @@
     transition: .4s ease;color: #fff;
     background-color: #3eb0ef;
     box-shadow: none;
+}
+
+@media (max-width: 1250px) {
+    .checkout-box {
+        flex-direction: column;
+        width: 70%;
+    }
+
+    .checkout-plan {
+        margin-top: 30px;
+    }
 }
 
 @media (max-width: 860px) {

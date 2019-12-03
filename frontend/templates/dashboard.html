@@ -8,30 +8,73 @@ Dashboard
 <!-- Page Heading -->
 <h1 class="h3 mt-3 mb-4 text-gray-800">Dashboard</h1>
 {% if not user_is_paying %}
-<div class="card border-left-success shadow p-3">
-    <h3>Time Remaining in Trial: <span id="timer" class="timer"></span></h3>
-    <p>When the timer ends, your trial period is over.</p>
-
-    <div class="shift-down">
-        <button onclick="goToCheckout()" class="btn btn-lg btn-success">Subscribe Now</button>
-        <script src="https://js.stripe.com/v3/"></script>
-        <script>
-            var stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
-            function goToCheckout() {
-                stripe.redirectToCheckout({
-                    // Make the id field from the Checkout Session creation API response
-                    // available to this file, so you can provide it as parameter here
-                    // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
-                    sessionId: '{{ session_id }}'
-                }).then(function (result) {
-                    // If `redirectToCheckout` fails due to a browser or network
-                    // error, display the localized error message to your customer
-                    // using `result.error.message`.
-                });
-            }
-        </script>
+<div class="card shadow p-3">
+    <div class="mx-auto ps-3 text-center">
+        <h3>Time Remaining in Trial: <span id="timer" class="timer"></span></h3>
+        <p>When the timer ends, your trial period is over.</p>
+    </div>
+    <div class="checkout-box">
+        <div class="checkout-plan">
+            <header class="checkout-plan-header">
+                <h3>Starter</h3>
+                <span>$</span><strong>17</strong> / month
+            </header>
+            <div class="checkout-plan-content">
+                <ul>
+                    <li>50 Uses Of X</li>
+                    <li>Easy payment. Cancel anytime.</li>
+                    <li>Simple, secure card payment</li>
+                </ul>
+                <a class="button-checkout" onclick="goToCheckout()">Choose this plan</a>
+            </div>
+        </div>
+        <div class="checkout-plan">
+            <header class="checkout-plan-header">
+                <h3>Growth</h3>
+                <span>$</span><strong>47</strong> / month
+            </header>
+            <div class="checkout-plan-content">
+                <ul>
+                    <li>200 Uses Of X</li>
+                    <li>Easy payment. Cancel anytime.</li>
+                    <li>Simple, secure card payment</li>
+                </ul>
+                <a class="button-checkout" onclick="goToCheckout()">Choose this plan</a>
+            </div>
+        </div>
+        <div class="checkout-plan">
+            <header class="checkout-plan-header">
+                <h3>Scale</h3>
+                <span>$</span><strong>197</strong> / month
+            </header>
+            <div class="checkout-plan-content">
+                <ul>
+                    <li>1000 Uses Of X</li>
+                    <li>Easy payment. Cancel anytime.</li>
+                    <li>Simple, secure card payment</li>
+                </ul>
+                <a class="button-checkout" onclick="goToCheckout()">Choose this plan</a>
+            </div>
+        </div>
     </div>
 </div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe("{{ STRIPE_PUBLIC_KEY | safe}}");
+    function goToCheckout() {
+        stripe.redirectToCheckout({
+            // Make the id field from the Checkout Session creation API response
+            // available to this file, so you can provide it as parameter here
+            // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+            sessionId: '{{ session_id }}'
+        }).then(function (result) {
+            // If `redirectToCheckout` fails due to a browser or network
+            // error, display the localized error message to your customer
+            // using `result.error.message`.
+        });
+    }
+</script>
 
 <script>
 var expiredDate = new Date("{{ expire_date }}");
