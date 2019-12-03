@@ -77,7 +77,6 @@ def dashboard():
     return render_template('dashboard.html', **variables)
 
 @app.route("/setup_payment", methods=["POST"])
-@csrf.exempt
 @login_required
 def setup_payment():
     try:
