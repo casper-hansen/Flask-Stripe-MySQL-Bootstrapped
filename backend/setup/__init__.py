@@ -24,7 +24,7 @@ my_loader = jinja2.ChoiceLoader([
     ])
 app.jinja_loader = my_loader
 
-app.config.from_pyfile('env_variables.cfg')
+app.config.from_pyfile('env_variables.py')
 
 CONN_STR = "mysql+mysqlconnector://{0}:{1}@{2}:{3}" \
     .format(app.config['MYSQL_USER'], app.config['MYSQL_PASSWORD'], app.config['MYSQL_HOST'], app.config['MYSQL_PORT'])

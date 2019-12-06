@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 import stripe
 
-# Upon importing, run backend/setup/__init__.py
+# Before importing backend/setup/__init__.py is run
 from backend.setup import app, db, User, login_manager, csrf
 stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
@@ -37,7 +37,6 @@ def signup():
 
         return json.dumps({'message':'/login_page'}), 200
     except exc.IntegrityError as ex:
-        print(ex)
         db.session.rollback()
         return json.dumps({'message':'Email already in use, tried logging in?'}), 403
     except Exception as ex:
@@ -104,6 +103,7 @@ def setup_payment():
 
         return json.dumps(variables), 200
     except Exception as ex:
+        print(ex)
         return json.dumps({'message':'Something went wrong'}), 401
     
     
