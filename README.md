@@ -6,7 +6,7 @@ This template is ready for scaling and is easy to deploy.
 # Technologies and features
 
 - [x] Python & MySQL Database
-- [x] Stripe for payments
+- [x] Stripe for payments (supported: creating subscriptions)
 - [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
 - [x] Flask as Backend, serving HTML, CSS and JS
 - [x] Simplistic REST API with Flask
