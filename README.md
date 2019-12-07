@@ -17,7 +17,7 @@ Currently, there is one database (UserDB) with one table (user).
 # Technologies and features
 
 - [x] Python & MySQL Database
-- [x] Stripe for payments (supported: creating subscriptions)
+- [x] Stripe for secure payments (create subscription).
 - [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
 - [x] Flask as Backend, serving HTML, CSS and JS
 - [x] Simplistic REST API with Flask
@@ -39,6 +39,15 @@ Currently, there is one database (UserDB) with one table (user).
 - [ ] Automatic in-app notifications — offer annual payment after 1 months use, notify user of credit card expiring soon.
 - [ ] Easy pricing strategy provided. Monthly for $xx and annual for $xx, get 2 months free. Extremely transparent pricing strategy, annual being standard and opt-of, with the benefits you lose if you switch to monthly.
 
+## Stripe Information
+
+Stripe's newest, securest and easiest way is used in this template. You will have full trust when some user pays you, because you are redirected to Stripe's page for payment.
+
+**We fixed an issue:** If the user enters his credentials, but then closes the page, the payment might go through. Not anymore, Stripe sends webhooks to CONFIRM any subscription has been correctly setup. All this is built into this template.
+
+- Subscriptions: User is redirected to Stripe, and Stripe sends your application a webhook POST request to verify that the user is correctly setup.
+
+- Updating subscriptions: Upcoming functionality. Make a button to unsubscribe, but let the period paid for continue until the end of the month. If a user has subscribed, then unsubscribed, we need a button we opting in to subscribe again.
 
 ## Todo
 
