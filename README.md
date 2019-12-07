@@ -43,7 +43,7 @@ Currently, there is one database (UserDB) with one table (user).
 
 Stripe's newest, securest and easiest way is used in this template. You will have full trust when some user pays you, because you are redirected to Stripe's page for payment.
 
-**We fixed an issue:** If the user enters his credentials, but then closes the page, the payment might go through. Not anymore, Stripe sends webhooks to CONFIRM any subscription has been correctly setup. All this is built into this template.
+**Webhooks are used to make 100% sure that any payment goes through with 0% failure. With previous Flask templates, Stripe's legacy (unsecure, uncertain) way of setting up subscriptions was used - but this is fixed here.**
 
 - Subscriptions: User is redirected to Stripe, and Stripe sends your application a webhook POST request to verify that the user is correctly setup.
 
