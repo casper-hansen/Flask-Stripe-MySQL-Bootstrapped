@@ -72,7 +72,7 @@ def login():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    trial_period = timedelta(days=7)
+    trial_period = timedelta(days=app.config['TRIAL_LENGTH_DAYS'])
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
