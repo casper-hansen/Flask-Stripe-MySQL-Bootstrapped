@@ -9,10 +9,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 import stripe
 
-# Before importing backend/setup/__init__.py is run
+# Upon this import, backend/setup/__init__.py is run
 from backend.stripe import app, db, User, login_manager, csrf, stripe_api
-stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
+# Import all routes from stripe.py
 app.register_blueprint(stripe_api)
 
 @login_manager.user_loader

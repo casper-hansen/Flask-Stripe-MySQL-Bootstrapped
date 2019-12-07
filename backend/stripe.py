@@ -1,24 +1,21 @@
 import json
-import os
-from datetime import timedelta
 
-from flask import Flask, Blueprint, render_template, redirect, request, escape, jsonify, flash, current_app
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
-from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc
+from flask import Flask, Blueprint, request
+from flask_login import login_required, current_user
 import stripe
 
 from backend.setup import app, db, User, login_manager, csrf
 
+# Every route from here will be imported to app.py through the stripe_api Blueprint
 stripe_api = Blueprint('stripe_api', __name__)
+stripe.api_key = app.config['STRIPE_SECRET_KEY']
 
 @stripe_api.route("/setup_payment", methods=["POST"])
 @login_required
 def setup_payment():
     try:
         data = request.get_json(force=True)
-        plan = current_app.config['STRIPE_PLAN_' + data['plan']]
+        plan = app.config['STRIPE_PLAN_' + data['plan']]
 
         session = stripe.checkout.Session.create(
             customer_email=current_user.email,
@@ -32,7 +29,7 @@ def setup_payment():
             cancel_url='http://localhost:5000/dashboard',
         )
 
-        variables = dict(stripe_public_key=current_app.config['STRIPE_PUBLIC_KEY'],
+        variables = dict(stripe_public_key=app.config['STRIPE_PUBLIC_KEY'],
                          session_id=session.id)
 
         return json.dumps(variables), 200
@@ -47,9 +44,9 @@ def succesful_payment():
     received_sig = request.headers.get("Stripe-Signature", None)
 
     try:
-        with current_app.app_context():
+        with app.app_context():
             event = stripe.Webhook.construct_event(
-                payload, received_sig, current_app.config['ENDPOINT_SECRET']
+                payload, received_sig, app.config['ENDPOINT_SECRET']
             )
     except ValueError:
         print("Error while decoding event!")
