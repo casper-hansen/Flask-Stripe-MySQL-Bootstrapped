@@ -1,6 +1,6 @@
 DEBUG=True
 SQLALCHEMY_TRACK_MODIFICATIONS=False
-BASE_URL='http://localhost'
+BASE_URL='http://localhost:5000'
 MYSQL_HOST="localhost"
 MYSQL_PORT='5001'
 MYSQL_USER="root"

@@ -27,8 +27,8 @@ def setup_payment():
                     'plan': plan,
                 }],
             },
-            success_url='http://localhost:5000/billing',
-            cancel_url='http://localhost:5000/dashboard',
+            success_url=app.config['BASE_URL'] + '/billing',
+            cancel_url=app.config['BASE_URL'] +'/dashboard',
         )
 
         variables = dict(stripe_public_key=app.config['STRIPE_PUBLIC_KEY'],
@@ -72,3 +72,22 @@ def succesful_payment():
             db.session.commit()
 
     return "", 200
+
+@stripe_api.route("/cancel_subscription", methods=["PUT"])
+@login_required
+def cancel_subscription():
+    try:
+        session = stripe.Subscription.modify(
+            current_user.subscription_id,
+            cancel_at_period_end=True
+        )
+        print(session)
+        current_user.subscription_active = False
+        db.session.commit()
+
+        variables = dict(message='Success. You unsubscribed and will not be billed anymore. Your subscription will last until')
+
+        return json.dumps(variables), 200
+    except Exception as ex:
+        return json.dumps({'message':'Something went wrong'}), 401
+    
