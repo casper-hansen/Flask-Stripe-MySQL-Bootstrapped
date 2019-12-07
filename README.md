@@ -80,9 +80,7 @@ A tip that makes your life easier:
 
 ### Login to the database from Windows
 
-You can also open the MySQL vXX Command Line Prompt (e.g. MySQL 8.0 Command Line Prompt) and sign in. Here is a few steps to look at the database generated in the database, once you have run the application one time:
-
-Open the MySQL 8.0 Command Line and enter your password, e.g. `rootpw` is used in this repo.
+Open MySQL vXX Command Line Prompt (e.g. MySQL 8.0 Command Line Prompt) and enter your password, e.g. `rootpw` is used in this repo.
 
 ## Mac and Linux
 
