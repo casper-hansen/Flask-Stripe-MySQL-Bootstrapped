@@ -11,6 +11,7 @@ class User(UserMixin, db.Model):
     subscription_active = Column(Boolean, default=False, nullable=False)
     subscription_id = Column(String(256), unique=False)
     customer_id = Column(String(256), unique=False)
+    subscription_cancelled_at = Column(Integer, unique=False)
     is_authenticated = True
 
     def __repr__(self):

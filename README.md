@@ -3,10 +3,21 @@ This template is ready for scaling and is easy to deploy.
 
 ![Signup, Login and Stripe Demo!](demo/showcase.gif)
 
+# After Installation
+
+You can at any point login to your MySQL database, containing multiple databases.
+
+Currently, there is one database (UserDB) with one table (user).
+
+1. See login instructions in the installation section
+2. Once logged in, you can do `USE UserDB;`
+3. Then you can do `DESCRIBE user;`
+4. And you can also look at all your users `SELECT * FROM user;`
+
 # Technologies and features
 
 - [x] Python & MySQL Database
-- [x] Stripe for payments
+- [x] Stripe for secure payments (create subscription).
 - [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
 - [x] Flask as Backend, serving HTML, CSS and JS
 - [x] Simplistic REST API with Flask
@@ -28,11 +39,20 @@ This template is ready for scaling and is easy to deploy.
 - [ ] Automatic in-app notifications — offer annual payment after 1 months use, notify user of credit card expiring soon.
 - [ ] Easy pricing strategy provided. Monthly for $xx and annual for $xx, get 2 months free. Extremely transparent pricing strategy, annual being standard and opt-of, with the benefits you lose if you switch to monthly.
 
+## Stripe Information
+
+Stripe's newest, securest and easiest way is used in this template. You will have full trust when some user pays you, because you are redirected to Stripe's page for payment.
+
+**Webhooks are used to make 100% sure that any payment goes through with 0% failure. With previous Flask templates, Stripe's legacy (unsecure, uncertain) way of setting up subscriptions was used - but this is fixed here.**
+
+- Subscriptions: User is redirected to Stripe, and Stripe sends your application a webhook POST request to verify that the user is correctly setup.
+
+- Updating subscriptions: Upcoming functionality. Make a button to unsubscribe, but let the period paid for continue until the end of the month. If a user has subscribed, then unsubscribed, we need a button we opting in to subscribe again.
 
 ## Todo
 
 - Save more of Stripe data upon succesful payment
-- Update installation guide (its outdated)
+- Split some HTML in partial files
 
 # Installation
 
@@ -56,7 +76,11 @@ conn = connect(
 
 Download [MySQL server](https://dev.mysql.com/downloads/mysql/) and start it.
 
-**\*\*IMPORTANT** to check the "Configure MySQL Server as a Windows Service" and "Start the MySQL server at System Startup". Check the service is configured by pressing windows key or WINDOWS KEY+R and typing `services.msc` and find MySQL (e.g. MySQL80). It should be running, also after you have restarted your computer. Always check back here if something is not running.
+**\*\*IMPORTANT**: Make sure to check **"Configure MySQL Server as a Windows Service"** and **"Start the MySQL server at System Startup"**. 
+
+Check the service is configured by pressing windows key or WINDOWS KEY+R and typing `services.msc` and find MySQL (e.g. MySQL80). It should be running, also after you have restarted your computer. Always check back here if something is not running.
+
+### Register Environment Variables
 
 A tip that makes your life easier:
 
@@ -64,12 +88,9 @@ A tip that makes your life easier:
 2. In the upper section, double click path. Then click new. Then find your installation folder for mysql, e.g. mine was under `C:\Program Files\MySQL\MySQL Server 8.0\bin`. Add it as your path and click ok.
 3. Now you can use mysql, mysqld and mysqladmin commands which will be helpful for debugging.
 
-You can also open the MySQL vXX Command Line Prompt (e.g. MySQL 8.0 Command Line Prompt) and sign in. Here is a few steps to look at the database generated in the database, once you have run the application one time:
+### Login to the database from Windows
 
-1. Open the MySQL Command Prompt and enter your password, e.g. `rootpw` is used in this repo.
-2. Once logged in, you can do `USE UserDB;`
-3. Then you can do `DESCRIBE user;`
-4. And you can also look at all your users `SELECT * FROM user;`
+Open MySQL vXX Command Line Prompt (e.g. MySQL 8.0 Command Line Prompt) and enter your password, e.g. `rootpw` is used in this repo.
 
 ## Mac and Linux
 
@@ -88,26 +109,6 @@ You can always restart or stop the service, e.g. if the service is running and y
 - `brew services restart mysql`
 - `brew services stop mysql`
 
-## Production Install
+### Login to MySQL database
 
-This is assuming you are running a Linux Server.
-
-1. Update apt-get
-2. Download docker
-3. Download nginx
-4. Download mysql
-5. Setup a non-root user in mysql server, with limited privileges
-6. Run mysql server
-7. Setup a reverse proxy in nginx.conf file. Add the following under http. Note that the server_name variable can be switched to a domain of yours, or a public ip address.
-```
-server {
-	listen 0.0.0.0:80;
-	server_name localhost;
-	
-	location / {
-		proxy_pass http://localhost:5000;
-	}
-}
-```
-8. Run docker container
-
+Type in `mysqladmin -u root -p` and press enter. It will ask for your password, then you are in.

@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from datetime import timedelta
 
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
@@ -9,9 +10,11 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 import stripe
 
-# Upon importing, run backend/setup/__init__.py
-from backend.setup import app, db, User, login_manager, csrf
-stripe.api_key = app.config['STRIPE_SECRET_KEY']
+# Upon this import, backend/setup/__init__.py is run
+from backend.stripe import app, db, User, login_manager, csrf, stripe_api
+
+# Import all routes from stripe.py
+app.register_blueprint(stripe_api)
 
 @login_manager.user_loader
 def load_user(id):
@@ -25,19 +28,21 @@ def home():
 @app.route("/signup", methods=["POST"])
 def signup():
     try:
+        # Get data from AJAX request
         data = request.get_json(force=True)
         email = data['email']
         password = data['password']
 
+        # Hash the password (store only the hash)
         pw_hash = generate_password_hash(password, 10)
 
+        # Save user in database
         new_user = User(email=email, password_hash=pw_hash)
         db.session.add(new_user)
         db.session.commit()
 
         return json.dumps({'message':'/login_page'}), 200
     except exc.IntegrityError as ex:
-        print(ex)
         db.session.rollback()
         return json.dumps({'message':'Email already in use, tried logging in?'}), 403
     except Exception as ex:
@@ -52,12 +57,15 @@ def login_page():
 @app.route("/login", methods=["POST"])
 def login():
     try:
+        # Get data from AJAX request
         data = request.get_json(force=True)
-        
         email = data['email']
         password = data['password']
+
+        # Find user
         user = User.query.filter_by(email=email).first()
 
+        # If user exists, check if email and password matches
         if user != None:
             check_pw = check_password_hash(user.password_hash, password)
             if user.email == email and check_pw:
@@ -73,76 +81,33 @@ def login():
 @login_required
 def dashboard():
     trial_period = timedelta(days=app.config['TRIAL_LENGTH_DAYS'])
+    timestamp = time.time()
+    show_reactivate = None
+
+    if current_user.subscription_cancelled_at != None and timestamp < current_user.subscription_cancelled_at:
+        show_reactivate = True
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
-                     user_is_paying=current_user.subscription_active)
+                     user_is_paying=current_user.subscription_active,
+                     show_reactivate=show_reactivate,
+                     subscription_cancelled_at=current_user.subscription_cancelled_at)
     
     return render_template('dashboard.html', **variables)
-
-@app.route("/setup_payment", methods=["POST"])
-@login_required
-def setup_payment():
-    try:
-        data = request.get_json(force=True)
-        plan = app.config['STRIPE_PLAN_' + data['plan']]
-
-        session = stripe.checkout.Session.create(
-            customer_email=current_user.email,
-            payment_method_types=['card'],
-            subscription_data={
-                'items': [{
-                    'plan': plan,
-                }],
-            },
-            success_url='http://localhost:5000/billing',
-            cancel_url='http://localhost:5000/dashboard',
-        )
-
-        variables = dict(stripe_public_key=app.config['STRIPE_PUBLIC_KEY'],
-                         session_id=session.id)
-
-        return json.dumps(variables), 200
-    except Exception as ex:
-        return json.dumps({'message':'Something went wrong'}), 401
-    
-    
-@app.route("/webhook_pay_success", methods=["POST"])
-@csrf.exempt
-def succesful_payment():
-    payload = request.data.decode("utf-8")
-    received_sig = request.headers.get("Stripe-Signature", None)
-
-    try:
-        with app.app_context():
-            event = stripe.Webhook.construct_event(
-                payload, received_sig, app.config['ENDPOINT_SECRET']
-            )
-    except ValueError:
-        print("Error while decoding event!")
-        return "Bad payload", 400
-    except stripe.error.SignatureVerificationError:
-        print("Invalid signature!")
-        return "Bad signature", 400
-
-    data = json.loads(payload)
-    if data['type'] == 'checkout.session.completed':
-        data_object = data['data']['object']
-        user = User.query.filter_by(email=data_object['customer_email']).first()
-
-        if user != None:
-            user.subscription_active = True
-            user.subscription_id = data_object['subscription']
-            user.customer_id = data_object['customer']
-            db.session.commit()
-
-    return "", 200
 
 @app.route("/billing")
 @login_required
 def billing():
+    timestamp = time.time()
+    show_reactivate = None
+
+    if current_user.subscription_cancelled_at != None and timestamp < current_user.subscription_cancelled_at:
+        show_reactivate = True
+
     variables = dict(subscription_active=current_user.subscription_active,
-                     email=current_user.email)
+                     email=current_user.email,
+                     show_reactivate=show_reactivate)
+    
     return render_template('billing.html', **variables)
 
 @app.route("/tos")

@@ -135,7 +135,38 @@ var countDown = function () {
 countDown();
 var x = setInterval(countDown, 1000);
 </script>
-{% else %}
+{% elif show_reactivate %}
+<div class="card shadow p-3 border-primary">
+    <h3>You are subscribed, but you unsubscribed, and your access ends: {{ subscription_cancelled_at }}</h3>
+    <div id="output" class="text-success"></div>
+    <button id="reactivate_subscription" onclick="resubscribe();" type="submit" class="btn btn-success btn-block">
+        Reactivate Your Subscription
+    </button>
+</div>
 {% endif %}
 
 {% endblock %}
+
+{% if subscription_active %}
+{% block scripts %}
+<script>
+    function resubscribe() {
+        $.ajax({
+        url: '/reactivate_subscription',
+        type: 'PUT',
+        success: function(response){
+            json_obj = JSON.parse(response);
+            msg = json_obj.message;
+            $('#output').html(msg);
+            $('#reactivate_subscription').hide();
+        },
+        error: function(error){
+            json_obj = JSON.parse(error.responseText);
+            msg = json_obj.message;
+            $('#output').html(msg);
+        }
+        });
+    }
+</script>
+{% endblock %}
+{% endif %}
