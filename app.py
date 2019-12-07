@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from datetime import timedelta
 
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
@@ -80,18 +81,33 @@ def login():
 @login_required
 def dashboard():
     trial_period = timedelta(days=7)
+    timestamp = time.time()
+    show_reactivate = None
+
+    if current_user.subscription_cancelled_at != None and timestamp < current_user.subscription_cancelled_at:
+        show_reactivate = True
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
-                     user_is_paying=current_user.subscription_active)
+                     user_is_paying=current_user.subscription_active,
+                     show_reactivate=show_reactivate,
+                     subscription_cancelled_at=current_user.subscription_cancelled_at)
     
     return render_template('dashboard.html', **variables)
 
 @app.route("/billing")
 @login_required
 def billing():
+    timestamp = time.time()
+    show_reactivate = None
+
+    if current_user.subscription_cancelled_at != None and timestamp < current_user.subscription_cancelled_at:
+        show_reactivate = True
+
     variables = dict(subscription_active=current_user.subscription_active,
-                     email=current_user.email)
+                     email=current_user.email,
+                     show_reactivate=show_reactivate)
+    
     return render_template('billing.html', **variables)
 
 @app.route("/tos")

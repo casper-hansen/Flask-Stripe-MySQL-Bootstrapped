@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from flask import Flask, Blueprint, request
 from flask_login import login_required, current_user
@@ -81,11 +82,32 @@ def cancel_subscription():
             current_user.subscription_id,
             cancel_at_period_end=True
         )
-        print(session)
-        current_user.subscription_active = False
+
+        timestamp = session['cancel_at']
+        subscription_ends = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        current_user.subscription_cancelled_at = int(timestamp)
         db.session.commit()
 
-        variables = dict(message='Success. You unsubscribed and will not be billed anymore. Your subscription will last until')
+        variables = dict(message='Success. You unsubscribed and will not be billed anymore. Your subscription will last until' + subscription_ends)
+
+        return json.dumps(variables), 200
+    except Exception as ex:
+        print(ex)
+        return json.dumps({'message':'Something went wrong'}), 401
+
+@stripe_api.route("/reactivate_subscription", methods=["PUT"])
+@login_required
+def reactivate_subscription():
+    try:
+        session = stripe.Subscription.modify(
+            current_user.subscription_id,
+            cancel_at_period_end=False
+        )
+
+        current_user.subscription_cancelled_at = None
+        db.session.commit()
+
+        variables = dict(message='Success. You will automatically be billed every month.')
 
         return json.dumps(variables), 200
     except Exception as ex:

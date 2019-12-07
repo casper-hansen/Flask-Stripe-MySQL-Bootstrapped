@@ -8,12 +8,16 @@ Billing
 <h1 class="h3 mt-3 mb-4 text-gray-800">Billing Page</h1>
 {{ name }}
 {% if subscription_active %}
+<div id="output" class="text-success"></div>
 <p>You are a paid subscriber!</p>
 
-<button onclick="unsubscribe();" type="submit" class="btn btn-danger btn-block">
-    Cancel My Subscription
+{% if not show_reactivate %}
+<button id="cancel_subscription" onclick="unsubscribe();" type="submit" class="btn btn-danger btn-block">
+    Cancel Your Subscription
 </button>
+{% else %}
 
+{% endif %}
 
 {% else %}
 <p>You do not have an active subscription.</p>
@@ -29,10 +33,15 @@ Billing
         url: '/cancel_subscription',
         type: 'PUT',
         success: function(response){
-            console.log(response)
+            json_obj = JSON.parse(response);
+            msg = json_obj.message;
+            $('#output').html(msg);
+            $('#cancel_subscription').hide();
         },
         error: function(error){
-            console.log(error)
+            json_obj = JSON.parse(error.responseText);
+            msg = json_obj.message;
+            $('#output').html(msg);
         }
         });
     }

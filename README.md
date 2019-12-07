@@ -52,6 +52,7 @@ Stripe's newest, securest and easiest way is used in this template. You will hav
 ## Todo
 
 - Save more of Stripe data upon succesful payment
+- Split some HTML in partial files
 
 # Installation
 
