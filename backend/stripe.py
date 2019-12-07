@@ -14,9 +14,11 @@ stripe.api_key = app.config['STRIPE_SECRET_KEY']
 @login_required
 def setup_payment():
     try:
+        # Get the data from AJAX request
         data = request.get_json(force=True)
         plan = app.config['STRIPE_PLAN_' + data['plan']]
 
+        # Setup a Stripe session, completed with a webhook
         session = stripe.checkout.Session.create(
             customer_email=current_user.email,
             payment_method_types=['card'],
@@ -40,9 +42,11 @@ def setup_payment():
 @stripe_api.route("/webhook_pay_success", methods=["POST"])
 @csrf.exempt
 def succesful_payment():
+    # Upon successful payment, Stripe sends data. Capture payload.
     payload = request.data.decode("utf-8")
     received_sig = request.headers.get("Stripe-Signature", None)
 
+    # Verify received data
     try:
         with app.app_context():
             event = stripe.Webhook.construct_event(
@@ -55,6 +59,7 @@ def succesful_payment():
         print("Invalid signature!")
         return "Bad signature", 400
 
+    # Make user a paid subscriber
     data = json.loads(payload)
     if data['type'] == 'checkout.session.completed':
         data_object = data['data']['object']

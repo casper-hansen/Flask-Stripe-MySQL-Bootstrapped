@@ -27,12 +27,15 @@ def home():
 @app.route("/signup", methods=["POST"])
 def signup():
     try:
+        # Get data from AJAX request
         data = request.get_json(force=True)
         email = data['email']
         password = data['password']
 
+        # Hash the password (store only the hash)
         pw_hash = generate_password_hash(password, 10)
 
+        # Save user in database
         new_user = User(email=email, password_hash=pw_hash)
         db.session.add(new_user)
         db.session.commit()
@@ -53,12 +56,15 @@ def login_page():
 @app.route("/login", methods=["POST"])
 def login():
     try:
+        # Get data from AJAX request
         data = request.get_json(force=True)
-        
         email = data['email']
         password = data['password']
+
+        # Find user
         user = User.query.filter_by(email=email).first()
 
+        # If user exists, check if email and password matches
         if user != None:
             check_pw = check_password_hash(user.password_hash, password)
             if user.email == email and check_pw:
