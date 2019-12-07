@@ -3,6 +3,17 @@ This template is ready for scaling and is easy to deploy.
 
 ![Signup, Login and Stripe Demo!](demo/showcase.gif)
 
+# After Installation
+
+You can at any point login to your MySQL database, containing multiple databases.
+
+Currently, there is one database (UserDB) with one table (user).
+
+1. See login instructions in the installation section
+2. Once logged in, you can do `USE UserDB;`
+3. Then you can do `DESCRIBE user;`
+4. And you can also look at all your users `SELECT * FROM user;`
+
 # Technologies and features
 
 - [x] Python & MySQL Database
@@ -32,7 +43,6 @@ This template is ready for scaling and is easy to deploy.
 ## Todo
 
 - Save more of Stripe data upon succesful payment
-- Update installation guide (its outdated)
 
 # Installation
 
@@ -56,7 +66,11 @@ conn = connect(
 
 Download [MySQL server](https://dev.mysql.com/downloads/mysql/) and start it.
 
-**\*\*IMPORTANT** to check the "Configure MySQL Server as a Windows Service" and "Start the MySQL server at System Startup". Check the service is configured by pressing windows key or WINDOWS KEY+R and typing `services.msc` and find MySQL (e.g. MySQL80). It should be running, also after you have restarted your computer. Always check back here if something is not running.
+**\*\*IMPORTANT**: Make sure to check **"Configure MySQL Server as a Windows Service"** and **"Start the MySQL server at System Startup"**. 
+
+Check the service is configured by pressing windows key or WINDOWS KEY+R and typing `services.msc` and find MySQL (e.g. MySQL80). It should be running, also after you have restarted your computer. Always check back here if something is not running.
+
+### Register Environment Variables
 
 A tip that makes your life easier:
 
@@ -64,12 +78,11 @@ A tip that makes your life easier:
 2. In the upper section, double click path. Then click new. Then find your installation folder for mysql, e.g. mine was under `C:\Program Files\MySQL\MySQL Server 8.0\bin`. Add it as your path and click ok.
 3. Now you can use mysql, mysqld and mysqladmin commands which will be helpful for debugging.
 
+### Login to the database from Windows
+
 You can also open the MySQL vXX Command Line Prompt (e.g. MySQL 8.0 Command Line Prompt) and sign in. Here is a few steps to look at the database generated in the database, once you have run the application one time:
 
-1. Open the MySQL Command Prompt and enter your password, e.g. `rootpw` is used in this repo.
-2. Once logged in, you can do `USE UserDB;`
-3. Then you can do `DESCRIBE user;`
-4. And you can also look at all your users `SELECT * FROM user;`
+Open the MySQL 8.0 Command Line and enter your password, e.g. `rootpw` is used in this repo.
 
 ## Mac and Linux
 
@@ -88,26 +101,6 @@ You can always restart or stop the service, e.g. if the service is running and y
 - `brew services restart mysql`
 - `brew services stop mysql`
 
-## Production Install
+### Login to MySQL database
 
-This is assuming you are running a Linux Server.
-
-1. Update apt-get
-2. Download docker
-3. Download nginx
-4. Download mysql
-5. Setup a non-root user in mysql server, with limited privileges
-6. Run mysql server
-7. Setup a reverse proxy in nginx.conf file. Add the following under http. Note that the server_name variable can be switched to a domain of yours, or a public ip address.
-```
-server {
-	listen 0.0.0.0:80;
-	server_name localhost;
-	
-	location / {
-		proxy_pass http://localhost:5000;
-	}
-}
-```
-8. Run docker container
-
+Type in `mysqladmin -u root -p` and press enter. It will ask for your password, then you are in.
