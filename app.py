@@ -1,7 +1,7 @@
 import json
 import os
 import time
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
@@ -93,6 +93,9 @@ def dashboard():
             show_reactivate = True
         sub_active = stripe_obj.subscription_active
         sub_cancelled_at = stripe_obj.subscription_cancelled_at
+        
+        if sub_cancelled_at != None:
+            sub_cancelled_at =  datetime.utcfromtimestamp(sub_cancelled_at).strftime('%Y-%m-%d %H:%M:%S')
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,

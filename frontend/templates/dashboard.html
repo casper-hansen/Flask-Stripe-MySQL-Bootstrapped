@@ -6,7 +6,21 @@ Dashboard
 
 {% block content %}
 <!-- Page Heading -->
-<h1 class="h3 mt-3 mb-4 text-gray-800">Dashboard</h1>
+<div class="row">
+    <div class="col">
+        <h1 class="h3 mt-3 mb-4 text-gray-800">Dashboard</h1>
+    </div>
+    <div class="mt-3 text-right" style="padding-right: .75rem; padding-left: .75rem;">
+        <div class="card border-success shadow h-100 py-2">
+            <div class="col mr-2">
+                <div class="h5 mb-0 font-weight-bold text-gray-800">Hello! You are logged in as</div>
+                <div>{{ email }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% if not user_is_paying %}
 <div class="card shadow p-3 border-primary">
     <div class="mx-auto ps-3 text-center">
@@ -136,12 +150,27 @@ countDown();
 var x = setInterval(countDown, 1000);
 </script>
 {% elif show_reactivate %}
-<div class="card shadow p-3 border-primary">
-    <h3>You are subscribed, but your subscription will not be renewed and ends: {{ subscription_cancelled_at }}</h3>
-    <div id="output" class="text-success"></div>
-    <button id="reactivate_subscription" onclick="resubscribe();" type="submit" class="btn btn-success btn-block">
-        Reactivate Your Subscription
-    </button>
+<div class="row">
+    
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-lg-6 mt-3">
+      <div class="card border-left-danger shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+                <div id="output" class="text-success"></div>
+                <div id="sub_warning" class="text-xs font-weight-bold text-danger text-uppercase mb-1">Your subscription has been cancelled.</div>
+                <div id="ends_at" class="h5 mb-0 font-weight-bold text-gray-800">It ends {{ subscription_cancelled_at }}</div>
+            </div>
+            <div class="col-auto">
+                <button id="reactivate_subscription" onclick="resubscribe();" type="submit" class="btn btn-success btn-block">
+                    Reactivate Your Subscription
+                </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 {% endif %}
 
@@ -159,6 +188,8 @@ var x = setInterval(countDown, 1000);
             msg = json_obj.message;
             $('#output').html(msg);
             $('#reactivate_subscription').hide();
+            $('#sub_warning').hide();
+            $('#ends_at').hide();
         },
         error: function(error){
             json_obj = JSON.parse(error.responseText);
