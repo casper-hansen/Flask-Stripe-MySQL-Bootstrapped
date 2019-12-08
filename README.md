@@ -51,7 +51,11 @@ Stripe's newest, securest and easiest way is used in this template. You will hav
 
 ## Todo
 
-- Save more of Stripe data upon succesful payment
+- Add Stripe webhooks renewed payment from subscription every month [https://stripe.com/docs/billing/webhooks#tracking](https://stripe.com/docs/billing/webhooks#tracking). 
+    - A few days prior to renewal, your site receives an `invoice.upcoming` event at the webhook endpoint. You can listen for this event to add extra invoice items to a subscription draft invoice.
+    - Your site receives an `invoice.payment_succeeded` event.
+    - Your webhook endpoint finds the customer for whom payment was just made.
+    - Your webhook endpoint updates the customer’s `current_period_end` timestamp in your database to the appropriate date in the future (plus a day or two for leeway).
 - Split some HTML in partial files
 
 # Installation

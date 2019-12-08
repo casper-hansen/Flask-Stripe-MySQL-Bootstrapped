@@ -137,7 +137,7 @@ var x = setInterval(countDown, 1000);
 </script>
 {% elif show_reactivate %}
 <div class="card shadow p-3 border-primary">
-    <h3>You are subscribed, but you unsubscribed, and your access ends: {{ subscription_cancelled_at }}</h3>
+    <h3>You are subscribed, but your subscription will not be renewed and ends: {{ subscription_cancelled_at }}</h3>
     <div id="output" class="text-success"></div>
     <button id="reactivate_subscription" onclick="resubscribe();" type="submit" class="btn btn-success btn-block">
         Reactivate Your Subscription
