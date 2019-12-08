@@ -23,7 +23,8 @@ app = Flask(__name__,
 my_loader = jinja2.ChoiceLoader([
         app.jinja_loader,
         jinja2.FileSystemLoader([template_dir, 
-                                 base_template_dir]),
+                                 base_template_dir,
+                                 static_dir]),
     ])
 app.jinja_loader = my_loader
 

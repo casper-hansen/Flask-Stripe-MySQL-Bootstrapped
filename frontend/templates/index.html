@@ -66,118 +66,12 @@ id="page-top"
     </div>
   </div>
 </header>
-<section class="page-section" id="services">
-  <div class="container">
-    <h2 class="text-center mt-0">At Your Service</h2>
-    <hr class="divider my-4">
-    <div class="row">
-      <div class="col-lg-3 col-md-6 text-center">
-        <div class="mt-5">
-          <i class="fas fa-4x fa-gem text-primary mb-4"></i>
-          <h3 class="h4 mb-2">Sturdy Themes</h3>
-          <p class="text-muted mb-0">Our themes are updated regularly to keep them bug free!</p>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6 text-center">
-        <div class="mt-5">
-          <i class="fas fa-4x fa-laptop-code text-primary mb-4"></i>
-          <h3 class="h4 mb-2">Up to Date</h3>
-          <p class="text-muted mb-0">All dependencies are kept current to keep things fresh.</p>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6 text-center">
-        <div class="mt-5">
-          <i class="fas fa-4x fa-globe text-primary mb-4"></i>
-          <h3 class="h4 mb-2">Ready to Publish</h3>
-          <p class="text-muted mb-0">You can use this design as is, or you can make changes!</p>
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-6 text-center">
-        <div class="mt-5">
-          <i class="fas fa-4x fa-heart text-primary mb-4"></i>
-          <h3 class="h4 mb-2">Made with Love</h3>
-          <p class="text-muted mb-0">Is it really open source if it's not made with love?</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-</section>
 
-<section class="page-section bg-dark text-white" id="pricing">
-  <div class="container text-center">
-    <h2 class="mb-4" style="margin-left:20px;">Ready To Succeed?</h2>
-    <div class="p-3">
-        <div class="checkout-box" id="checkout-front-page">
-            <div class="checkout-plan">
-                <header class="checkout-plan-header">
-                    <h3>Starter</h3>
-                    <span>$</span><strong>17</strong> / month
-                </header>
-                <div class="checkout-plan-content frontpage">
-                    <ul>
-                        <li>50 Uses Of X</li>
-                        <li>Easy payment. Cancel anytime.</li>
-                        <li>Simple, secure card payment</li>
-                    </ul>
-                    <a class="button-checkout js-scroll-trigger" href="#page-top">Start Trial Now</a>
-                </div>
-            </div>
-            <div class="checkout-plan">
-                <header class="checkout-plan-header">
-                    <h3>Growth</h3>
-                    <span>$</span><strong>47</strong> / month
-                </header>
-                <div class="checkout-plan-content frontpage">
-                    <ul>
-                        <li>200 Uses Of X</li>
-                        <li>Easy payment. Cancel anytime.</li>
-                        <li>Simple, secure card payment</li>
-                    </ul>
-                    <a class="button-checkout js-scroll-trigger" href="#page-top">Start Trial Now</a>
-                </div>
-            </div>
-            <div class="checkout-plan">
-                <header class="checkout-plan-header">
-                    <h3>Scale</h3>
-                    <span>$</span><strong>197</strong> / month
-                </header>
-                <div class="checkout-plan-content frontpage">
-                    <ul>
-                        <li>1000 Uses Of X</li>
-                        <li>Easy payment. Cancel anytime.</li>
-                        <li>Simple, secure card payment</li>
-                    </ul>
-                    <a class="button-checkout js-scroll-trigger" href="#page-top">Start Trial Now</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <p style="margin-left:20px;">* All trial accounts have a limit of X uses</p>
-    
-  </div>
-</section>
+{% include 'partials/services.html' %}
 
-<!-- Footer -->
-<footer class="bg-light py-5">
-  <div class="container">
-    <div class="small text-center text-muted">
-      <div class="row">
-        <div class="col">
-          <hr>
-          Contact Us: <!-- REPLACE HREF AND TEXT -->
-          <a class="d-inline" href="mailto:contact@yourwebsite.com">contact@yourwebsite.com</a>
-        </div>
-        <div class="col"><hr>
-          Copyright © 2019 - ML SaaS Tutorial
-        </div>
-        <div class="col"><hr>
-          <a class="d-inline" href="/tos">Terms of Service</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
+{% include 'partials/index_pricing.html' %}
+
+{% include 'partials/index_footer.html' %}
 {% endblock %}
 
 {% block scripts %}
