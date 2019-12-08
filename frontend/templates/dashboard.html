@@ -22,7 +22,7 @@ Dashboard
 
 
 {% if not user_is_paying %}
-<div class="card shadow p-3 border-primary">
+<div class="card shadow p-3 border-primary mt-3">
     <div class="mx-auto ps-3 text-center">
         <h3>Time Remaining in Trial: <span id="timer" class="timer"></span></h3>
         <p>When the timer ends, your trial period is over.</p>
@@ -112,46 +112,11 @@ Dashboard
 
 <script>
 var expiredDate = new Date("{{ expire_date }}");
-
-// Update the count down every 1 second
-var countDown = function () {
-
-    // Get todays date and time
-    var now = new Date().getTime();
-
-    // Find the distance between now an the count down date
-    var distance = expiredDate.getTime() - now;
-
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    // Display the result in the element with id="demo"
-    if (days > 0) {
-        countdown = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
-    }
-    else {
-        countdown = hours + "h " + minutes + "m " + seconds + "s";
-    }
-
-    document.getElementById("timer").innerHTML = countdown
-
-    // If the count down is finished, write some text
-    if (distance < 0) {
-        clearInterval(x);
-        document.getElementById("timer").innerHTML = "EXPIRED";
-        document.getElementById("paynow").style.visibility = "hidden";
-    }
-
-};
-countDown();
-var x = setInterval(countDown, 1000);
 </script>
+<script src="partials/countdown.js"></script>
+
 {% elif show_reactivate %}
 <div class="row">
-    
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-lg-6 mt-3">
       <div class="card border-left-danger shadow h-100 py-2">
