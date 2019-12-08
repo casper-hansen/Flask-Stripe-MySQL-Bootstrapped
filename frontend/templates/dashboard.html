@@ -75,18 +75,13 @@ Dashboard
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    
     function goToCheckout(plan) {
         data = JSON.stringify({
             plan: plan
         })
 
-        $.ajax({
-            url: '/setup_payment',
-            type: 'POST',
-            contentType: "application/json",
-            data: data, 
-            success: function(response){
+        ajax('setup_payment', 'POST', data,
+            function(response) {
                 json_obj = JSON.parse(response);
                 public_key = json_obj.stripe_public_key;
                 session_id = json_obj.session_id;
@@ -103,10 +98,10 @@ Dashboard
                     // using `result.error.message`.
                 });
             },
-            error: function(error){
+            function(error) {
                 console.log('Something went wrong' + error);
             }
-        });
+        )
     }
 </script>
 
@@ -145,23 +140,21 @@ var expiredDate = new Date("{{ expire_date }}");
 {% block scripts %}
 <script>
     function resubscribe() {
-        $.ajax({
-        url: '/reactivate_subscription',
-        type: 'PUT',
-        success: function(response){
-            json_obj = JSON.parse(response);
-            msg = json_obj.message;
-            $('#output').html(msg);
-            $('#reactivate_subscription').hide();
-            $('#sub_warning').hide();
-            $('#ends_at').hide();
-        },
-        error: function(error){
-            json_obj = JSON.parse(error.responseText);
-            msg = json_obj.message;
-            $('#output').html(msg);
-        }
-        });
+        ajax('/reactivate_subscription', 'PUT', null,
+            function(response) {
+                json_obj = JSON.parse(response);
+                msg = json_obj.message;
+                $('#output').html(msg);
+                $('#reactivate_subscription').hide();
+                $('#sub_warning').hide();
+                $('#ends_at').hide();
+            },
+            function(error) {
+                json_obj = JSON.parse(error.responseText);
+                msg = json_obj.message;
+                $('#output').html(msg);
+            }
+        )
     }
 </script>
 {% endblock %}

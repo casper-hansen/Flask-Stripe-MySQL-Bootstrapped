@@ -29,21 +29,19 @@ Billing
 {% block scripts %}
 <script>
     function unsubscribe() {
-        $.ajax({
-        url: '/cancel_subscription',
-        type: 'PUT',
-        success: function(response){
-            json_obj = JSON.parse(response);
-            msg = json_obj.message;
-            $('#output').html(msg);
-            $('#cancel_subscription').hide();
-        },
-        error: function(error){
-            json_obj = JSON.parse(error.responseText);
-            msg = json_obj.message;
-            $('#output').html(msg);
-        }
-        });
+        ajax('/cancel_subscription', 'PUT', null,
+            function(response){
+                json_obj = JSON.parse(response);
+                msg = json_obj.message;
+                $('#output').html(msg);
+                $('#cancel_subscription').hide();
+            },
+            function(error){
+                json_obj = JSON.parse(error.responseText);
+                msg = json_obj.message;
+                $('#output').html(msg);
+            }
+        )
     }
 </script>
 {% endblock %}

@@ -70,33 +70,31 @@ $(function(){
   $("#login-form").submit(function(e) {
     e.preventDefault();
   });
+
+  // On button click, get data and make AJAX call
   $('.btn.btn-primary.btn-user.btn-block').click(function(){
-  data = JSON.stringify({
-    email: $('#exampleInputEmail').val(), 
-    password: $('#exampleInputPassword').val()
-  })
-  
-  $.ajax({
-    url: '/login',
-    type: 'POST',
-    contentType: "application/json",
-    data: data, 
-    success: function(response){
-      json_obj = JSON.parse(response);
-      url = json_obj.message;
-      window.location.replace(url);
-    },
-    error: function(error){
-      if (error.status == '401'){
-        json_obj = JSON.parse(error.responseText);
-        $('#output').html(json_obj.message);
-      }
-      else if (error.status == '500'){
-        json_obj = JSON.parse(error.responseText);
-        $('#output').html(json_obj.message);
-      }
-    }
-    });
+    data = JSON.stringify({
+      email: $('#exampleInputEmail').val(), 
+      password: $('#exampleInputPassword').val()
+    })
+    
+    ajax('/login', 'POST', data,
+          function(response){
+            json_obj = JSON.parse(response);
+            url = json_obj.message;
+            window.location.replace(url);
+          },
+          function(error){
+            if (error.status == '401'){
+              json_obj = JSON.parse(error.responseText);
+              $('#output').html(json_obj.message);
+            }
+            else if (error.status == '500'){
+              json_obj = JSON.parse(error.responseText);
+              $('#output').html(json_obj.message);
+            }
+          }
+    )
   });
 });
 </script>

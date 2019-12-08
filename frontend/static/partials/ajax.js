@@ -4,7 +4,7 @@ function ajax(url, type, data, sfunc, efunc) {
         type: type,
         contentType: "application/json",
         data: data, 
-        success: sfunc(response), 
-        error: efunc(error)
+        success: sfunc, 
+        error: efunc
     });
 }

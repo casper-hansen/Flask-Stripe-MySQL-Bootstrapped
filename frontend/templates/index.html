@@ -85,33 +85,32 @@ id="page-top"
     $("#signup-form").submit(function(e) {
       e.preventDefault();
     });
-    $('.btn.btn-primary.btn-xl').click(function(){
-    data = JSON.stringify({
-      email: $('#emailField').val(), 
-      password: $('#passwordField').val()
-    })
     
-    $.ajax({
-      url: '/signup',
-      type: 'POST',
-      contentType: "application/json",
-      data: data, 
-      success: function(response){
-        json_obj = JSON.parse(response);
-        url = json_obj.message;
-        window.location.replace(url);
-      },
-      error: function(error){
-        if (error.status == '401' || error.status == '403'){
-          json_obj = JSON.parse(error.responseText);
-          $('#output').html(json_obj.message);
-        }
-        else {
-          $('#output').html('');
-        }
-      }
-      });
+    // On button click, get data and make AJAX call
+    $('.btn.btn-primary.btn-xl').click(function(){
+
+      data = JSON.stringify({
+        email: $('#emailField').val(), 
+        password: $('#passwordField').val()
+      })
+
+      ajax('/signup', 'POST', data,
+            function(response){
+              json_obj = JSON.parse(response);
+              url = json_obj.message;
+              window.location.replace(url);
+            },
+            function(error){
+              if (error.status == '401' || error.status == '403'){
+                json_obj = JSON.parse(error.responseText);
+                $('#output').html(json_obj.message);
+              }
+              else {
+                $('#output').html('');
+              }
+            }
+      )
     });
-  });
+});
   </script>
 {% endblock %}
