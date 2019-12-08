@@ -5,7 +5,7 @@ from flask import Flask, Blueprint, request
 from flask_login import login_required, current_user
 import stripe
 
-from backend.setup import app, db, User, login_manager, csrf
+from backend.setup import app, db, User, Stripe, login_manager, csrf
 
 # Every route from here will be imported to app.py through the stripe_api Blueprint
 stripe_api = Blueprint('stripe_api', __name__)
@@ -67,9 +67,24 @@ def succesful_payment():
         user = User.query.filter_by(email=data_object['customer_email']).first()
 
         if user != None:
-            user.subscription_active = True
-            user.subscription_id = data_object['subscription']
-            user.customer_id = data_object['customer']
+            sub = stripe.Subscription.retrieve(data_object['subscription'])
+
+            subscription_id = data_object['subscription']
+            customer_id = data_object['customer']
+            amount = data_object['display_items'][0]['amount']
+            
+            current_period_start = sub['current_period_start']
+            current_period_end = sub['current_period_end']
+
+            new_stripe = Stripe(user_id=user.id,
+                                subscription_id=subscription_id,
+                                customer_id=customer_id,
+                                subscription_active=True,
+                                amount=amount,
+                                current_period_start=current_period_start,
+                                current_period_end=current_period_end,
+                                subscription_cancelled_at=None)
+            db.session.add(new_stripe)
             db.session.commit()
 
     return "", 200
@@ -78,33 +93,36 @@ def succesful_payment():
 @login_required
 def cancel_subscription():
     try:
+        stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
+
         session = stripe.Subscription.modify(
-            current_user.subscription_id,
+            stripe_obj.subscription_id,
             cancel_at_period_end=True
         )
 
         timestamp = session['cancel_at']
         subscription_ends = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-        current_user.subscription_cancelled_at = int(timestamp)
+        stripe_obj.subscription_cancelled_at = int(timestamp)
         db.session.commit()
 
         variables = dict(message='Success. You unsubscribed and will not be billed anymore. Your subscription will last until' + subscription_ends)
 
         return json.dumps(variables), 200
     except Exception as ex:
-        print(ex)
         return json.dumps({'message':'Something went wrong'}), 401
 
 @stripe_api.route("/reactivate_subscription", methods=["PUT"])
 @login_required
 def reactivate_subscription():
     try:
+        stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
+
         session = stripe.Subscription.modify(
-            current_user.subscription_id,
-            cancel_at_period_end=False
+            stripe_obj.subscription_id,
+            cancel_at_period_end=True
         )
 
-        current_user.subscription_cancelled_at = None
+        stripe_obj.subscription_cancelled_at = None
         db.session.commit()
 
         variables = dict(message='Success. You will automatically be billed every month.')

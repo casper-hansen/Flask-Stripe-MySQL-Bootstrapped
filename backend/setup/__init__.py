@@ -46,7 +46,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 db = SQLAlchemy(app)
 
 # Import user after setup (important)
-from backend.setup.models import User
+from backend.setup.models import User, Stripe
 
 # Within our app context, create all missing tables
 db.create_all()

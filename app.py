@@ -11,7 +11,7 @@ from sqlalchemy import exc
 import stripe
 
 # Upon this import, backend/setup/__init__.py is run
-from backend.stripe import app, db, User, login_manager, csrf, stripe_api
+from backend.stripe import app, db, User, Stripe, login_manager, csrf, stripe_api
 
 # Import all routes from stripe.py
 app.register_blueprint(stripe_api)
@@ -83,15 +83,22 @@ def dashboard():
     trial_period = timedelta(days=app.config['TRIAL_LENGTH_DAYS'])
     timestamp = time.time()
     show_reactivate = None
+    sub_active = None
+    sub_cancelled_at = None
 
-    if current_user.subscription_cancelled_at != None and timestamp < current_user.subscription_cancelled_at:
-        show_reactivate = True
+    stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
+
+    if stripe_obj != None:
+        if stripe_obj.subscription_cancelled_at != None and timestamp < stripe_obj.subscription_cancelled_at:
+            show_reactivate = True
+        sub_active = stripe_obj.subscription_active
+        sub_cancelled_at = stripe_obj.subscription_cancelled_at
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
-                     user_is_paying=current_user.subscription_active,
+                     user_is_paying=sub_active,
                      show_reactivate=show_reactivate,
-                     subscription_cancelled_at=current_user.subscription_cancelled_at)
+                     subscription_cancelled_at=sub_cancelled_at)
     
     return render_template('dashboard.html', **variables)
 
@@ -100,11 +107,16 @@ def dashboard():
 def billing():
     timestamp = time.time()
     show_reactivate = None
+    sub_active = None
 
-    if current_user.subscription_cancelled_at != None and timestamp < current_user.subscription_cancelled_at:
-        show_reactivate = True
+    stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
 
-    variables = dict(subscription_active=current_user.subscription_active,
+    if stripe_obj != None:
+        if stripe_obj.subscription_cancelled_at != None and timestamp < stripe_obj.subscription_cancelled_at:
+            show_reactivate = True
+        sub_active = stripe_obj.subscription_active
+
+    variables = dict(subscription_active=sub_active,
                      email=current_user.email,
                      show_reactivate=show_reactivate)
     
