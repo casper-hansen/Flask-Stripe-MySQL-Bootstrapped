@@ -17,7 +17,7 @@ Currently, there is one database (UserDB) with one table (user).
 # Technologies and features
 
 - [x] Python & MySQL Database
-- [x] Stripe for secure payments (create subscription).
+- [x] Stripe for secure payments: creating subscriptions and automated billing at the end of each month.
 - [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
 - [x] Flask as Backend, serving HTML, CSS and JS
 - [x] Simplistic REST API with Flask
@@ -31,6 +31,7 @@ Currently, there is one database (UserDB) with one table (user).
 - [ ] Docker: Machine Learning sample model in Gunicorn+Docker container.
 - [ ] Docker: Make 2 docker containers interact.
 - [ ] Email validation
+- [ ] Logging errors in database
 - [ ] Feedback button to store feedback in database
 - [ ] Account Details (update account, disable account)
 - [ ] Settings for app
@@ -39,23 +40,8 @@ Currently, there is one database (UserDB) with one table (user).
 - [ ] Automatic in-app notifications — offer annual payment after 1 months use, notify user of credit card expiring soon.
 - [ ] Easy pricing strategy provided. Monthly for $xx and annual for $xx, get 2 months free. Extremely transparent pricing strategy, annual being standard and opt-of, with the benefits you lose if you switch to monthly.
 
-## Stripe Information
-
-Stripe's newest, securest and easiest way is used in this template. You will have full trust when some user pays you, because you are redirected to Stripe's page for payment.
-
-**Webhooks are used to make 100% sure that any payment goes through with 0% failure. With previous Flask templates, Stripe's legacy (unsecure, uncertain) way of setting up subscriptions was used - but this is fixed here.**
-
-- Subscriptions: User is redirected to Stripe, and Stripe sends your application a webhook POST request to verify that the user is correctly setup.
-
-- Updating subscriptions: Upcoming functionality. Make a button to unsubscribe, but let the period paid for continue until the end of the month. If a user has subscribed, then unsubscribed, we need a button we opting in to subscribe again.
-
 ## Todo
 
-- Add Stripe webhooks renewed payment from subscription every month [https://stripe.com/docs/billing/webhooks#tracking](https://stripe.com/docs/billing/webhooks#tracking). 
-    - A few days prior to renewal, your site receives an `invoice.upcoming` event at the webhook endpoint. You can listen for this event to add extra invoice items to a subscription draft invoice.
-    - Your site receives an `invoice.payment_succeeded` event.
-    - Your webhook endpoint finds the customer for whom payment was just made.
-    - Your webhook endpoint updates the customer’s `current_period_end` timestamp in your database to the appropriate date in the future (plus a day or two for leeway).
 - Split some HTML in partial files
 
 # Installation

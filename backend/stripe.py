@@ -54,7 +54,7 @@ def succesful_payment():
     try:
         with app.app_context():
             event = stripe.Webhook.construct_event(
-                payload, received_sig, app.config['SUBSCRIPTION_SUCCESS_WEBHOOK_SECRET']
+                payload, received_sig, app.config['WEBHOOK_SUBSCRIPTION_SUCCESS']
             )
     except ValueError:
         print("Error while decoding event!")
@@ -143,11 +143,13 @@ def reactivate_subscription():
         print(stacktrace)
         return json.dumps({'message':'Something went wrong'}), 401
     
-# When the customer pays his subscription for another month,
-# we need to update when his current_period_end in the db
 @stripe_api.route("/webhook_invoice_paid", methods=["POST"])
 @csrf.exempt
 def invoice_paid():
+    '''
+        When the customer pays his subscription for another month,
+        we need to update when his current_period_end in the db
+    '''
     payload = request.data.decode("utf-8")
     received_sig = request.headers.get("Stripe-Signature", None)
 
@@ -155,7 +157,7 @@ def invoice_paid():
     try:
         with app.app_context():
             event = stripe.Webhook.construct_event(
-                payload, received_sig, app.config['NEW_INVOICE_WEBHOOK_SECRET']
+                payload, received_sig, app.config['WEBHOOK_NEW_INVOICE']
             )
     except ValueError:
         print("Error while decoding event!")
@@ -170,6 +172,45 @@ def invoice_paid():
             data_object = data['data']['object']
             stripe_obj = Stripe.query.filter_by(customer_id=data_object['customer']).first()
             stripe_obj.current_period_end = data_object['period_end']
+
+            db.session.commit()
+
+        return "", 200
+    except Exception as ex:
+        stacktrace = traceback.format_exc()
+        print(stacktrace)
+        return str(stacktrace), 500
+
+@stripe_api.route("/webhook_subscription_ended", methods=["POST"])
+@csrf.exempt
+def subscription_ended():
+    '''
+        If the customer has cancelled the subscription, this webhook
+        will be sent at the end of the current period, to cancel
+        any access to the service.
+    '''
+    payload = request.data.decode("utf-8")
+    received_sig = request.headers.get("Stripe-Signature", None)
+
+    # Verify received data
+    try:
+        with app.app_context():
+            event = stripe.Webhook.construct_event(
+                payload, received_sig, app.config['WEBHOOK_SUBSCRIPTION_ENDED']
+            )
+    except ValueError:
+        print("Error while decoding event!")
+        return "Bad payload", 400
+    except stripe.error.SignatureVerificationError:
+        print("Invalid signature!")
+        return "Bad signature", 400
+    
+    try:
+        data = json.loads(payload)
+        data_object = data['data']['object']
+        if data_object['status'] == 'canceled':
+            stripe_obj = Stripe.query.filter_by(customer_id=data_object['customer']).first()
+            stripe_obj.subscription_active = False
 
             db.session.commit()
 
