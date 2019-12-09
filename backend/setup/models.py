@@ -22,8 +22,8 @@ class Stripe(db.Model):
     user_id = Column(Integer, ForeignKey('user.id'), unique=True, nullable=False)
     user = relationship("User", backref=backref("user", uselist=False))
 
-    subscription_id = Column(String(256), unique=False)
-    customer_id = Column(String(256), unique=False)
+    subscription_id = Column(String(256), unique=True, nullable=False)
+    customer_id = Column(String(256), unique=True, nullable=False)
     subscription_active = Column(Boolean, default=False)
     amount = Column(Integer, unique=False)
     current_period_start = Column(Integer, unique=False)

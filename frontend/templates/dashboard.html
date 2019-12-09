@@ -80,7 +80,7 @@ Dashboard
             plan: plan
         })
 
-        ajax('setup_payment', 'POST', data,
+        ajax('/setup_payment', 'POST', data,
             function(response) {
                 json_obj = JSON.parse(response);
                 public_key = json_obj.stripe_public_key;
