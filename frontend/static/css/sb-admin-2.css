@@ -10996,3 +10996,21 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+#sub_warning {
+  white-space: nowrap;
+}
+
+#ends_at {
+  white-space: nowrap;
+}
+
+@media(max-width: 460px) {
+  #sub_warning {
+    white-space: normal;
+  }
+  
+  #ends_at {
+    white-space: normal;
+  }
+}
