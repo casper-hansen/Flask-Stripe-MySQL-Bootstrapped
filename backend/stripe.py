@@ -5,8 +5,10 @@ import traceback
 from flask import Flask, Blueprint, request
 from flask_login import login_required, current_user
 import stripe
+from sqlalchemy import exc
 
 from backend.setup import app, db, User, Stripe, login_manager, csrf
+from backend.helpers.stripe_helper import validate_stripe_data
 
 # Every route from here will be imported to app.py through the stripe_api Blueprint
 stripe_api = Blueprint('stripe_api', __name__)
@@ -42,30 +44,16 @@ def setup_payment():
         print(stacktrace)
         return json.dumps({'message':'Something went wrong'}), 401
     
-    
 @stripe_api.route("/webhook_pay_success", methods=["POST"])
 @csrf.exempt
 def succesful_payment():
-    # Upon successful payment, Stripe sends data. Capture payload.
-    payload = request.data.decode("utf-8")
-    received_sig = request.headers.get("Stripe-Signature", None)
-
-    # Verify received data
+    '''
+        A function for grabbing correct data and storing it in MySQL db,
+        when a user successfully pays on Stripe.
+    '''
     try:
-        with app.app_context():
-            event = stripe.Webhook.construct_event(
-                payload, received_sig, app.config['WEBHOOK_SUBSCRIPTION_SUCCESS']
-            )
-    except ValueError:
-        print("Error while decoding event!")
-        return "Bad payload", 400
-    except stripe.error.SignatureVerificationError:
-        print("Invalid signature!")
-        return "Bad signature", 400
+        data = validate_stripe_data(request, 'WEBHOOK_SUBSCRIPTION_SUCCESS')
 
-    # Make user a paid subscriber
-    data = json.loads(payload)
-    try:
         if data['type'] == 'checkout.session.completed':
             data_object = data['data']['object']
             user = User.query.filter_by(email=data_object['customer_email']).first()
@@ -92,6 +80,12 @@ def succesful_payment():
                 db.session.commit()
 
         return "", 200
+    except exc.IntegrityError:
+        return "User already has an active subscription", 400
+    except ValueError:
+        return "Bad payload", 400
+    except stripe.error.SignatureVerificationError:
+        return "Bad signature", 400
     except Exception as ex:
         stacktrace = traceback.format_exc()
         print(stacktrace)
@@ -150,24 +144,10 @@ def invoice_paid():
         When the customer pays his subscription for another month,
         we need to update when his current_period_end in the db
     '''
-    payload = request.data.decode("utf-8")
-    received_sig = request.headers.get("Stripe-Signature", None)
 
-    # Verify received data
     try:
-        with app.app_context():
-            event = stripe.Webhook.construct_event(
-                payload, received_sig, app.config['WEBHOOK_NEW_INVOICE']
-            )
-    except ValueError:
-        print("Error while decoding event!")
-        return "Bad payload", 400
-    except stripe.error.SignatureVerificationError:
-        print("Invalid signature!")
-        return "Bad signature", 400
-    
-    try:
-        data = json.loads(payload)
+        data = validate_stripe_data(request, 'WEBHOOK_NEW_INVOICE')
+
         if data['type'] == 'invoice.payment_succeeded':
             data_object = data['data']['object']
             stripe_obj = Stripe.query.filter_by(customer_id=data_object['customer']).first()
@@ -178,6 +158,12 @@ def invoice_paid():
                 return "", 200
             else:
                 return "stripe_obj is null", 202
+        else:
+            return "Wrong request type", 400
+    except ValueError:
+        return "Bad payload", 400
+    except stripe.error.SignatureVerificationError:
+        return "Bad signature", 400
     except Exception as ex:
         stacktrace = traceback.format_exc()
         print(stacktrace)
@@ -191,24 +177,10 @@ def subscription_ended():
         will be sent at the end of the current period, to cancel
         any access to the service.
     '''
-    payload = request.data.decode("utf-8")
-    received_sig = request.headers.get("Stripe-Signature", None)
-
-    # Verify received data
-    try:
-        with app.app_context():
-            event = stripe.Webhook.construct_event(
-                payload, received_sig, app.config['WEBHOOK_SUBSCRIPTION_ENDED']
-            )
-    except ValueError:
-        print("Error while decoding event!")
-        return "Bad payload", 400
-    except stripe.error.SignatureVerificationError:
-        print("Invalid signature!")
-        return "Bad signature", 400
     
     try:
-        data = json.loads(payload)
+        data = validate_stripe_data(request, 'WEBHOOK_SUBSCRIPTION_ENDED')
+
         data_object = data['data']['object']
         if data_object['status'] == 'canceled':
             stripe_obj = Stripe.query.filter_by(customer_id=data_object['customer']).first()
@@ -220,6 +192,10 @@ def subscription_ended():
                 return "", 200
             else:
                 return "stripe_obj is null", 500
+    except ValueError:
+        return "Bad payload", 400
+    except stripe.error.SignatureVerificationError:
+        return "Bad signature", 400
     except Exception as ex:
         stacktrace = traceback.format_exc()
         print(stacktrace)
