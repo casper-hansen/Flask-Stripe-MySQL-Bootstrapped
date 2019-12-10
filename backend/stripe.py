@@ -68,15 +68,22 @@ def succesful_payment():
                 current_period_start = sub['current_period_start']
                 current_period_end = sub['current_period_end']
 
-                new_stripe = Stripe(user_id=user.id,
-                                    subscription_id=subscription_id,
-                                    customer_id=customer_id,
-                                    subscription_active=True,
-                                    amount=amount,
-                                    current_period_start=current_period_start,
-                                    current_period_end=current_period_end,
-                                    subscription_cancelled_at=None)
-                db.session.add(new_stripe)
+                new_stripe = dict(user_id=user.id,
+                                  subscription_id=subscription_id,
+                                  customer_id=customer_id,
+                                  subscription_active=True,
+                                  amount=amount,
+                                  current_period_start=current_period_start,
+                                  current_period_end=current_period_end,
+                                  subscription_cancelled_at=None)
+                
+                stripe_obj = Stripe.query.filter_by(user_id=user.id).first()
+                if stripe_obj == None:
+                    stripe_row = Stripe(**new_stripe)
+                    db.session.add(stripe_row)
+                else:
+                    stripe_obj.update(**new_stripe)
+                
                 db.session.commit()
 
         return "", 200

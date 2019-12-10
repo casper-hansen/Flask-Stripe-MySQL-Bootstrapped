@@ -32,3 +32,8 @@ class Stripe(db.Model):
 
     def __repr__(self):
         return 'id: '.join([str(id)])
+
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
