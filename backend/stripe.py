@@ -171,11 +171,13 @@ def invoice_paid():
         if data['type'] == 'invoice.payment_succeeded':
             data_object = data['data']['object']
             stripe_obj = Stripe.query.filter_by(customer_id=data_object['customer']).first()
-            stripe_obj.current_period_end = data_object['period_end']
-
-            db.session.commit()
-
-        return "", 200
+            
+            if stripe_obj != None:
+                stripe_obj.current_period_end = data_object['period_end']
+                db.session.commit()
+                return "", 200
+            else:
+                return "stripe_obj is null", 202
     except Exception as ex:
         stacktrace = traceback.format_exc()
         print(stacktrace)
@@ -210,11 +212,14 @@ def subscription_ended():
         data_object = data['data']['object']
         if data_object['status'] == 'canceled':
             stripe_obj = Stripe.query.filter_by(customer_id=data_object['customer']).first()
-            stripe_obj.subscription_active = False
 
-            db.session.commit()
+            if stripe_obj != None:
+                stripe_obj.subscription_active = False
+                db.session.commit()
 
-        return "", 200
+                return "", 200
+            else:
+                return "stripe_obj is null", 500
     except Exception as ex:
         stacktrace = traceback.format_exc()
         print(stacktrace)
