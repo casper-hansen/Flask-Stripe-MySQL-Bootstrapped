@@ -12,6 +12,7 @@ import stripe
 
 # Upon this import, backend/setup/__init__.py is run
 from backend.stripe import app, db, User, Stripe, login_manager, csrf, stripe_api
+from backend.helpers.app_helper import is_user_subscription_active
 
 # Import all routes from stripe.py
 app.register_blueprint(stripe_api)
@@ -81,47 +82,32 @@ def login():
 @login_required
 def dashboard():
     trial_period = timedelta(days=app.config['TRIAL_LENGTH_DAYS'])
-    timestamp = time.time()
-    show_reactivate = None
-    sub_active = None
-    sub_cancelled_at = None
 
-    stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
-
-    if stripe_obj != None:
-        if stripe_obj.subscription_cancelled_at != None and timestamp < stripe_obj.subscription_cancelled_at:
-            show_reactivate = True
-        sub_active = stripe_obj.subscription_active
-        sub_cancelled_at = stripe_obj.subscription_cancelled_at
-        
-        if sub_cancelled_at != None:
-            sub_cancelled_at =  datetime.utcfromtimestamp(sub_cancelled_at).strftime('%Y-%m-%d %H:%M:%S')
+    sub_active = is_user_subscription_active(False)
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
-                     user_is_paying=sub_active,
-                     show_reactivate=show_reactivate,
-                     subscription_cancelled_at=sub_cancelled_at)
+                     user_is_paying=sub_active)
     
     return render_template('dashboard.html', **variables)
 
 @app.route("/billing")
 @login_required
 def billing():
-    timestamp = time.time()
-    show_reactivate = None
-    sub_active = None
+    sub_active, show_reactivate, sub_cancelled_at = is_user_subscription_active()
+    stripe_obj = Stripe.query.filter_by(user_id=current_user.id).all()
+    from sqlalchemy import inspect
 
-    stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
+    def object_as_dict(obj):
+        return {c.key: getattr(obj, c.key)
+                for c in inspect(obj).mapper.column_attrs}
 
-    if stripe_obj != None:
-        if stripe_obj.subscription_cancelled_at != None and timestamp < stripe_obj.subscription_cancelled_at:
-            show_reactivate = True
-        sub_active = stripe_obj.subscription_active
+    print(object_as_dict(stripe_obj[0]))
 
     variables = dict(subscription_active=sub_active,
                      email=current_user.email,
-                     show_reactivate=show_reactivate)
+                     show_reactivate=show_reactivate,
+                     subscription_cancelled_at=sub_cancelled_at)
     
     return render_template('billing.html', **variables)
 

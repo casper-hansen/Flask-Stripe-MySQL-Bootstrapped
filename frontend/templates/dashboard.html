@@ -28,53 +28,7 @@ Dashboard
 var expiredDate = new Date("{{ expire_date }}");
 </script>
 <script src="partials/countdown.js"></script>
-
-{% elif show_reactivate %}
-<div class="row">
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-lg-6 mt-3">
-      <div class="card border-left-danger shadow h-100 py-2">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col mr-2">
-                <div id="output" class="text-success"></div>
-                <div id="sub_warning" class="text-xs font-weight-bold text-danger text-uppercase mb-1">Your subscription has been cancelled.</div>
-                <div id="ends_at" class="h5 mb-0 font-weight-bold text-gray-800">It ends {{ subscription_cancelled_at }}</div>
-            </div>
-            <div class="col-auto">
-                <button id="reactivate_subscription" onclick="resubscribe();" type="submit" class="btn btn-success btn-default">
-                    Reactivate Your Subscription
-                </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-</div>
 {% endif %}
 
 {% endblock %}
 
-{% if subscription_active %}
-{% block scripts %}
-<script>
-    function resubscribe() {
-        ajax('/reactivate_subscription', 'PUT', null,
-            function(response) {
-                json_obj = JSON.parse(response);
-                msg = json_obj.message;
-                $('#output').html(msg);
-                $('#reactivate_subscription').hide();
-                $('#sub_warning').hide();
-                $('#ends_at').hide();
-            },
-            function(error) {
-                json_obj = JSON.parse(error.responseText);
-                msg = json_obj.message;
-                $('#output').html(msg);
-            }
-        )
-    }
-</script>
-{% endblock %}
-{% endif %}
