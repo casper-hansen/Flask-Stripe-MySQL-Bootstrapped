@@ -24,6 +24,7 @@ class Stripe(db.Model):
 
     subscription_id = Column(String(256), unique=True, nullable=False)
     customer_id = Column(String(256), unique=True, nullable=False)
+    payment_method_id = Column(String(256), unique=True, nullable=True)
     subscription_active = Column(Boolean, default=False)
     amount = Column(Integer, unique=False)
     current_period_start = Column(Integer, unique=False)

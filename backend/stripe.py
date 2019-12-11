@@ -161,10 +161,18 @@ def invoice_paid():
             
             if stripe_obj != None:
                 stripe_obj.current_period_end = data_object['period_end']
+                pi = stripe.PaymentIntent.retrieve(data_object['payment_intent'])
+                stripe_obj.payment_method_id = pi['payment_method']
+
+                stripe.Customer.modify(
+                    stripe_obj.customer_id,
+                    invoice_settings={'default_payment_method': stripe_obj.payment_method_id}
+                )
+
                 db.session.commit()
                 return "", 200
             else:
-                return "stripe_obj is null", 202
+                return "stripe_obj is null, request was sent before user paid", 402
         else:
             return "Wrong request type", 400
     except ValueError:
