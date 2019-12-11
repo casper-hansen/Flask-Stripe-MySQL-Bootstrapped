@@ -132,8 +132,9 @@ def terms_of_service():
 
 @app.route("/logout")
 def logout():
-    current_user.is_authenticated = False
-    logout_user()
+    if current_user.is_authenticated == True:
+        current_user.is_authenticated = False
+        logout_user()
     return redirect('/', code=302)
     
 @app.errorhandler(401)

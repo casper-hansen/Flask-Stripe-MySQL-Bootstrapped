@@ -19,12 +19,12 @@ class User(UserMixin, db.Model):
 class Stripe(db.Model):
     __tablename__ = 'stripe'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'), unique=False, nullable=False)
     user = relationship("User", backref=backref("user", uselist=False))
 
-    subscription_id = Column(String(256), unique=True, nullable=False)
-    customer_id = Column(String(256), unique=True, nullable=False)
-    payment_method_id = Column(String(256), unique=True, nullable=True)
+    subscription_id = Column(String(256), unique=False, nullable=False)
+    customer_id = Column(String(256), unique=False, nullable=False)
+    payment_method_id = Column(String(256), unique=False, nullable=True)
     subscription_active = Column(Boolean, default=False)
     amount = Column(Integer, unique=False)
     current_period_start = Column(Integer, unique=False)
