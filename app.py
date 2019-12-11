@@ -98,16 +98,19 @@ def billing():
     stripe_obj = Stripe.query.filter_by(user_id=current_user.id).all()
     from sqlalchemy import inspect
 
-    def object_as_dict(obj):
-        return {c.key: getattr(obj, c.key)
-                for c in inspect(obj).mapper.column_attrs}
+    def object_as_dict(stripe_subscriptions):
+        keys_to_return = ['current_period_end',
+                            'subscription_active', 
+                            'amount']
+        return [{c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs if c.key in keys_to_return} for obj in stripe_subscriptions]
 
-    print(object_as_dict(stripe_obj[0]))
+    sub_dict = object_as_dict(stripe_obj)
 
     variables = dict(subscription_active=sub_active,
                      email=current_user.email,
                      show_reactivate=show_reactivate,
-                     subscription_cancelled_at=sub_cancelled_at)
+                     subscription_cancelled_at=sub_cancelled_at,
+                     subscription_data=json.dumps(sub_dict))
     
     return render_template('billing.html', **variables)
 

@@ -36,7 +36,7 @@ def create_subscription_in_db(subscription_id):
     current_period_start = sub['current_period_start']
     current_period_end = sub['current_period_end']
 
-    new_stripe = dict(user_id=stripe_obj.user.id,
+    new_stripe = dict(user_id=stripe_obj.user_id,
                         subscription_id=subscription_id,
                         customer_id=customer_id,
                         subscription_active=True,

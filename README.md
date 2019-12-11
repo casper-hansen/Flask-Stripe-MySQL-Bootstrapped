@@ -42,6 +42,7 @@ Currently, there is one database (UserDB) with one table (user).
 
 ## Todo
 
+- Fix create_subscription_in_db when user is none
 - Split some HTML in partial files
 - Add ability to have multiple subscriptions
 - List all subscriptions
