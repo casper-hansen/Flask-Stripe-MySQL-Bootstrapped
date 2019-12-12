@@ -38,3 +38,14 @@ class Stripe(db.Model):
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
+
+class Notifications(db.Model):
+    __tablename__  = 'notifications'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), unique=False, nullable=False)
+    user = relationship("User", backref=backref("user", uselist=False))
+
+    color = Column(String(50))
+    icon = Column(String(50))
+    created_date = Column(DateTime, server_default=func.now())
+    message = Column(String(500))

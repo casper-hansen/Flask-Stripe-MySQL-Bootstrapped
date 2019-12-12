@@ -6,29 +6,15 @@ Dashboard
 
 {% block content %}
 <!-- Page Heading -->
-<div class="row">
-    <div class="col">
-        <h1 class="h3 mt-3 mb-4 text-gray-800">Dashboard</h1>
-    </div>
-    <div class="mt-3 text-right" style="padding-right: .75rem; padding-left: .75rem;">
-        <div class="card border-success shadow h-100 py-2">
-            <div class="col mr-2">
-                <div class="h5 mb-0 font-weight-bold text-gray-800">Hello! You are logged in as</div>
-                <div>{{ email }}</div>
-            </div>
-        </div>
-    </div>
-</div>
-
+<h1 class="h3 mt-3 mb-4 text-gray-800">Dashboard</h1>
 
 {% if not user_is_paying %}
 {% include 'partials/dashboard_pricing.html' %}
 
 <script>
-var expiredDate = new Date("{{ expire_date }}");
+    var expiredDate = new Date("{{ expire_date }}");
 </script>
 <script src="partials/countdown.js"></script>
 {% endif %}
 
 {% endblock %}
-

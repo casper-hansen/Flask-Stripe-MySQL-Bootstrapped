@@ -39,7 +39,7 @@ def subscriptions_to_json(stripe_subscriptions):
         new_dict = {}
         for key in keys_to_return:
             if key == 'current_period_end':
-                new_dict['Subscription Ends'] = datetime.utcfromtimestamp(eval('row.' + key)).strftime('%Y-%m-%d %H:%M:%S')
+                new_dict['Renew Date'] = datetime.utcfromtimestamp(eval('row.' + key)).strftime('%Y-%m-%d %H:%M:%S')
             elif key == 'subscription_active':
                 value = eval('row.' + key)
                 new_dict['Subscription Active'] = 'YES' if value == True else 'NO'

@@ -8,9 +8,11 @@ Billing
 <h1 class="h3 mt-3 mb-4 text-gray-800">Billing Page</h1>
 {{ name }}
 {% if subscription_active %}
-<div id="output" class="text-success"></div>
-<p>You are a paid subscriber!</p>
 
+<p>This page shows your subscriptions, whether they are active and when you have been billed.</p>
+
+<h3>Your Subscriptions</h3>
+<div id="output" class="text-success"></div>
 <div class="card row mt-3">
     <div class="col-sm-12">
         <div id="billing_info" class="table-responsive">
@@ -29,25 +31,26 @@ Billing
                 <tr>
                     {% set outer_loop = loop %}
                     {% for key, value in dict_item.items() %}
-                    
+
                         {% if (key != 'subscription_id') and (key != 'cancel_in_progress') %}
                         <td id="123" class="align-middle"> 
                             {{ value }} 
                         </td>
                         {% endif %}
 
-                        {% if key == 'subscription_id' and dict_item['cancel_in_progress'] == None %}
+                        {% if key == 'subscription_id' %} 
                         <td class="align-middle">
+                        {% if dict_item['cancel_in_progress'] == None %}
                             <button data_sub_id="{{value}}" type="submit" class="cancel_subscription btn btn-danger btn-default">
                                 Cancel
                             </button>
-                        </td>
-
-                        {% elif key == 'subscription_id' and dict_item['cancel_in_progress'] == True %}
-                        <td class="align-middle">
-                          <button data_sub_id="{{value}}"type="submit" class="reactivate_subscription btn btn-success btn-default">
+                        {% elif dict_item['cancel_in_progress'] == True %}
+                            <button data_sub_id="{{value}}"type="submit" class="reactivate_subscription btn btn-success btn-default">
                                 Reactivate
-                          </button>
+                            </button>
+                        {% elif key == 'subscription_id' and dict_item['cancel_in_progress'] == False %}
+                            This subscription has ended.
+                        {% endif %}
                         </td>
                         {% endif %}
                     {% endfor %}

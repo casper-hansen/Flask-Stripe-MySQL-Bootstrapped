@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+    <!-- Topbar Navbar -->
+    <ul class="navbar-nav ml-auto">
+
+        <!-- Nav Item - Alerts -->
+        <li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+                <!-- Counter - Alerts -->
+                <span class="badge badge-danger badge-counter">{{ n_messages }}</span>
+            </a>
+            <!-- Dropdown - Alerts -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header">
+                    Alerts Center
+                </h6>
+                {% for message in notifications %}
+                    <a class="dropdown-item d-flex align-items-center" href="#">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-{{message[0]}}">
+                                <i class="fas fa-{{message[1]}} text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="small text-gray-500">{{message[2]}}</div>
+                            {{message[3]}}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </li>
+        <div class="topbar-divider d-none d-sm-block"></div>
+
+        <!-- Nav Item - User Information -->
+        <li class="nav-item dropdown no-arrow mt-2">
+            <div class="col mr-2">
+                <div class="h5 mb-0 font-weight-bold text-gray-800">User: </div>
+                <div>{{ email }}</div>
+            </div>
+        </li>
+    </ul>
+</nav>

@@ -85,9 +85,14 @@ def dashboard():
 
     sub_active = is_user_subscription_active(False)
 
+    notifications = [['success', 'donate', 'December 7, 2019', '$290.29 has been deposited into your account!'],
+                     ['warning', 'exclamation-triangle', 'December 2, 2019', "Spending Alert: We've noticed unusually high spending for your account."]]
+
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
-                     user_is_paying=sub_active)
+                     user_is_paying=sub_active,
+                     notifications=notifications,
+                     n_messages='2')
     
     return render_template('dashboard.html', **variables)
 
@@ -98,12 +103,17 @@ def billing():
     stripe_obj = Stripe.query.filter_by(user_id=current_user.id).all()
 
     sub_dict = subscriptions_to_json(stripe_obj)
+
+    notifications = [['success', 'donate', 'December 7, 2019', '$290.29 has been deposited into your account!'],
+                     ['warning', 'exclamation-triangle', 'December 2, 2019', "Spending Alert: We've noticed unusually high spending for your account."]]
     
     variables = dict(subscription_active=sub_active,
                      email=current_user.email,
                      show_reactivate=show_reactivate,
                      subscription_cancelled_at=sub_cancelled_at,
-                     subscription_data=sub_dict)
+                     subscription_data=sub_dict,
+                     notifications=notifications,
+                     n_messages='2')
     
     return render_template('billing.html', **variables)
 
