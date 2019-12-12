@@ -12,7 +12,7 @@ import stripe
 
 # Upon this import, backend/setup/__init__.py is run
 from backend.stripe import app, db, User, Stripe, login_manager, csrf, stripe_api
-from backend.helpers.app_helper import is_user_subscription_active
+from backend.helpers.app_helper import is_user_subscription_active, subscriptions_to_json
 
 # Import all routes from stripe.py
 app.register_blueprint(stripe_api)
@@ -96,21 +96,14 @@ def dashboard():
 def billing():
     sub_active, show_reactivate, sub_cancelled_at = is_user_subscription_active()
     stripe_obj = Stripe.query.filter_by(user_id=current_user.id).all()
-    from sqlalchemy import inspect
 
-    def object_as_dict(stripe_subscriptions):
-        keys_to_return = ['current_period_end',
-                            'subscription_active', 
-                            'amount']
-        return [{c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs if c.key in keys_to_return} for obj in stripe_subscriptions]
-
-    sub_dict = object_as_dict(stripe_obj)
-
+    sub_dict = subscriptions_to_json(stripe_obj)
+    
     variables = dict(subscription_active=sub_active,
                      email=current_user.email,
                      show_reactivate=show_reactivate,
                      subscription_cancelled_at=sub_cancelled_at,
-                     subscription_data=json.dumps(sub_dict))
+                     subscription_data=sub_dict)
     
     return render_template('billing.html', **variables)
 

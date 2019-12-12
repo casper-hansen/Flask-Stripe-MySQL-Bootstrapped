@@ -2,6 +2,7 @@ from flask_login import current_user
 from backend.models import Stripe
 import time
 from datetime import datetime
+import json
 
 def is_user_subscription_active(billing_page = True):
     timestamp = time.time()
@@ -25,3 +26,24 @@ def is_user_subscription_active(billing_page = True):
         return sub_active, show_reactivate, sub_cancelled_at
     else:
         return sub_active
+
+def subscriptions_to_json(stripe_subscriptions):
+    keys_to_return = ['current_period_end',
+                        'subscription_active', 
+                        'amount']
+    
+    return_arr = []
+    for row in stripe_subscriptions:
+        new_dict = {}
+        for key in keys_to_return:
+            if key == 'current_period_end':
+                new_dict['Subscription Ends'] = datetime.utcfromtimestamp(eval('row.' + key)).strftime('%Y-%m-%d %H:%M:%S')
+            elif key == 'subscription_active':
+                value = eval('row.' + key)
+                new_dict['Subscription Active'] = 'YES' if value == True else 'NO'
+            elif key == 'amount':
+                new_dict['Paid'] = "$" + str(eval('row.' + key)/100)
+        return_arr.append(new_dict)
+
+    return return_arr
+    #return json.dumps(return_arr)

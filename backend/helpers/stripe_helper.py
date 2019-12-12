@@ -31,21 +31,22 @@ def create_subscription_in_db(subscription_id):
     # Find the customer in db
     stripe_obj = Stripe.query.filter_by(customer_id=customer_id).first()
 
-    amount = sub['items']['data'][0]['plan']['amount']
-    
-    current_period_start = sub['current_period_start']
-    current_period_end = sub['current_period_end']
+    if stripe_obj != None:
+        amount = sub['items']['data'][0]['plan']['amount']
+        
+        current_period_start = sub['current_period_start']
+        current_period_end = sub['current_period_end']
 
-    new_stripe = dict(user_id=stripe_obj.user_id,
-                        subscription_id=subscription_id,
-                        customer_id=customer_id,
-                        subscription_active=True,
-                        amount=amount,
-                        current_period_start=current_period_start,
-                        current_period_end=current_period_end,
-                        subscription_cancelled_at=None)
+        new_stripe = dict(user_id=stripe_obj.user_id,
+                            subscription_id=subscription_id,
+                            customer_id=customer_id,
+                            subscription_active=True,
+                            amount=amount,
+                            current_period_start=current_period_start,
+                            current_period_end=current_period_end,
+                            subscription_cancelled_at=None)
 
-    stripe_row = Stripe(**new_stripe)
+        stripe_row = Stripe(**new_stripe)
 
-    db.session.add(stripe_row)
-    db.session.commit()
+        db.session.add(stripe_row)
+        db.session.commit()
