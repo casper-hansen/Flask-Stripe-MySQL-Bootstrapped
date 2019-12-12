@@ -23,6 +23,35 @@ def validate_stripe_data(request, webhook_from_config):
 
     return data
 
+def update_subscription_when_paid(data, already_called = False):
+    if data['type'] == 'invoice.payment_succeeded':
+        data_object = data['data']['object']
+        sub_id = data_object['subscription']
+        stripe_obj = Stripe.query.filter_by(subscription_id=sub_id).first()
+        
+        if stripe_obj != None:
+            stripe_obj.current_period_end = data_object['lines']['data'][0]['period']['end']
+            pi = stripe.PaymentIntent.retrieve(data_object['payment_intent'])
+
+            if stripe_obj.payment_method_id == None:
+                stripe_obj.payment_method_id = pi['payment_method']
+
+                stripe.Customer.modify(
+                    stripe_obj.customer_id,
+                    invoice_settings={'default_payment_method': stripe_obj.payment_method_id}
+                )
+
+            db.session.commit()
+            return "", 200
+        else:
+            create_subscription_in_db(sub_id)
+            if not already_called:
+                update_subscription_when_paid(data, True)
+
+            return "subscription_id did not exist, created a new row", 200
+    else:
+        return "Wrong request type", 400
+
 def create_subscription_in_db(subscription_id):
     # Get the subscription object and customer_id
     sub = stripe.Subscription.retrieve(subscription_id)
@@ -50,3 +79,12 @@ def create_subscription_in_db(subscription_id):
 
         db.session.add(stripe_row)
         db.session.commit()
+
+def is_subscription_id_present_in_user(user_id, sub_id):
+    stripe_obj = Stripe.query.filter_by(user_id=user_id).all()
+
+    for row in stripe_obj:
+        if row.subscription_id == sub_id:
+            return row, True
+        
+    return None, False

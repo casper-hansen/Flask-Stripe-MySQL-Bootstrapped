@@ -11,8 +11,6 @@ Billing
 <div id="output" class="text-success"></div>
 <p>You are a paid subscriber!</p>
 
-
-
 <div class="card row mt-3">
     <div class="col-sm-12">
         <div id="billing_info" class="table-responsive">
@@ -20,33 +18,38 @@ Billing
                 <!-- table header -->
                 {% if subscription_data %}
                 <tr>
-                  {% for key in subscription_data[0] %}
-                  <th> {{ key }} </th>
-                  {% endfor %}
+                    {% for key in subscription_data[0] %}
+                    <th> {{ key if key != 'subscription_id' }} </th>
+                    {% endfor %}
                 </tr>
                 {% endif %}
 
                 <!-- table rows -->
                 {% for dict_item in subscription_data %}
                 <tr>
-                  {% for value in dict_item.values() %}
-                  <td> {{ value }} </td>
-                  {% endfor %}
-                  <td>
-                      {% if show_reactivate %}
-                      <button id="reactivate_subscription" onclick="resubscribe();" type="submit" class="btn btn-success btn-default">
-                          Reactivate Your Subscription
-                      </button>
-                      {% else %}
-                      <button id="cancel_subscription" onclick="unsubscribe();" type="submit" class="btn btn-danger btn-default">
-                          Cancel Your Subscription
-                      </button>
-                      {% endif %}
-                  </td>
+                    {% set outer_loop = loop %}
+                    {% for key, value in dict_item.items() %}
+                    
+                        <td class="align-middle"> 
+                            {{ value if key != 'subscription_id' }} 
+                        </td>
+                        {% if key == 'subscription_id' and dict_item['Subscription Active'] == 'YES' %}
+                        <td class="align-middle">
+                            <button data_sub_id="{{value}}" type="submit" class="cancel_subscription btn btn-danger btn-default">
+                                Cancel Your Subscription
+                            </button>
+                        </td>
+
+                        {% elif key == 'subscription_id' and dict_item['Subscription Active'] == 'NO' %}
+                        <td class="align-middle">
+                          <button data_sub_id="{{value}}"type="submit" class="reactivate_subscription btn btn-success btn-default">
+                              Reactivate Your Subscription
+                          </button>
+                        </td>
+                        {% endif %}
+                    {% endfor %}
                 </tr>
                 {% endfor %}
-
-                
             </table>
         </div>
     </div>
@@ -61,37 +64,45 @@ Billing
 {% if subscription_active %}
 {% block scripts %}
 <script>
-    function unsubscribe() {
-        ajax('/cancel_subscription', 'PUT', null,
-            function(response){
-                json_obj = JSON.parse(response);
-                msg = json_obj.message;
-                $('#output').html(msg);
-                $('#cancel_subscription').hide();
-            },
-            function(error){
-                json_obj = JSON.parse(error.responseText);
-                msg = json_obj.message;
-                $('#output').html(msg);
-            }
-        )
+    $( ".cancel_subscription" ).click(function() {
+        unsubscribe($(this).attr("data_sub_id"));
+        $(this).hide();
+    });
+
+    $( ".reactivate_subscription" ).click(function() {
+        resubscribe($(this).attr("data_sub_id"));
+        $(this).hide();
+    });
+
+    function successfn(response) {
+        json_obj = JSON.parse(response);
+        msg = json_obj.message;
+        $('#output').html(msg);
     }
 
-    function resubscribe() {
-        ajax('/reactivate_subscription', 'PUT', null,
-            function(response) {
-                json_obj = JSON.parse(response);
-                msg = json_obj.message;
-                $('#output').html(msg);
-                $('#reactivate_subscription').hide();
-            },
-            function(error) {
-                json_obj = JSON.parse(error.responseText);
-                msg = json_obj.message;
-                $('#output').html(msg);
-            }
-        )
+    function errorfn(error) {
+        json_obj = JSON.parse(error.responseText);
+        msg = json_obj.message;
+        $('#output').html(msg);
     }
+
+    function unsubscribe(sub_id) {
+        data = JSON.stringify({
+            sub_id: sub_id
+        });
+
+        ajax('/cancel_subscription', 'PUT', data, successfn, errorfn)
+    }
+
+    function resubscribe(sub_id) {
+        data = JSON.stringify({
+            sub_id: sub_id
+        });
+
+        ajax('/reactivate_subscription', 'PUT', data, successfn, errorfn)
+    }
+
+    
 </script>
 {% endblock %}
 {% endif %}

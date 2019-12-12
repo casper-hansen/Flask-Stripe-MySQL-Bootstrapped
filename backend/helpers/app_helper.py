@@ -29,8 +29,9 @@ def is_user_subscription_active(billing_page = True):
 
 def subscriptions_to_json(stripe_subscriptions):
     keys_to_return = ['current_period_end',
-                        'subscription_active', 
-                        'amount']
+                      'subscription_active', 
+                      'amount',
+                      'subscription_id']
     
     return_arr = []
     for row in stripe_subscriptions:
@@ -43,6 +44,8 @@ def subscriptions_to_json(stripe_subscriptions):
                 new_dict['Subscription Active'] = 'YES' if value == True else 'NO'
             elif key == 'amount':
                 new_dict['Paid'] = "$" + str(eval('row.' + key)/100)
+            elif key == 'subscription_id':
+                new_dict[key] = eval('row.' + key)
         return_arr.append(new_dict)
 
     return return_arr

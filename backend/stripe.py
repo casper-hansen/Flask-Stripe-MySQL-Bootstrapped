@@ -8,7 +8,7 @@ import stripe
 from sqlalchemy import exc
 
 from backend.setup import app, db, User, Stripe, login_manager, csrf
-from backend.helpers.stripe_helper import validate_stripe_data, create_subscription_in_db
+from backend.helpers.stripe_helper import validate_stripe_data, update_subscription_when_paid, is_subscription_id_present_in_user
 
 # Every route from here will be imported to app.py through the stripe_api Blueprint
 stripe_api = Blueprint('stripe_api', __name__)
@@ -48,16 +48,20 @@ def setup_payment():
     except Exception as ex:
         stacktrace = traceback.format_exc()
         print(stacktrace)
-        return json.dumps({'message':'Something went wrong'}), 401
+        return json.dumps({'message':'Something went wrong'}), 500
     
 @stripe_api.route("/cancel_subscription", methods=["PUT"])
 @login_required
 def cancel_subscription():
     try:
-        stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
+        data = request.get_json(force=True)
+        stripe_obj, is_present = is_subscription_id_present_in_user(current_user.id, data['sub_id'])
+
+        if not is_present:
+            return json.dumps({'message':'User does not have subscription id'}), 401
 
         session = stripe.Subscription.modify(
-            stripe_obj.subscription_id,
+            data['sub_id'],
             cancel_at_period_end=True
         )
 
@@ -66,22 +70,26 @@ def cancel_subscription():
         stripe_obj.subscription_cancelled_at = int(timestamp)
         db.session.commit()
 
-        variables = dict(message='Success. You unsubscribed and will not be billed anymore. Your subscription will last until' + subscription_ends)
+        variables = dict(message='Success. You unsubscribed and will not be billed anymore. Your subscription will last until ' + subscription_ends)
 
         return json.dumps(variables), 200
     except Exception as ex:
         stacktrace = traceback.format_exc()
         print(stacktrace)
-        return json.dumps({'message':'Something went wrong'}), 401
+        return json.dumps({'message':'Something went wrong'}), 500
 
 @stripe_api.route("/reactivate_subscription", methods=["PUT"])
 @login_required
 def reactivate_subscription():
     try:
-        stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
+        data = request.get_json(force=True)
+        stripe_obj, is_present = is_subscription_id_present_in_user(current_user.id, data['sub_id'])
+
+        if not is_present:
+            return json.dumps({'message':'User does not have subscription id'}), 401
 
         session = stripe.Subscription.modify(
-            stripe_obj.subscription_id,
+            data['sub_id'],
             cancel_at_period_end=False
         )
 
@@ -94,7 +102,7 @@ def reactivate_subscription():
     except Exception as ex:
         stacktrace = traceback.format_exc()
         print(stacktrace)
-        return json.dumps({'message':'Something went wrong'}), 401
+        return json.dumps({'message':'Something went wrong'}), 500
 
 @stripe_api.route("/webhook_pay_success", methods=["POST"])
 @csrf.exempt
@@ -156,31 +164,8 @@ def invoice_paid():
 
     try:
         data = validate_stripe_data(request, 'WEBHOOK_NEW_INVOICE')
+        return update_subscription_when_paid(data)
 
-        if data['type'] == 'invoice.payment_succeeded':
-            data_object = data['data']['object']
-            sub_id = data_object['subscription']
-            stripe_obj = Stripe.query.filter_by(subscription_id=sub_id).first()
-            
-            if stripe_obj != None:
-                stripe_obj.current_period_end = data_object['period_end']
-                pi = stripe.PaymentIntent.retrieve(data_object['payment_intent'])
-
-                if stripe_obj.payment_method_id == None:
-                    stripe_obj.payment_method_id = pi['payment_method']
-
-                    stripe.Customer.modify(
-                        stripe_obj.customer_id,
-                        invoice_settings={'default_payment_method': stripe_obj.payment_method_id}
-                    )
-
-                db.session.commit()
-                return "", 200
-            else:
-                create_subscription_in_db(sub_id)
-                return "subscription_id did not exist, created a new row", 200
-        else:
-            return "Wrong request type", 400
     except exc.IntegrityError:
         return "Something went wrong", 400
     except ValueError:

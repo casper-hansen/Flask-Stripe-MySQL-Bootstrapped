@@ -76,7 +76,7 @@ $(function(){
     data = JSON.stringify({
       email: $('#exampleInputEmail').val(), 
       password: $('#exampleInputPassword').val()
-    })
+    });
     
     ajax('/login', 'POST', data,
           function(response){
