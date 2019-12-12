@@ -19,7 +19,7 @@ Billing
                 {% if subscription_data %}
                 <tr>
                     {% for key in subscription_data[0] %}
-                    <th> {{ key if key != 'subscription_id' }} </th>
+                    <th> {{ key if (key != 'subscription_id') and (key != 'cancel_in_progress') }} </th>
                     {% endfor %}
                 </tr>
                 {% endif %}
@@ -30,20 +30,23 @@ Billing
                     {% set outer_loop = loop %}
                     {% for key, value in dict_item.items() %}
                     
-                        <td class="align-middle"> 
-                            {{ value if key != 'subscription_id' }} 
+                        {% if (key != 'subscription_id') and (key != 'cancel_in_progress') %}
+                        <td id="123" class="align-middle"> 
+                            {{ value }} 
                         </td>
-                        {% if key == 'subscription_id' and dict_item['Subscription Active'] == 'YES' %}
+                        {% endif %}
+
+                        {% if key == 'subscription_id' and dict_item['cancel_in_progress'] == None %}
                         <td class="align-middle">
                             <button data_sub_id="{{value}}" type="submit" class="cancel_subscription btn btn-danger btn-default">
-                                Cancel Your Subscription
+                                Cancel
                             </button>
                         </td>
 
-                        {% elif key == 'subscription_id' and dict_item['Subscription Active'] == 'NO' %}
+                        {% elif key == 'subscription_id' and dict_item['cancel_in_progress'] == True %}
                         <td class="align-middle">
                           <button data_sub_id="{{value}}"type="submit" class="reactivate_subscription btn btn-success btn-default">
-                              Reactivate Your Subscription
+                                Reactivate
                           </button>
                         </td>
                         {% endif %}

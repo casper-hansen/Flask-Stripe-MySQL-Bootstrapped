@@ -27,6 +27,10 @@ def update_subscription_when_paid(data, already_called = False):
     if data['type'] == 'invoice.payment_succeeded':
         data_object = data['data']['object']
         sub_id = data_object['subscription']
+
+        if sub_id == None:
+            return "subscription_id was null", 402
+
         stripe_obj = Stripe.query.filter_by(subscription_id=sub_id).first()
         
         if stripe_obj != None:

@@ -31,6 +31,7 @@ def subscriptions_to_json(stripe_subscriptions):
     keys_to_return = ['current_period_end',
                       'subscription_active', 
                       'amount',
+                      'subscription_cancelled_at',
                       'subscription_id']
     
     return_arr = []
@@ -43,9 +44,23 @@ def subscriptions_to_json(stripe_subscriptions):
                 value = eval('row.' + key)
                 new_dict['Subscription Active'] = 'YES' if value == True else 'NO'
             elif key == 'amount':
-                new_dict['Paid'] = "$" + str(eval('row.' + key)/100)
+                new_dict['Price'] = "$" + str(eval('row.' + key)/100)
             elif key == 'subscription_id':
                 new_dict[key] = eval('row.' + key)
+            elif key == 'subscription_cancelled_at':
+                timestamp = time.time()
+                value = eval('row.' + key)
+
+                if value == None:
+                    # Show cancel button
+                    new_dict['cancel_in_progress'] = None
+                elif timestamp < value:
+                    # If current time is before the time when subscription is cancelled
+                    # Show reactivate button
+                    new_dict['cancel_in_progress'] = True
+                else:
+                    # Show no button
+                    new_dict['cancel_in_progress'] = False
         return_arr.append(new_dict)
 
     return return_arr
