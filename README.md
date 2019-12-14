@@ -42,6 +42,11 @@ Currently, there is one database (UserDB) with one table (user).
 
 ## Todo
 
+- Build the app into an actual architecture http://dev.nando.audio/2014/04/01/large_apps_with_sqlalchemy__architecture.html
+    - Which layers and what do they do?
+    - Unit/integration testing?
+    - Logging?
+    - Microservices?
 - Fix create_subscription_in_db when user is none
 - Split some HTML in partial files
 - Add ability to have multiple subscriptions
