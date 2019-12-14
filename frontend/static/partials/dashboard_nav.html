@@ -14,21 +14,22 @@
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
-                    Alerts Center
+                    Your Notifications
                 </h6>
                 {% for message in notifications %}
-                    <a class="dropdown-item d-flex align-items-center" href="#">
-                        <div class="mr-3">
-                            <div class="icon-circle bg-{{message.color}}">
-                                <i class="fas fa-{{message.icon}} text-white"></i>
-                            </div>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                    <div class="mr-3">
+                        <div class="icon-circle bg-{{message.color}}">
+                            <i class="fas fa-{{message.icon}} text-white"></i>
                         </div>
-                        <div>
-                            <div class="small text-gray-500">{{message.created_date}}</div>
-                            {{message.message_preview}}
-                        </div>
-                    </a>
+                    </div>
+                    <div>
+                        <div class="small text-gray-500">{{message.created_date}}</div>
+                        <p class="notification_preview">{{message.message_preview}}</p>
+                    </div>
+                </a>
                 {% endfor %}
+                <a class="dropdown-item text-center small text-gray-500" href="/notifications">Show All Notifications</a>
             </div>
         </li>
         <div class="topbar-divider d-none d-sm-block"></div>

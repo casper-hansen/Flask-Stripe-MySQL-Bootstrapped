@@ -27,6 +27,15 @@ def is_user_subscription_active(billing_page = True):
     else:
         return sub_active
 
+def get_ending(num):
+    num = int(num)
+    date_suffix = ["th", "st", "nd", "rd"]
+
+    if num % 10 in [1, 2, 3] and num not in [11, 12, 13]:
+        return date_suffix[num % 10]
+    else:
+        return date_suffix[0]
+
 def subscriptions_to_json(stripe_subscriptions):
     keys_to_return = ['current_period_end',
                       'subscription_active', 
@@ -35,11 +44,15 @@ def subscriptions_to_json(stripe_subscriptions):
                       'subscription_id']
     
     return_arr = []
+
     for row in stripe_subscriptions:
         new_dict = {}
         for key in keys_to_return:
             if key == 'current_period_end':
-                new_dict['Renew Date'] = datetime.utcfromtimestamp(eval('row.' + key)).strftime('%Y-%m-%d %H:%M:%S')
+                dt = datetime.utcfromtimestamp(eval('row.' + key))
+                ending = get_ending(dt.day)
+                dt_formatted = dt.strftime('%B %d{0}, %Y'.format(ending))
+                new_dict['Renew Date'] = dt_formatted
             elif key == 'subscription_active':
                 value = eval('row.' + key)
                 new_dict['Subscription Active'] = 'YES' if value == True else 'NO'

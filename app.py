@@ -7,7 +7,7 @@ from flask import Flask, render_template, redirect, request, escape, jsonify, fl
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import exc
+from sqlalchemy import exc, desc
 import stripe
 
 # Upon this import, backend/setup/__init__.py is run
@@ -49,7 +49,7 @@ def signup():
         new_notification = Notifications(user_id=new_user.id,
                                          color = 'success',
                                          icon = 'check-circle',
-                                         message_preview = 'Test message preview',
+                                         message_preview = 'You are signed up! Thanks for joining this service.',
                                          message = 'You have successfully signed up!')
         db.session.add(new_notification)
 
@@ -102,7 +102,7 @@ def dashboard():
     #notifications = [['success', 'donate', 'December 7, 2019', '$290.29 has been deposited into your account!'],
     #                 ['warning', 'exclamation-triangle', 'December 2, 2019', "Spending Alert: We've noticed unusually high spending for your account."]]
 
-    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).all()
+    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
@@ -120,7 +120,7 @@ def billing():
 
     sub_dict = subscriptions_to_json(stripe_obj)
 
-    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).all()
+    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
     
     variables = dict(subscription_active=sub_active,
                      email=current_user.email,
@@ -131,6 +131,17 @@ def billing():
                      n_messages=len(notifications))
     
     return render_template('billing.html', **variables)
+
+@app.route("/notifications")
+@login_required
+def notifications_center():
+    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
+
+    variables = dict(email=current_user.email,
+                     notifications=notifications,
+                     n_messages=len(notifications))
+
+    return render_template('notifications.html', **variables)
 
 @app.route("/tos")
 def terms_of_service():

@@ -10693,6 +10693,12 @@ form.user .btn-user {
   width: 12.5rem;
 }
 
+.notification_preview {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
 @-webkit-keyframes noise-anim {
   0% {
     clip: rect(32px, 9999px, 16px, 0);
