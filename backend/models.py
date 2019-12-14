@@ -43,7 +43,7 @@ class Notifications(db.Model):
     __tablename__  = 'notifications'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'), unique=False, nullable=False)
-    user = relationship("User", backref=backref("user", uselist=False))
+    #user = relationship("User", backref=backref("user_ref", uselist=False))
 
     color = Column(String(50))
     icon = Column(String(50))
