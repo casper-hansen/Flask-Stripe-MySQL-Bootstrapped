@@ -10,30 +10,39 @@ Notifications
 {% for message in notifications %}
 <div class="">
     <div class="card shadow p-3 mt-3 mx-auto" style="width: 50%;">
-            <a class="row text-decoration-none " href="#noti_{{message.id}}" data-toggle="collapse">
-                    <div class="col">
-                        <div class="col">
-                            <div class="row">
-                                <div class="col-xs-6 icon-circle bg-{{message.color}}">
-                                    <i class="fas fa-{{message.icon}} text-white"></i>
-                                </div>
-                                <div class="col-xs-6 ml-3 justify-content-center align-items-center" style="display: flex;">
-                                    <span class="font-weight-bold text-center">{{message.created_date}}</span>
-                                </div>
-                            </div>
+        <a class="row text-decoration-none" id="{{message.id}}" href="#noti_{{message.id}}" data-toggle="collapse">
+            <div class="col">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-xs-6 icon-circle bg-{{message.color}}">
+                            <i class="fas fa-{{message.icon}} text-white"></i>
                         </div>
-                        
-                        <div class="col ml-2 mt-2 mx-auto">
-                            {{message.message_preview + '..'}}
+                        <div class="col-xs-6 ml-3 justify-content-center align-items-center" style="display: flex;">
+                            <span class="font-weight-bold text-center">{{message.created_date}}</span>
                         </div>
                     </div>
-                </a>
-                <div id="noti_{{message.id}}" class="collapse">
-                    {{message.message}}
                 </div>
+                
+                <div class="col ml-2 mt-2 mx-auto">
+                    {{message.message_preview + '..'}}
+                </div>
+            </div>
+        </a>
+        <div id="noti_{{message.id}}" class="collapse mt-2">
+            {{message.message}}
+        </div>
     </div>
-    
 </div>
 {% endfor %}
+
+<script>
+window.onload = function() {
+    id = localStorage.getItem("noti_id");
+    if (id != null) {
+        document.getElementById(id).click();
+        localStorage.removeItem("noti_id");
+    }
+}
+</script>
 
 {% endblock %}

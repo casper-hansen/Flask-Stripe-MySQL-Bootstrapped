@@ -17,7 +17,7 @@
                     Your Notifications
                 </h6>
                 {% for message in notifications %}
-                <a class="dropdown-item d-flex align-items-center" href="/notifications/{{message.id}}">
+                <a class="dropdown-item d-flex align-items-center notificationLink" href="javascript:goToNotifiction('{{message.id}}')">
                     <div class="mr-3">
                         <div class="icon-circle bg-{{message.color}}">
                             <i class="fas fa-{{message.icon}} text-white"></i>
@@ -43,3 +43,10 @@
         </li>
     </ul>
 </nav>
+
+<script>
+    function goToNotifiction(id) {
+        localStorage.setItem("noti_id", id);
+        window.location.replace("/notifications");
+    }
+</script>
