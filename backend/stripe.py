@@ -7,6 +7,7 @@ from flask_login import login_required, current_user
 import stripe
 from sqlalchemy import exc
 
+# Import all the things
 from backend.setup import app, db, User, Stripe, Notifications, login_manager, csrf
 from backend.helpers.stripe_helper import validate_stripe_data, update_subscription_when_paid, is_subscription_id_present_in_user
 
@@ -17,9 +18,36 @@ stripe.api_key = app.config['STRIPE_SECRET_KEY']
 @stripe_api.route("/setup_payment", methods=["POST"])
 @login_required
 def setup_payment():
+    '''
+        Endpoint for setting up a subscription with a redirect to Stripe.
+        
+        Upon click the "Choose this plan", the plan clicked on is sent
+        in a post request to this endpoint. We create a stripe checkout session
+        where the user can provide payment information for creating the
+        subscription clicked on.
+
+        If succesful, the STRIPE_PUBLIC_KEY and session_id is returned.
+        This information is used by the Stripe javascript library to redirect
+        to Stripe's site for payment.
+
+        Parameters
+        ----------
+        request : JSON data
+            Has to contain the name of the plan.
+
+        Returns
+        -------
+        stripe_public_key : string (JSON)
+            The public key from the config.py file
+        
+        session_id : string (JSON)
+            The session id created from stripe.checkout.Session.create()
+    '''
     try:
         # Get the data from AJAX request
         data = request.get_json(force=True)
+
+        # Find the plan id in the config file
         plan = app.config['STRIPE_PLAN_' + data['plan']]
 
         stripe_obj = Stripe.query.filter_by(user_id=current_user.id).first()
@@ -41,6 +69,7 @@ def setup_payment():
             cancel_url=app.config['BASE_URL'] +'/dashboard',
         )
 
+        # Used for redirect
         variables = dict(stripe_public_key=app.config['STRIPE_PUBLIC_KEY'],
                          session_id=session.id)
 
@@ -53,6 +82,20 @@ def setup_payment():
 @stripe_api.route("/cancel_subscription", methods=["PUT"])
 @login_required
 def cancel_subscription():
+    '''
+        Endpoint for cancelling an active subscription.
+
+        Parameters
+        ----------
+        request : JSON data
+            Has to contain the subscription_id for cancellation.
+
+        Returns
+        -------
+        message : string (JSON)
+            Renders a success string with information about when the subscription
+            finally ends (at the end of the period).
+    '''
     try:
         data = request.get_json(force=True)
         stripe_obj, is_present = is_subscription_id_present_in_user(current_user.id, data['sub_id'])
@@ -60,6 +103,8 @@ def cancel_subscription():
         if not is_present:
             return json.dumps({'message':'User does not have subscription id'}), 401
 
+        # Cancel at period end means that the subscription is still active,
+        # and the user still has access to the service for the currently paid period.
         session = stripe.Subscription.modify(
             data['sub_id'],
             cancel_at_period_end=True
@@ -81,6 +126,19 @@ def cancel_subscription():
 @stripe_api.route("/reactivate_subscription", methods=["PUT"])
 @login_required
 def reactivate_subscription():
+    '''
+        Endpoint for reactivating a cancelled subscription.
+
+        Parameters
+        ----------
+        request : JSON data
+            Has to contain the subscription_id for cancellation.
+
+        Returns
+        -------
+        message : string (JSON)
+            Renders a success string.
+    '''
     try:
         data = request.get_json(force=True)
         stripe_obj, is_present = is_subscription_id_present_in_user(current_user.id, data['sub_id'])
@@ -108,19 +166,36 @@ def reactivate_subscription():
 @csrf.exempt
 def succesful_payment():
     '''
-        A function for grabbing correct data and storing it in MySQL db,
-        when a user successfully pays on Stripe.
+        Endpoint for receving the checkout.session.complete webhook request from Stripe. 
+        
+
+        Parameters
+        ----------
+        request : JSON data
+            This is a payload from Stripe. Contains Stripe's Checkout Session object.
+
+        Returns
+        -------
+        message : string
+            Empty string if the request went well. Contains debugging information
+            if the request went bad.
+        status : int
+            HTTP status code.
     '''
     try:
+        # Validate if the request is a valid request received from Stripe
         data = validate_stripe_data(request, 'WEBHOOK_SUBSCRIPTION_SUCCESS')
 
         if data['type'] == 'checkout.session.completed':
+            # Find the data object and corresponding user
             data_object = data['data']['object']
             user = User.query.filter_by(email=data_object['customer_email']).first()
 
             if user != None:
+                # Get the stripe subscription
                 sub = stripe.Subscription.retrieve(data_object['subscription'])
 
+                # Find and update the subscription data
                 subscription_id = data_object['subscription']
                 customer_id = data_object['customer']
                 amount = data_object['display_items'][0]['amount']
@@ -158,8 +233,25 @@ def succesful_payment():
 @csrf.exempt
 def invoice_paid():
     '''
+        Endpoint for receving the invoice.payment_succeeded from Stripe. 
         When the customer pays his subscription for another month,
-        we need to update when his current_period_end in the db
+        we need to update when his current_period_end in the db.
+
+        (Webhook is also received the first time the customer pays. In
+         any case, this will not be a problem. It's handled correctly.)
+
+        Parameters
+        ----------
+        request : JSON data
+            This is a payload from Stripe.
+
+        Returns
+        -------
+        message : string
+            Empty string if the request went well. Contains debugging information
+            if the request went bad.
+        status : int
+            HTTP status code.
     '''
 
     try:
@@ -181,9 +273,29 @@ def invoice_paid():
 @csrf.exempt
 def subscription_ended():
     '''
-        If the customer has cancelled the subscription, this webhook
-        will be sent at the end of the current period, to cancel
-        any access to the service.
+        Endpoint for receving the customer.subscription.deleted from Stripe. 
+        This webhook is received if the user cancelled his subscription
+        at an earlier time, and the current_period_end in the database
+        is less than current time.
+
+        When a subscription is cancelled, the subscription lasts for the
+        period paid. When the period is over, this webhook is sent from
+        Stripe.
+
+        Removes all access to the services provided for paid subscriptions.
+
+        Parameters
+        ----------
+        request : JSON data
+            This is a payload from Stripe.
+
+        Returns
+        -------
+        message : string
+            Empty string if the request went well. Contains debugging information
+            if the request went bad.
+        status : int
+            HTTP status code.
     '''
     
     try:

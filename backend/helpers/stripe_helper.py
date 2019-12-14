@@ -24,17 +24,25 @@ def validate_stripe_data(request, webhook_from_config):
     return data
 
 def update_subscription_when_paid(data, already_called = False):
+    '''
+        Method for updating a subscription, when it has been paid.
+    '''
     if data['type'] == 'invoice.payment_succeeded':
+        # Get data object and subscription id
         data_object = data['data']['object']
         sub_id = data_object['subscription']
 
+        # If the subscription id is null, we can't update the subscription
         if sub_id == None:
             return "subscription_id was null", 402
 
         stripe_obj = Stripe.query.filter_by(subscription_id=sub_id).first()
         
         if stripe_obj != None:
+            # Find the new end of period
             stripe_obj.current_period_end = data_object['lines']['data'][0]['period']['end']
+
+            # Get the payment method to setup the default payment method
             pi = stripe.PaymentIntent.retrieve(data_object['payment_intent'])
 
             if stripe_obj.payment_method_id == None:
@@ -57,6 +65,10 @@ def update_subscription_when_paid(data, already_called = False):
         return "Wrong request type", 400
 
 def create_subscription_in_db(subscription_id):
+    '''
+        Given a subscription id, create the subscription in database.
+        Finds all the relevant information from the stripe subscription object
+    '''
     # Get the subscription object and customer_id
     sub = stripe.Subscription.retrieve(subscription_id)
     customer_id = sub['customer']
@@ -85,8 +97,14 @@ def create_subscription_in_db(subscription_id):
         db.session.commit()
 
 def is_subscription_id_present_in_user(user_id, sub_id):
+    '''
+        Provided a user id and subscription id, check if the user has
+        the provided subscription id.
+        Returns the row in database where the subscription id exists
+    '''
     stripe_obj = Stripe.query.filter_by(user_id=user_id).all()
 
+    # If the provided subscription id exists, return the row
     for row in stripe_obj:
         if row.subscription_id == sub_id:
             return row, True
