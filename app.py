@@ -144,23 +144,6 @@ def notifications_center():
 
     return render_template('notifications.html', **variables)
 
-@app.route("/notifications/<notification_id>")
-@login_required
-def notificataion_message(notification_id):
-    clicked_message = Notifications.query.filter_by(id=notification_id, user_id=current_user.id).first()
-    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
-
-    if notifications == None:
-        return not_found(NotFound)
-
-    variables = dict(email=current_user.email,
-                     message_view=True,
-                     notifications=notifications,
-                     clicked_message=clicked_message,
-                     n_messages=len(notifications))
-
-    return render_template('message.html', **variables)
-
 @app.route("/tos")
 def terms_of_service():
     variables = dict(is_authenticated=current_user.is_authenticated)

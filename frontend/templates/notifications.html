@@ -9,24 +9,30 @@ Notifications
 <h1 class="h3 mt-3 mb-4 text-gray-800">All Your Notifications</h1>
 {% for message in notifications %}
 <div class="">
-<a class="row text-decoration-none mx-auto" href="/notifications/{{message.id}}" style="width: 50%;">
-    <div class="col card shadow p-3 mt-3">
-        <div class="col">
-            <div class="row">
-                <div class="col-xs-6 icon-circle bg-{{message.color}}">
-                    <i class="fas fa-{{message.icon}} text-white"></i>
+    <div class="card shadow p-3 mt-3 mx-auto" style="width: 50%;">
+            <a class="row text-decoration-none " href="#noti_{{message.id}}" data-toggle="collapse">
+                    <div class="col">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-xs-6 icon-circle bg-{{message.color}}">
+                                    <i class="fas fa-{{message.icon}} text-white"></i>
+                                </div>
+                                <div class="col-xs-6 ml-3 justify-content-center align-items-center" style="display: flex;">
+                                    <span class="font-weight-bold text-center">{{message.created_date}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col ml-2 mt-2 mx-auto">
+                            {{message.message_preview + '..'}}
+                        </div>
+                    </div>
+                </a>
+                <div id="noti_{{message.id}}" class="collapse">
+                    {{message.message}}
                 </div>
-                <div class="col-xs-6 ml-3 justify-content-center align-items-center" style="display: flex;">
-                    <span class="font-weight-bold text-center">{{message.created_date}}</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col ml-2 mt-2 mx-auto">
-            {{message.message_preview + '..'}}
-        </div>
     </div>
-</a>
+    
 </div>
 {% endfor %}
 
