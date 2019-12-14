@@ -13,6 +13,7 @@ import stripe
 # Upon this import, backend/setup/__init__.py is run
 from backend.stripe import app, db, User, Stripe, login_manager, csrf, stripe_api
 from backend.helpers.app_helper import is_user_subscription_active, subscriptions_to_json
+from backend.models import Notifications
 
 # Import all routes from stripe.py
 app.register_blueprint(stripe_api)
@@ -39,7 +40,20 @@ def signup():
 
         # Save user in database
         new_user = User(email=email, password_hash=pw_hash)
+
+        # Take the row spot
         db.session.add(new_user)
+        db.session.flush()
+
+        # Make notification
+        new_notification = Notifications(user_id=new_user.id,
+                                         color = 'success',
+                                         icon = 'check-circle',
+                                         message_preview = 'Test message preview',
+                                         message = 'You have successfully signed up!')
+        db.session.add(new_notification)
+
+        # Commit changes
         db.session.commit()
 
         return json.dumps({'message':'/login_page'}), 200
@@ -85,14 +99,16 @@ def dashboard():
 
     sub_active = is_user_subscription_active(False)
 
-    notifications = [['success', 'donate', 'December 7, 2019', '$290.29 has been deposited into your account!'],
-                     ['warning', 'exclamation-triangle', 'December 2, 2019', "Spending Alert: We've noticed unusually high spending for your account."]]
+    #notifications = [['success', 'donate', 'December 7, 2019', '$290.29 has been deposited into your account!'],
+    #                 ['warning', 'exclamation-triangle', 'December 2, 2019', "Spending Alert: We've noticed unusually high spending for your account."]]
+
+    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).all()
 
     variables = dict(email=current_user.email,
                      expire_date=current_user.created_date + trial_period,
                      user_is_paying=sub_active,
                      notifications=notifications,
-                     n_messages='2')
+                     n_messages=len(notifications))
     
     return render_template('dashboard.html', **variables)
 

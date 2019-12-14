@@ -19,13 +19,13 @@
                 {% for message in notifications %}
                     <a class="dropdown-item d-flex align-items-center" href="#">
                         <div class="mr-3">
-                            <div class="icon-circle bg-{{message[0]}}">
-                                <i class="fas fa-{{message[1]}} text-white"></i>
+                            <div class="icon-circle bg-{{message.color}}">
+                                <i class="fas fa-{{message.icon}} text-white"></i>
                             </div>
                         </div>
                         <div>
-                            <div class="small text-gray-500">{{message[2]}}</div>
-                            {{message[3]}}
+                            <div class="small text-gray-500">{{message.created_date}}</div>
+                            {{message.message_preview}}
                         </div>
                     </a>
                 {% endfor %}
