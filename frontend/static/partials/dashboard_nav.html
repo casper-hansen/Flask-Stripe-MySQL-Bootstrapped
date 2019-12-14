@@ -17,7 +17,7 @@
                     Your Notifications
                 </h6>
                 {% for message in notifications %}
-                <a class="dropdown-item d-flex align-items-center" href="#">
+                <a class="dropdown-item d-flex align-items-center" href="/notifications/{{message.id}}">
                     <div class="mr-3">
                         <div class="icon-circle bg-{{message.color}}">
                             <i class="fas fa-{{message.icon}} text-white"></i>

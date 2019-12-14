@@ -3,6 +3,7 @@ import os
 import time
 from datetime import timedelta, datetime
 
+from werkzeug.exceptions import NotFound
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_bcrypt import generate_password_hash, check_password_hash
@@ -135,13 +136,30 @@ def billing():
 @app.route("/notifications")
 @login_required
 def notifications_center():
-    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
+    notifications = Notifications.query.filter_by(user_id=current_user.id).order_by(Notifications.created_date.desc()).all()
 
     variables = dict(email=current_user.email,
                      notifications=notifications,
                      n_messages=len(notifications))
 
     return render_template('notifications.html', **variables)
+
+@app.route("/notifications/<notification_id>")
+@login_required
+def notificataion_message(notification_id):
+    clicked_message = Notifications.query.filter_by(id=notification_id, user_id=current_user.id).first()
+    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
+
+    if notifications == None:
+        return not_found(NotFound)
+
+    variables = dict(email=current_user.email,
+                     message_view=True,
+                     notifications=notifications,
+                     clicked_message=clicked_message,
+                     n_messages=len(notifications))
+
+    return render_template('message.html', **variables)
 
 @app.route("/tos")
 def terms_of_service():

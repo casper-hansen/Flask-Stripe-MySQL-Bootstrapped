@@ -6,9 +6,10 @@ Notifications
 
 {% block content %}
 <!-- Page Heading -->
-<h1 class="h3 mt-3 mb-4 text-gray-800">Notifications</h1>
+<h1 class="h3 mt-3 mb-4 text-gray-800">All Your Notifications</h1>
 {% for message in notifications %}
-<a class="row text-decoration-none" href="#">
+<div class="">
+<a class="row text-decoration-none mx-auto" href="/notifications/{{message.id}}" style="width: 50%;">
     <div class="col card shadow p-3 mt-3">
         <div class="col">
             <div class="row">
@@ -26,7 +27,7 @@ Notifications
         </div>
     </div>
 </a>
-
+</div>
 {% endfor %}
 
 {% endblock %}
