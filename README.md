@@ -42,6 +42,7 @@ Currently, there is one database (UserDB) with one table (user).
 - Split some HTML in partial files
 - Move on to upgrading/downgrading monthly and yearly plans
 - Add billing information (invoice date, description, amount, was it paid)
+- Variable builder
 
 # Installation
 

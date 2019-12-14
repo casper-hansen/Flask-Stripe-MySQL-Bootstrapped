@@ -120,8 +120,7 @@ def billing():
 
     sub_dict = subscriptions_to_json(stripe_obj)
 
-    notifications = [['success', 'donate', 'December 7, 2019', '$290.29 has been deposited into your account!'],
-                     ['warning', 'exclamation-triangle', 'December 2, 2019', "Spending Alert: We've noticed unusually high spending for your account."]]
+    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).all()
     
     variables = dict(subscription_active=sub_active,
                      email=current_user.email,
@@ -129,7 +128,7 @@ def billing():
                      subscription_cancelled_at=sub_cancelled_at,
                      subscription_data=sub_dict,
                      notifications=notifications,
-                     n_messages='2')
+                     n_messages=len(notifications))
     
     return render_template('billing.html', **variables)
 
