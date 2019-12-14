@@ -16,29 +16,21 @@ Currently, there is one database (UserDB) with one table (user).
 
 # Technologies and features
 
-- [x] Python & MySQL Database
-- [x] Stripe for secure payments: creating subscriptions and automated billing at the end of each month.
-- [x] Bootstrapped, pretty theme with a dashboard (using [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/))
-- [x] Flask as Backend, serving HTML, CSS and JS
-- [x] Simplistic REST API with Flask
-- [x] Reusing HTML files when loading pages, including scripts, for performance
-- [x] Complete signup and login system, user data stored in MySQL database
-- [x] Error handling
-- [x] Secure against XSS, CSRF attacks (i.e. you cannot send POST requests to the /signup endpoint, because it will be rejected with no CSRF token)
-- [x] 7-day Trial Period For Subscribers
-- [x] Page-template with an included Terms of Service (TOS) page
-- [ ] Docker: Gunicorn+Docker for this web app.
-- [ ] Docker: Machine Learning sample model in Gunicorn+Docker container.
-- [ ] Docker: Make 2 docker containers interact.
+- [x] Python & Flask & MySQL Database
+- [x] Stripe Subscriptions (Create, Cancel, Reactivate, Update supported)
+- [x] Bootstrapped theme [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/)
+- [x] User sign up and login (Facebook & Google integration in progress)
+- [x] 3 Pricing Tiers included (Starter, Growth, Scale)
+- [x] Base templates: Index, Dashboard and Pages
+- [x] XSS and CSRF security
+- [x] Trial Period (defaults to 24 hours)
+- [ ] Notifications for users (upselling, credit card expiring soon, etc.)
+- [ ] Feedback button: Easily gather feedback from users
 - [ ] Email validation
-- [ ] Logging errors in database
-- [ ] Feedback button to store feedback in database
-- [ ] Account Details (update account, disable account)
-- [ ] Settings for app
-- [ ] Signup and Login with Facebook / Google
 - [ ] Multiprocessing with Gunicorn, for SQLAlchemy and MySQL
-- [ ] Automatic in-app notifications — offer annual payment after 1 months use, notify user of credit card expiring soon.
-- [ ] Easy pricing strategy provided. Monthly for $xx and annual for $xx, get 2 months free. Extremely transparent pricing strategy, annual being standard and opt-of, with the benefits you lose if you switch to monthly.
+- [ ] Docker: Fully split into microservices with Docker (Gunicorn -> Flask)
+- [ ] Admin account: View feedback, logs, errors, etc.
+
 
 ## Todo
 
@@ -47,10 +39,7 @@ Currently, there is one database (UserDB) with one table (user).
     - Unit/integration testing?
     - Logging?
     - Microservices?
-- Fix create_subscription_in_db when user is none
 - Split some HTML in partial files
-- Add ability to have multiple subscriptions
-- List all subscriptions
 - Move on to upgrading/downgrading monthly and yearly plans
 - Add billing information (invoice date, description, amount, was it paid)
 
