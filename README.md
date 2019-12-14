@@ -52,7 +52,7 @@ Currently, there is one database (UserDB) with one table (user).
 # Installation
 
 1. Install Python (3.7 was used for this project)
-2. Install the package requirements `pip install requirements.txt`
+2. Install the package requirements `pip install -r requirements.txt`
 3. Download and install MySQL server and run it
 - Windows: See Windows section below
 - Mac/Linux: See Mac and Linux section below
