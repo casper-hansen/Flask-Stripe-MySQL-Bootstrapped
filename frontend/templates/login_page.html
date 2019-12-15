@@ -10,10 +10,34 @@
 {% endblock %}
 
 {% block body_attributes %}
-class="bg-gradient-primary"
+id="page-top"
 {% endblock %}
 
 {% block content %}
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light py-3" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand js-scroll-trigger text-dark" href="/">ML SaaS Tutorial</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto my-2 my-lg-0">
+          {% if is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/dashboard">Back To Dashboard</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/login_page">Login</a>
+          </li>
+          {% endif %}
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <div class="container">
 
   <!-- Outer Row -->
@@ -24,30 +48,27 @@ class="bg-gradient-primary"
       <div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card-body p-0">
           <!-- Nested Row within Card Body -->
-          <div class="row">
-            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-            <div class="col-lg-6">
-              <div class="p-5">
-                <div class="text-center">
-                  <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+          <div class="row mx-auto">
+            <div class="col-xl-8 p-5 mx-auto">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+              </div>
+              <form id="login-form" class="user" role="form">
+                <div class="form-group">
+                  <input type="email" name="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
                 </div>
-                <form id="login-form" class="user" role="form">
-                  <div class="form-group">
-                    <input type="email" name="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
-                  </div>
-                  <div class="form-group">
-                    <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
-                  </div>
-                  <div id="output" class="pb-2 row align-items-center justify-content-center text-danger">{{ message }}</div>
-                  <div class="form-group">
-                    <input type="submit" value="Login" class="btn btn-primary btn-user btn-block"/>
-                  </div>
+                <div class="form-group">
+                  <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+                </div>
+                <div id="output" class="pb-2 row align-items-center justify-content-center text-danger">{{ message }}</div>
+                <div class="form-group">
+                  <input type="submit" value="Login" class="btn btn-primary btn-user btn-block"/>
+                </div>
 
-                </form>
-                <hr>
-                <div class="text-center">
-                  <a class="small" href="/">Home / Register</a>
-                </div>
+              </form>
+              <hr>
+              <div class="text-center">
+                <a class="small" href="/">Home / Register</a>
               </div>
             </div>
           </div>
@@ -59,6 +80,29 @@ class="bg-gradient-primary"
   </div>
 
 </div>
+{% endblock %}
+
+{% block footer %}
+<!-- Footer -->
+<footer class="footer bg-light py-5">
+  <div class="container">
+    <div class="small text-center text-muted">
+      <div class="row">
+        <div class="col">
+          <hr>
+          Contact Us: <!-- REPLACE HREF AND TEXT -->
+          <a class="d-inline" href="mailto:contact@yourwebsite.com">contact@yourwebsite.com</a>
+        </div>
+        <div class="col"><hr>
+          Copyright © 2019 - ML SaaS Tutorial
+        </div>
+        <div class="col"><hr>
+          <a class="d-inline" href="/tos">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 {% endblock %}
 
 {% block scripts %}
