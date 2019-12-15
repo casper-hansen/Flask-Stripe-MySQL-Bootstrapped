@@ -144,6 +144,21 @@ def notifications_center():
 
     return render_template('notifications.html', **variables)
 
+@app.route("/notification_read", methods=["PUT"])
+def notification_read():
+    try:
+        data = request.get_json(force=True)
+        noti_id = data['noti_id']
+
+        notifications = Notifications.query.filter_by(id=noti_id).first()
+        notifications.isRead = True
+
+        db.session.commit()
+
+        return json.dumps({'message':''}), 200
+    except Exception as ex:
+        return json.dumps({'message':'Unknown error, we apologize'}), 500
+
 @app.route("/tos")
 def terms_of_service():
     variables = dict(is_authenticated=current_user.is_authenticated)
