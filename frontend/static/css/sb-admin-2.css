@@ -10699,6 +10699,16 @@ form.user .btn-user {
   word-break: break-word;
 }
 
+.noti_div {
+  width: 50%;
+}
+
+@media (max-width: 1050px) {
+  .noti_div {
+    width: 100%;
+  }
+}
+
 @-webkit-keyframes noise-anim {
   0% {
     clip: rect(32px, 9999px, 16px, 0);
