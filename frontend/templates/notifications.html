@@ -7,7 +7,7 @@ Notifications
 {% block content %}
 <!-- Page Heading -->
 <h1 class="h3 mt-3 mb-4 text-gray-800">All Your Notifications</h1>
-{% for message in notifications %}
+{% for message in all_notifications %}
 <div class="">
     <div class="card shadow p-3 mt-3 mx-auto" style="width: 50%;">
         <a class="row text-decoration-none noti" id="{{message.id}}" href="#noti_{{message.id}}" data-toggle="collapse">
@@ -43,7 +43,9 @@ window.onload = function() {
     
     id = localStorage.getItem("noti_id");
     if (id != null) {
-        document.getElementById(id).click();
+        ele = document.getElementById(id);
+        ele.scrollIntoView(true);
+        ele.click();
         localStorage.removeItem("noti_id");
     }
 }
