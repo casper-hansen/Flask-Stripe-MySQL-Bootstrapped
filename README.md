@@ -39,11 +39,9 @@ Currently, there is one database (UserDB) with one table (user).
     - Unit/integration testing?
     - Logging?
     - Microservices?
-- Split some HTML in partial files
 - Move on to upgrading/downgrading monthly and yearly plans
 - Add billing information (invoice date, description, amount, was it paid)
 - Variable builder
-- Make login page use base template
 
 # Installation
 
