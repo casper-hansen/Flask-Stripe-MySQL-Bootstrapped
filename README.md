@@ -24,7 +24,7 @@ Currently, there is one database (UserDB) with one table (user).
 - [x] Base templates: Index, Dashboard and Pages
 - [x] XSS and CSRF security
 - [x] Trial Period (defaults to 24 hours)
-- [ ] Notifications for users (upselling, credit card expiring soon, etc.)
+- [x] Notifications for users (upselling, credit card expiring soon, etc.)
 - [ ] Feedback button: Easily gather feedback from users
 - [ ] Email validation
 - [ ] Multiprocessing with Gunicorn, for SQLAlchemy and MySQL
