@@ -44,7 +44,7 @@ Billing
                                 Cancel
                             </button>
                         {% elif dict_item['cancel_in_progress'] == True %}
-                            <button data_sub_id="{{value}}"type="submit" class="reactivate_subscription btn btn-success btn-default">
+                            <button data_sub_id="{{value}}" type="submit" class="reactivate_subscription btn btn-success btn-default">
                                 Reactivate
                             </button>
                         {% elif key == 'subscription_id' and dict_item['cancel_in_progress'] == False %}
