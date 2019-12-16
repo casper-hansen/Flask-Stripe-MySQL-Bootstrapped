@@ -16,6 +16,7 @@
                 <h6 class="dropdown-header">
                     Your Notifications
                 </h6>
+                <div class="text-center m-2">{{ "You have no new notifications." if n_messages == 0 }}</div>
                 {% for message in notifications %}
                 <a class="dropdown-item d-flex align-items-center notificationLink" href="javascript:goToNotifiction('{{message.id}}')">
                     <div class="mr-3">
