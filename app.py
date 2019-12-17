@@ -93,6 +93,7 @@ def login():
             return json.dumps({'message':'Email not registered'}), 401
     except Exception as ex:
         return json.dumps({'message':'Unknown error, we apologize'}), 500
+
 @app.route("/dashboard")
 @login_required
 def dashboard():

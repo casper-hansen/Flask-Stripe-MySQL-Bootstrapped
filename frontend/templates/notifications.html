@@ -10,7 +10,7 @@ Notifications
 {% for message in all_notifications %}
 <div class="mx-auto noti_div">
     <div class="card shadow p-3 mt-3 ">
-        <a class="row text-decoration-none noti" id="{{message.id}}" href="#noti_{{message.id}}" data-toggle="collapse">
+        <a class="row text-decoration-none noti" id="{{message.id}}" href="#noti_{{message.id}}" data-is-read="{{message.isRead}}" data-toggle="collapse">
             <div class="col">
                 <div class="col">
                     <div class="row">
@@ -38,7 +38,12 @@ Notifications
 <script>
 window.onload = function() {
     $( ".noti" ).click(function() {
-        update_read_status($(this).attr("id"));
+        isRead = $(this).attr('data-is-read');
+
+        if (isRead == "False") {
+            update_read_status($(this).attr("id"));
+            $(this).attr('data-is-read', 'True');
+        }
     });
     
     id = localStorage.getItem("noti_id");
