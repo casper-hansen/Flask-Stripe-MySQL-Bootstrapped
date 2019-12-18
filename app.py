@@ -12,9 +12,9 @@ from sqlalchemy import exc, desc
 import stripe
 
 # Upon this import, backend/setup/__init__.py is run
-from backend.stripe import app, db, User, Stripe, login_manager, csrf, stripe_api
+from backend.services.stripe import app, db, User, Stripe, login_manager, csrf, stripe_api
 from backend.helpers.app_helper import is_user_subscription_active, subscriptions_to_json
-from backend.models import Notifications
+from backend.models.notifications import Notifications
 
 # Import all routes from stripe.py
 app.register_blueprint(stripe_api)

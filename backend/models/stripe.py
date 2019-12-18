@@ -1,20 +1,8 @@
+from backend import db
 from flask_login import UserMixin
-from backend.setup import db
 from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey, Text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship,backref
-
-class User(UserMixin, db.Model):
-    __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
-    email = Column(String(120), unique=True, nullable=False)
-    password_hash = Column(String(256), unique=False, nullable=False)
-    created_date = Column(DateTime, server_default=func.now())
-    
-    is_authenticated = True
-
-    def __repr__(self):
-        return 'id: '.join([str(id)])
 
 class Stripe(db.Model):
     __tablename__ = 'stripe'
@@ -38,15 +26,3 @@ class Stripe(db.Model):
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
-
-class Notifications(db.Model):
-    __tablename__  = 'notifications'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), unique=False, nullable=False)
-
-    color = Column(String(50))
-    icon = Column(String(50))
-    message_preview = Column(String(160))
-    message = Column(Text)
-    created_date = Column(DateTime, server_default=func.now())
-    isRead = Column(Boolean, default=False, nullable=False)

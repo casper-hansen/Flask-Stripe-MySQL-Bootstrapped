@@ -7,7 +7,7 @@ from flask_wtf import CSRFProtect
 import jinja2
 
 # Finding all our directories for this template
-base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..'))
+base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 frontend_dir = os.path.join(base_dir, 'frontend')
 template_dir = os.path.join(frontend_dir, 'templates')
 static_dir = os.path.join(frontend_dir, 'static')
@@ -46,8 +46,12 @@ mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0}".format(app.config['MYSQ
 app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 db = SQLAlchemy(app)
 
+print('App is setup!')
+
 # Import user after setup (important)
-from backend.models import User, Stripe, Notifications
+from backend.models.user import User
+from backend.models.stripe import Stripe
+from backend.models.notifications import Notifications
 
 # Within our app context, create all missing tables
 db.create_all()

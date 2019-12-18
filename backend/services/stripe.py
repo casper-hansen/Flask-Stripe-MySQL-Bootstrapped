@@ -8,7 +8,7 @@ import stripe
 from sqlalchemy import exc
 
 # Import all the things
-from backend.setup import app, db, User, Stripe, Notifications, login_manager, csrf
+from backend import app, db, User, Stripe, Notifications, login_manager, csrf
 from backend.helpers.stripe_helper import validate_stripe_data, update_subscription_when_paid, is_subscription_id_present_in_user
 
 # Every route from here will be imported to app.py through the stripe_api Blueprint
