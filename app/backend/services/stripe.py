@@ -55,6 +55,8 @@ def setup_payment():
         if stripe_obj != None and stripe_obj.customer_id != None:
             customer_id = stripe_obj.customer_id
 
+        base_url = app.config['PROTOCOL'] + '://' + app.config['BASE_URL']
+
         # Setup a Stripe session, completed with a webhook
         session = stripe.checkout.Session.create(
             customer_email=current_user.email,
@@ -65,8 +67,8 @@ def setup_payment():
                     'plan': plan,
                 }],
             },
-            success_url=app.config['BASE_URL'] + '/billing',
-            cancel_url=app.config['BASE_URL'] +'/dashboard',
+            success_url=base_url + '/billing',
+            cancel_url=base_url +'/dashboard',
         )
 
         # Used for redirect

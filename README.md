@@ -22,7 +22,7 @@ Currently, there is one database (UserDB) with one table (user).
 - [x] User sign up and login (Facebook & Google integration in progress)
 - [x] 3 Pricing Tiers included (Starter, Growth, Scale)
 - [x] Base templates: Index, Dashboard and Pages
-- [x] XSS and CSRF security
+- [x] Secure app: Protection against XSS, X-XSS, CSRF, clickjacking (iframe) attacks
 - [x] Trial Period (defaults to 24 hours)
 - [x] Notifications for users (upselling, credit card expiring soon, etc.)
 - [ ] Feedback button: Easily gather feedback from users
