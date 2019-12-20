@@ -2,7 +2,7 @@ from flask import Flask, current_app
 import stripe
 import json
 
-from backend.services.stripe import Stripe, db
+from services.stripe import Stripe, db
 
 def validate_stripe_data(request, webhook_from_config):
     '''
