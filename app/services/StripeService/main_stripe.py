@@ -8,7 +8,7 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..')
 sys.path.append(base_dir)
 
 # Import all the things
-from backend import app, db, User, Stripe, Notifications, login_manager, csrf
+from backend import app, db, User, Stripe, csrf
 from action.stripe_action import StripeAction
 
 action = StripeAction(Stripe, db, app, User)
