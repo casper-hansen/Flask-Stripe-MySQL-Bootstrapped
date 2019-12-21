@@ -5,13 +5,18 @@ import stripe
 from datetime import timedelta, datetime
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
+from flask_wtf import CSRFProtect
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..'))
 sys.path.append(base_dir)
 
 # Import all the things
-from backend import app, db, User, Notifications, Stripe, csrf
+from backend import app, db, User, Notifications, Stripe
 from action.frontend_action import FrontendAction
+from call_notifications_service import notification_api
+
+csrf = CSRFProtect(app)
+app.register_blueprint(notification_api)
 
 action = FrontendAction(db, app, User, Notifications, Stripe)
 
@@ -79,5 +84,31 @@ def notifications_center():
 
     return render_template('notifications.html', **variables)
 
+@app.route("/tos")
+def terms_of_service():
+    variables = dict(is_authenticated=current_user.is_authenticated)
+    return render_template('terms_of_service.html', **variables)
+
+@app.route("/logout")
+def logout():
+    if current_user.is_authenticated == True:
+        current_user.is_authenticated = False
+        logout_user()
+    return redirect('/', code=302)
+
+@app.errorhandler(401)
+def not_logged_in(e):
+    variables = dict(message='Please login first')
+    
+    return render_template('login_page.html', **variables)
+
+@app.errorhandler(404)
+def not_found(e):
+    variables = dict(is_authenticated=current_user.is_authenticated,
+                     message = '404 Page Not Found',
+                     stacktrace = str(e))
+    
+    return render_template('error.html', **variables)
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5000)

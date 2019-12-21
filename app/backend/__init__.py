@@ -3,7 +3,6 @@ from sqlalchemy import create_engine
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_wtf import CSRFProtect
 import jinja2
 
 # Finding all our directories for this template
@@ -54,7 +53,6 @@ from models.notifications import Notifications
 db.create_all()
 login_manager = LoginManager(app)
 login_manager.session_protection = 'basic'
-csrf = CSRFProtect(app)
 
 @login_manager.user_loader
 def load_user(id):
