@@ -45,8 +45,6 @@ mysql_engine.execute("CREATE DATABASE IF NOT EXISTS {0}".format(app.config['MYSQ
 app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 db = SQLAlchemy(app)
 
-print('App is setup!')
-
 # Import user after setup (important)
 from models.user import User
 from models.stripe import Stripe
@@ -57,3 +55,9 @@ db.create_all()
 login_manager = LoginManager(app)
 login_manager.session_protection = 'basic'
 csrf = CSRFProtect(app)
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+print('>>>App is setup')
