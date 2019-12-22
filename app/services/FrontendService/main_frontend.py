@@ -115,4 +115,4 @@ def not_found(e):
     return render_template('error.html', **variables)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=app.config['FRONTEND_PORT'])
