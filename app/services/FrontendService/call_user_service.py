@@ -1,5 +1,7 @@
 from flask import Flask, Blueprint, request
+from flask_login import login_user
 from models.notifications import Notifications, db
+from models.user import User
 import json, requests
 
 user_api = Blueprint('user_api', __name__)
@@ -18,7 +20,8 @@ def login():
 
     r = requests.post('http://localhost:5003/login', json=data)
 
-    #if r.status_code == 200:
-    #    login_user(user, remember=True)
+    if r.status_code == 200:
+        user = User.query.filter_by(email=data['email']).first()
+        login_user(user, remember=True)
 
     return r.text, r.status_code

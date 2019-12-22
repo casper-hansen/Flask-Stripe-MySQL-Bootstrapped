@@ -52,6 +52,8 @@ class UserAction():
             self.db.session.rollback()
             return json.dumps({'message':'Email already in use, tried logging in?'}), 403
         except Exception as ex:
+            stacktrace = traceback.format_exc()
+            print(stacktrace)
             return json.dumps({'message':'Something went wrong'}), 401
 
     def login(self, request):
@@ -68,11 +70,12 @@ class UserAction():
             if user != None:
                 check_pw = check_password_hash(user.password_hash, password)
                 if user.email == email and check_pw:
-                    login_user(user, remember=True)
                     return json.dumps({'message':'/dashboard'}), 200
                 else:
                     return json.dumps({'message':'User data incorrect'}), 401
             else:
                 return json.dumps({'message':'Email not registered'}), 401
         except Exception as ex:
+            stacktrace = traceback.format_exc()
+            print(stacktrace)
             return json.dumps({'message':'Unknown error, we apologize'}), 500
