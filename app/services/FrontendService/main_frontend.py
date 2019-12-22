@@ -15,10 +15,12 @@ from backend import app, db, User, Notifications, Stripe
 from action.frontend_action import FrontendAction
 from call_notifications_service import notification_api
 from call_user_service import user_api
+from call_stripe_service import stripe_api
 
 csrf = CSRFProtect(app)
 app.register_blueprint(notification_api)
 app.register_blueprint(user_api)
+app.register_blueprint(stripe_api)
 
 action = FrontendAction(db, app, User, Notifications, Stripe)
 

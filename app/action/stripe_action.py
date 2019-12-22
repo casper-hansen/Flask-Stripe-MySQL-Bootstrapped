@@ -25,16 +25,18 @@ class StripeAction():
             # Find the plan id in the config file
             plan = self.app.config['STRIPE_PLAN_' + data['plan']]
 
-            stripe_obj = self.Stripe.query.filter_by(user_id=current_user.id).first()
+            stripe_obj = self.Stripe.query.filter_by(user_id=data['user_id']).first()
+            user = self.User.query.filter_by(id=data['user_id']).first()
+
             customer_id = None
             if stripe_obj != None and stripe_obj.customer_id != None:
                 customer_id = stripe_obj.customer_id
 
             base_url = self.app.config['PROTOCOL'] + '://' + self.app.config['BASE_URL']
-
+            
             # Setup a Stripe session, completed with a webhook
             session = stripe.checkout.Session.create(
-                customer_email=current_user.email,
+                customer_email=user.email,
                 customer=customer_id,
                 payment_method_types=['card'],
                 subscription_data={
@@ -59,7 +61,7 @@ class StripeAction():
     def cancel_subscription(self, request):
         try:
             data = request.get_json(force=True)
-            stripe_obj, is_present = self._is_subscription_id_present_in_user(current_user.id, data['sub_id'])
+            stripe_obj, is_present = self._is_subscription_id_present_in_user(data['user_id'], data['sub_id'])
 
             if not is_present:
                 return json.dumps({'message':'User does not have subscription id'}), 401
@@ -87,7 +89,7 @@ class StripeAction():
     def reactivate_subscription(self, request):
         try:
             data = request.get_json(force=True)
-            stripe_obj, is_present = self._is_subscription_id_present_in_user(current_user.id, data['sub_id'])
+            stripe_obj, is_present = self._is_subscription_id_present_in_user(data['user_id'], data['sub_id'])
 
             if not is_present:
                 return json.dumps({'message':'User does not have subscription id'}), 401
