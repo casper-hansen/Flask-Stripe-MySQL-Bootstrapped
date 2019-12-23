@@ -47,7 +47,8 @@ id="page-top"
 </nav>
 
 <!-- Masthead -->
-<header class="masthead">
+<header class="masthead pb_cover_v3 overflow-hidden cover-bg-indigo cover-bg-opacity text-left pb_gradient_v1 pb_slant-light" id="section-home">
+  <!--
   <div class="container h-100">
     <div class="row h-100 align-items-center justify-content-center text-center">
       <div class="col-lg-10 align-self-end">
@@ -65,8 +66,108 @@ id="page-top"
       </div>
     </div>
   </div>
+  -->
+
+  
+    <div>
+      <div class="container h-100">
+        <div class="row align-items-center justify-content-center">
+          <div class="col-md-6 text-white">
+            <h2 class="heading mb-3">Flask + Stripe = Success</h2>
+            <div class="sub-heading">
+              <p class="mb-4">The best service out there.</p>
+              <p class="mb-5"><a class="btn btn-success btn-lg pb_btn-pill smoothscroll" href="#pricing"><span class="pb_font-14 text-uppercase pb_letter-spacing-1">See Pricing</span></a></p>
+            </div>
+          </div>
+          <div class="col-md-5 relative align-self-center">
+            <form class="bg-white rounded pb_form_v1" style="padding: 60px;" autocomplete="no" id="signup-form" action="/signup" method="post">
+              <h2 class="mb-4 mt-0 text-center">Sign Up for Free</h2>
+              <div class="form-group">
+                <input type="text" class="form-control pb_height-50 reverse" placeholder="Name" autocomplete="new-name">
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control pb_height-50 reverse" required id="fieldForEmail" placeholder="Email" autocomplete="new-email">
+              </div>
+              <div class="form-group">
+                <input class="form-control pb_height-50 reverse" type="password" name="password" required id="fieldForPassword" placeholder="Password" autocomplete="new-pass">
+              </div>
+              <div class="form-group">
+                <input type="submit" class="btn btn-primary btn-lg btn-block pb_btn-pill  btn-shadow-blue" value="Register" autocomplete="new-submit">
+              </div>
+            </form>
+          </div>
+      </div>
+    </div>
 </header>
 
+<style>
+.pb_slant-light, .pb_slant-white {
+    position: relative;
+}.overflow-hidden {
+    overflow: hidden;
+}.bg_image, .pb_sm_py_cover, .pb_md_py_cover, .pb_lg_py_cover, .pb_xl_py_cover, .pb_cover, .pb_cover_v1, .pb_cover_v2, .pb_cover_v3, .pb_cover_v4, .pb_slide_v2 .slide_content>.pb_content-media {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}.cover-bg-black, .cover-bg-white, .cover-bg-blue, .cover-bg-indigo, .cover-bg-purple, .cover-bg-pink, .cover-bg-red, .cover-bg-orange, .cover-bg-yellow, .cover-bg-green, .cover-bg-cyan {
+    position: relative;
+}.pb_cover, .pb_cover_v1, .pb_cover_v2, .pb_cover_v3, .pb_cover_v4 {
+    position: relative;
+    height: 95vh;
+}.text-left {
+    text-align: left!important;
+}.pb_gradient_v1:before {
+    background: #665fee;
+    background: -moz-linear-gradient(45deg,#665fee 0%,#27c2de 100%);
+    background: -webkit-linear-gradient(45deg,#665fee 0%,#27c2de 100%);
+    background: -o-linear-gradient(45deg,#665fee 0%,#27c2de 100%);
+    background: linear-gradient(45deg,#665fee 0%,#27c2de 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#665fee',endColorstr='#27c2de',GradientType=1 );
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+}.cover-bg-opacity:before {
+    opacity: 1;
+}.cover-bg-black:before, .cover-bg-white:before, .cover-bg-blue:before, .cover-bg-indigo:before, .cover-bg-purple:before, .cover-bg-pink:before, .cover-bg-red:before, .cover-bg-orange:before, .cover-bg-yellow:before, .cover-bg-green:before, .cover-bg-cyan:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: "";
+  }.pb_slant-light:after, .pb_slant-white:after {
+    content: "";
+    position: absolute;
+    bottom: -100px;
+    left: -50px;
+    height: 200px;
+    width: 130%;
+    background-color: #f2f4f9;
+    -webkit-transform: rotate(-4deg);
+    -ms-transform: rotate(-4deg);
+    transform: rotate(-4deg);
+    z-index: 10;
+}.pb_slant-dark:after, .pb_slant-black:after {
+    content: "";
+    position: absolute;
+    bottom: -100px;
+    left: -50px;
+    height: 200px;
+    width: 130%;
+    background-color: #343a40;
+    -webkit-transform: rotate(-4deg);
+    -ms-transform: rotate(-4deg);
+    transform: rotate(-4deg);
+    z-index: 10;
+}
+.bg-light {
+    background-color: #f2f4f9!important;
+}
+  </style>
 {% include 'partials/services.html' %}
 
 {% include 'partials/index_pricing.html' %}
@@ -90,8 +191,8 @@ id="page-top"
     $('.btn.btn-primary.btn-xl').click(function(){
 
       data = JSON.stringify({
-        email: $('#emailField').val(), 
-        password: $('#passwordField').val()
+        email: $('#fieldForEmail').val(), 
+        password: $('#fieldForPassword').val()
       })
 
       ajax('/signup', 'POST', data,
