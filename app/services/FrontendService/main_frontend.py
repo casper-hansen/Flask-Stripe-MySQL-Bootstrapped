@@ -45,7 +45,7 @@ def dashboard():
     notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
     notifactions_for_display = notifications[0:5]
 
-    variables = dict(email=current_user.email,
+    variables = dict(name=current_user.name,
                      expire_date=current_user.created_date + trial_period,
                      user_is_paying=sub_active,
                      notifications=notifactions_for_display,
@@ -65,7 +65,7 @@ def billing():
     notifactions_for_display = notifications[0:5]
     
     variables = dict(subscription_active=sub_active,
-                     email=current_user.email,
+                     name=current_user.name,
                      show_reactivate=show_reactivate,
                      subscription_cancelled_at=sub_cancelled_at,
                      subscription_data=sub_dict,
@@ -81,7 +81,7 @@ def notifications_center():
     unread = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
     notifactions_for_display = unread[0:5]
 
-    variables = dict(email=current_user.email,
+    variables = dict(name=current_user.name,
                      notifications=notifactions_for_display,
                      all_notifications=notifications,
                      n_messages=len(unread))

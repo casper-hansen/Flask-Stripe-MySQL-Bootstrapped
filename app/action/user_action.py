@@ -23,14 +23,16 @@ class UserAction():
         try:
             # Get data from AJAX request
             data = request.get_json(force=True)
+            
             email = data['email']
             password = data['password']
+            name = data['name']
 
             # Hash the password (store only the hash)
             pw_hash = generate_password_hash(password, 10)
 
             # Save user in database
-            new_user = self.User(email=email, password_hash=pw_hash)
+            new_user = self.User(name=name, email=email, password_hash=pw_hash)
 
             # Take the row spot
             self.db.session.add(new_user)
@@ -50,7 +52,7 @@ class UserAction():
             return json.dumps({'message':'/login_page'}), 200
         except IntegrityError as ex:
             self.db.session.rollback()
-            return json.dumps({'message':'Email already in use, tried logging in?'}), 403
+            return json.dumps({'message':'Email already registered'}), 403
         except Exception as ex:
             stacktrace = traceback.format_exc()
             print(stacktrace)
