@@ -9674,7 +9674,6 @@ header.masthead h1 {
   header.masthead {
     height: 100vh;
     min-height: 40rem;
-    padding-top: 72px;
     padding-bottom: 0;
   }
   header.masthead p {
