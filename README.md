@@ -3,17 +3,6 @@ This template is ready for scaling and is easy to deploy.
 
 ![Signup, Login and Stripe Demo!](demo/showcase.gif)
 
-# After Installation
-
-You can at any point login to your MySQL database, containing multiple databases.
-
-Currently, there is one database (UserDB) with one table (user).
-
-1. See login instructions in the installation section
-2. Once logged in, you can do `USE UserDB;`
-3. Then you can do `DESCRIBE user;`
-4. And you can also look at all your users `SELECT * FROM user;`
-
 # Technologies and features
 
 - [x] Python & Flask & MySQL Database
@@ -42,6 +31,17 @@ Currently, there is one database (UserDB) with one table (user).
 - Move on to upgrading/downgrading monthly and yearly plans
 - Add billing information (invoice date, description, amount, was it paid)
 - Variable builder
+
+# After Installation
+
+You can at any point login to your MySQL database, containing multiple databases.
+
+Currently, there is one database (UserDB) with one table (user).
+
+1. See login instructions in the installation section
+2. Once logged in, you can do `USE UserDB;`
+3. Then you can do `DESCRIBE user;`
+4. And you can also look at all your users `SELECT * FROM user;`
 
 # Installation
 

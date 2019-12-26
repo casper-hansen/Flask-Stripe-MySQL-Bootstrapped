@@ -116,7 +116,7 @@ id="page-top"
     });
 
     function registerUser(element, valid = false) {
-      if(valid == true || this.checkValidity() === true) {
+      if(valid == true || element.checkValidity() === true) {
         data = JSON.stringify({
           name: $('#fieldForName').val(),
           email: $('#fieldForEmail').val(), 

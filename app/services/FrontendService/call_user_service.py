@@ -9,7 +9,6 @@ user_api = Blueprint('user_api', __name__)
 @user_api.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json(force=True)
-    print(data)
 
     r = requests.post('http://localhost:5003/signup', json=data)
 
