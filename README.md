@@ -20,14 +20,16 @@ This template is ready for scaling and is easy to deploy.
 - [ ] Docker: Fully split into microservices with Docker (Gunicorn -> Flask)
 - [ ] Admin account: View feedback, logs, errors, etc.
 
+## Future Work
+
+The frontend was purposely *NOT* made into microservices, e.g. serving the front page and dashboard from two different services. If this app needs a heavy and larger frontend, I would advice to serve different pieces of frontend from different services (for *true* scaling). This should not be an issue at all, unless you add way more static files for serving - but even then, adding more nodes/pods into a Kubernetes service/deployment is probably more feasible. Martin Fowler has a [great article](https://martinfowler.com/articles/micro-frontends.html) on his website by Cam Jackson on exactly this issue.
+
+Another piece of advice would be to use separate databases for each service, instead of separate tables as of right now.
+
+![System Overview](demo/system-overview.png)
 
 ## Todo
 
-- Build the app into an actual architecture http://dev.nando.audio/2014/04/01/large_apps_with_sqlalchemy__architecture.html
-    - Which layers and what do they do?
-    - Unit/integration testing?
-    - Logging?
-    - Microservices?
 - Move on to upgrading/downgrading monthly and yearly plans
 - Add billing information (invoice date, description, amount, was it paid)
 - Variable builder
