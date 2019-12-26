@@ -10,6 +10,9 @@ import traceback
 import time
 from flask_bcrypt import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
+from data_access.user import UserAccess
+
+db_access = UserAccess()
 
 class UserAction():
     def __init__(self, db, app, User, Notifications, Stripe):
@@ -28,26 +31,9 @@ class UserAction():
             password = data['password']
             name = data['name']
 
-            # Hash the password (store only the hash)
-            pw_hash = generate_password_hash(password, 10)
-
-            # Save user in database
-            new_user = self.User(name=name, email=email, password_hash=pw_hash)
-
-            # Take the row spot
-            self.db.session.add(new_user)
-            self.db.session.flush()
-
-            # Make notification
-            new_notification = self.Notifications(user_id=new_user.id,
-                                                  color = 'success',
-                                                  icon = 'check-circle',
-                                                  message_preview = 'You are signed up! Thanks for joining this service.',
-                                                  message = 'You have successfully signed up!')
-            self.db.session.add(new_notification)
-
-            # Commit changes
-            self.db.session.commit()
+            db_access.create_user(email=email,
+                                    password=password,
+                                    name=name)
 
             return json.dumps({'message':'/login_page'}), 200
         except IntegrityError as ex:

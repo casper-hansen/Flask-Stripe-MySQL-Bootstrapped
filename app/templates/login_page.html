@@ -65,7 +65,9 @@ id="page-top"
                 </div>
                 <div id="output" class="pb-2 row align-items-center justify-content-center text-danger">{{ message }}</div>
                 <div class="form-group">
-                  <input type="submit" value="Login" class="btn btn-primary btn-user btn-block"/>
+                  <input type="submit" value="Login" class="btn btn-primary btn-user btn-block d-inline">
+                  {% include 'partials/spinner.html' %}
+                  </input>
                 </div>
 
               </form>
@@ -120,6 +122,8 @@ $(function(){
 
   // On button click, get data and make AJAX call
   $('.btn.btn-primary.btn-user.btn-block').click(function(){
+    $('#spinner').css("display", "flex")
+
     data = JSON.stringify({
       email: $('#exampleInputEmail').val(), 
       password: $('#exampleInputPassword').val()
@@ -137,6 +141,7 @@ $(function(){
               $('#output').html(json_obj.message);
             }
             else if (error.status == '500'){
+              $('#spinner').css("display", "none")
               json_obj = JSON.parse(error.responseText);
               $('#output').html(json_obj.message);
             }

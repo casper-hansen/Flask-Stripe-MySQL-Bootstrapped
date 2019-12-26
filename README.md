@@ -39,8 +39,6 @@ Another piece of advice would be to use separate databases for each service, ins
 
 You can at any point login to your MySQL database, containing multiple databases.
 
-Currently, there is one database (UserDB) with one table (user).
-
 1. See login instructions in the installation section
 2. Once logged in, you can do `USE UserDB;`
 3. Then you can do `DESCRIBE user;`
