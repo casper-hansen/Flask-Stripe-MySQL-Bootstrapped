@@ -12,8 +12,7 @@ static_dir = os.path.join(base_dir, 'static')
 base_template_dir = os.path.join(template_dir, 'base_templates')
 
 # Making the Flask app
-app = Flask(__name__, 
-            root_path=base_dir,
+app = Flask(__name__,
             static_url_path='', 
             static_folder=static_dir)
 
