@@ -30,6 +30,7 @@ Another piece of advice would be to use separate databases for each service, ins
 
 ## Todo
 
+- Make frontend service only access database through the other services
 - Move on to upgrading/downgrading monthly and yearly plans
 - Add billing information (invoice date, description, amount, was it paid)
 - Variable builder
