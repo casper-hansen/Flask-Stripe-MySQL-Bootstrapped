@@ -57,19 +57,13 @@ id="page-top"
                 <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
               </div>
               <form id="login-form" class="user" role="form">
-                <div class="form-group">
-                  <input type="email" name="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
-                </div>
-                <div class="form-group">
-                  <input type="password" name="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
-                </div>
+                <input type="email" name="email" required class="form-control form-control-user mb-2" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                <input type="password" name="password" required class="form-control form-control-user mb-2" id="exampleInputPassword" placeholder="Password">
                 <div id="output" class="pb-2 row align-items-center justify-content-center text-danger">{{ message }}</div>
-                <div class="form-group">
-                  <input type="submit" value="Login" class="btn btn-primary btn-user btn-block d-inline">
+                <button type="submit" class="btn btn-primary btn-lg btn-user btn-block d-inline">
+                  <div id="login-text">Login</div>
                   {% include 'partials/spinner.html' %}
-                  </input>
-                </div>
-
+                </button>
               </form>
               <hr>
               <div class="text-center">
@@ -120,34 +114,46 @@ $(function(){
     e.preventDefault();
   });
 
+  $('#login-form').keypress(function(e){
+      if(e.which == 13) {
+        if(this.checkValidity() === true) {
+          userLogin(this[0], true);
+          e.preventDefault();
+        }
+      }
+    });
+
   // On button click, get data and make AJAX call
   $('.btn.btn-primary.btn-user.btn-block').click(function(){
-    $('#spinner').css("display", "flex")
-
-    data = JSON.stringify({
-      email: $('#exampleInputEmail').val(), 
-      password: $('#exampleInputPassword').val()
-    });
-    
-    ajax('/login', 'POST', data,
-          function(response){
-            json_obj = JSON.parse(response);
-            url = json_obj.message;
-            window.location.replace(url);
-          },
-          function(error){
-            if (error.status == '401'){
-              json_obj = JSON.parse(error.responseText);
-              $('#output').html(json_obj.message);
-            }
-            else if (error.status == '500'){
-              $('#spinner').css("display", "none")
-              json_obj = JSON.parse(error.responseText);
-              $('#output').html(json_obj.message);
-            }
-          }
-    )
+    userLogin($('#login-form')[0]);
   });
+
+  function userLogin(element, valid = false) {
+    if(valid == true || element.checkValidity() === true) {
+      console.log('valid')
+      $('#login-text').css("display", "none");
+      $('#spinner').css("display", "flex")
+
+      data = JSON.stringify({
+        email: $('#exampleInputEmail').val(), 
+        password: $('#exampleInputPassword').val()
+      });
+      
+      ajax('/login', 'POST', data,
+        function(response){
+          json_obj = JSON.parse(response);
+          url = json_obj.message;
+          window.location.replace(url);
+        },
+        function(error){
+          $('#spinner').css("display", "none")
+          $('#login-text').css("display", "block");
+          json_obj = JSON.parse(error.responseText);
+          $('#output').html(json_obj.message);
+        }
+      )
+    }
+  }
 });
 </script>
 {% endblock %}

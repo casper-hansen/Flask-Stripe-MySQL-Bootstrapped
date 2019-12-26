@@ -48,8 +48,8 @@ id="page-top"
 
 <!-- Masthead -->
 <header class="masthead pb_cover_v3 overflow-hidden cover-bg-indigo cover-bg-opacity text-left pb_slant-light" id="section-home">
-    <div>
-      <div class="container h-100">
+    <div class="h-100">
+      <div class="container">
         <div class="row align-items-center justify-content-center">
           <div class="col-md-6 text-white" id="main_heading">
             <h2 class="heading mb-3">Flask + Stripe = Success</h2>
@@ -59,7 +59,7 @@ id="page-top"
             </div>
           </div>
           <div class="col-md-5 relative align-self-center shadow-lg">
-            <form id="signup-form" class="bg-white rounded" style="padding: 60px; box-shadow: 1px 11px 68px -20px rgba(0, 170, 248, 0.705);" 
+            <form id="signup-form" class="bg-white rounded"
                   autocomplete="no" id="signup-form" action="/signup" method="post">
                 <h2 class="mt-0 mb-0 text-center">Sign Up For</h2>
                 <h2 class="mb-4 mt-0 text-center">Free Trial</h2>
@@ -67,14 +67,21 @@ id="page-top"
                 <input type="email" name="email" class="form-control mb-2" required id="fieldForEmail" placeholder="Email" autocomplete="new-email">
                 <input type="password" name="password" class="form-control mb-2" type="password" name="password" required id="fieldForPassword" placeholder="Password" autocomplete="new-pass">
                 <div id="output" class="pb-2 row align-items-center justify-content-center text-danger font-weight-bold">{{ message }}</div>
-                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Register" autocomplete="new-submit">
-                {% include 'partials/spinner.html' %}
+                <button type="submit" class="btn btn-primary btn-lg btn-block" value="" autocomplete="new-submit">
+                  <div id="register-text">Register</div>
+                  {% include 'partials/spinner.html' %}
+                </button>
+                
             </form>
           </div>
       </div>
     </div>
 
     <style>
+      #signup-form {
+        padding: 60px; 
+        box-shadow: 1px 11px 68px -20px rgba(0, 170, 248, 0.705);
+      }
       @media(max-width: 768px) {
         #main_heading {
           text-align: center!important;
@@ -118,7 +125,8 @@ id="page-top"
 
     function registerUser(element, valid = false) {
       if(valid == true || element.checkValidity() === true) {
-        $('#spinner').css("display", "flex")
+        $('#register-text').css("display", "none");
+        $('#spinner').css("display", "flex");
         data = JSON.stringify({
           name: $('#fieldForName').val(),
           email: $('#fieldForEmail').val(), 
@@ -133,6 +141,7 @@ id="page-top"
             },
             function(error){
               $('#spinner').css("display", "none")
+              $('#register-text').css("display", "block");
               json_obj = JSON.parse(error.responseText);
               $('#output').html(json_obj.message);
             }
