@@ -11,7 +11,7 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..')
 sys.path.append(base_dir)
 
 # Import all the things
-from backend import app, db, User, Notifications, Stripe
+from setup_app import app, db, User, Notifications, Stripe
 from action.frontend_action import FrontendAction
 from call_notifications_service import notification_api
 from call_user_service import user_api

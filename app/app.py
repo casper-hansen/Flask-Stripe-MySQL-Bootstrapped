@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc, desc
 import stripe
 
-# Upon this import, backend/setup/__init__.py is run
+# Upon this import, setup_app/__init__.py is run
 from services.StripeService.stripe import app, db, User, Stripe, login_manager, csrf, stripe_api
 from helpers.app_helper import is_user_subscription_active, subscriptions_to_json
 from models.notifications import Notifications

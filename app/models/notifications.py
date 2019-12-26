@@ -1,4 +1,4 @@
-from backend import db
+from setup_app import db
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey, Text
 from sqlalchemy.sql import func

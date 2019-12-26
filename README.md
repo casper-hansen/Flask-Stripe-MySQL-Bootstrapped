@@ -50,7 +50,7 @@ Currently, there is one database (UserDB) with one table (user).
 3. Download and install MySQL server and run it
 - Windows: See Windows section below
 - Mac/Linux: See Mac and Linux section below
-4. Configure your connector in `backend/db_access.py`. I configured MySQL to run on port 5001, but the default port is 3306, which you can easily switch the port to in the code.
+4. Configure your connector in `app/setup_app/config.py`. I configured MySQL to run on port 5001, but the default port is 3306, which you can easily switch the port to in the code.
 
 ```python
 conn = connect(

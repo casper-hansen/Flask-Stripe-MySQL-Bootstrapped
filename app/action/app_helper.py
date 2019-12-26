@@ -1,5 +1,5 @@
 from flask_login import current_user
-from backend import Stripe
+from setup_app import Stripe
 import time
 from datetime import datetime
 import json
