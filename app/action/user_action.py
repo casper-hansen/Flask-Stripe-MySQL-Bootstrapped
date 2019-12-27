@@ -15,10 +15,7 @@ from data_access.user_db import UserAccess
 db_access = UserAccess()
 
 class UserAction():
-    def __init__(self, app, User, Notifications, Stripe):
-        self.User = User
-        self.Notifications = Notifications
-        self.Stripe = Stripe
+    def __init__(self, app):
         self.app = app
 
     def signup(self, request):

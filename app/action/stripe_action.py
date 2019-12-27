@@ -7,6 +7,9 @@ import sys
 import os
 from datetime import timedelta, datetime
 import traceback
+from data_access.stripe_db import StripeAccess
+
+db_access = StripeAccess()
 
 class StripeAction():
     def __init__(self, Stripe, db, app, User):
@@ -25,7 +28,8 @@ class StripeAction():
             # Find the plan id in the config file
             plan = self.app.config['STRIPE_PLAN_' + data['plan']]
 
-            stripe_obj = self.Stripe.query.filter_by(user_id=data['user_id']).first()
+            stripe_obj = db_access.get_stripe(user_id=data['user_id'])
+            
             user = self.User.query.filter_by(id=data['user_id']).first()
 
             customer_id = None
