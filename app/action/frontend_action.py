@@ -108,6 +108,7 @@ class FrontendAction():
         if r.status_code == 200:
             notification_json = json.loads(r.text)
 
+            # if array is filled with items (i.e. when array is not empty)
             if notification_json:
                 notification_obj = [SimpleNamespace(**noti) for noti in notification_json]
                 notifactions_for_display = notification_obj[0:5]
