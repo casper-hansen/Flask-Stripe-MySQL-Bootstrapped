@@ -14,7 +14,7 @@ class FrontendAction():
         self.Stripe = Stripe
         self.db = db
         self.app = app
-        self.stripe_service = 'http://localhost:' + app.config['STRIPE_PORT'] + '/'
+        self.stripe_service = 'http://127.0.0.1:' + app.config['STRIPE_PORT'] + '/'
 
     def is_user_subscription_active(self, billing_page = True):
         timestamp = time.time()
