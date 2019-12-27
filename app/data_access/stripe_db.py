@@ -17,7 +17,7 @@ class StripeAccess():
 
     def get_stripe(self, 
                     user_id=None, subscription_id=None, customer_id=None,
-                    get_all=False):
+                    get_all=False, as_dict=False):
         if user_id != None:
             stripe_obj = self.Stripe.query.filter_by(user_id=user_id)
         elif subscription_id != None:
@@ -26,9 +26,14 @@ class StripeAccess():
             stripe_obj = self.Stripe.query.filter_by(customer_id=customer_id)
 
         if get_all:
-            return stripe_obj.all()
+            stripe_obj = stripe_obj.all()
         else:
-            return stripe_obj.first()
+            stripe_obj = stripe_obj.first()
+        
+        if as_dict and stripe_obj != None:
+            return self.Stripe.as_dict(stripe_obj)
+        
+        return stripe_obj
 
     def stripe_obj_to_dict(self, stripe_obj):
         return {c.key: getattr(stripe_obj, c.key)

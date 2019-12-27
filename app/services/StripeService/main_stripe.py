@@ -161,5 +161,9 @@ def subscription_ended():
     '''
     return action.subscription_ended(request)
 
+@app.route("/get_active_subscription/<user_id>", methods=["GET"])
+def get_active_subscription(user_id):
+    return action.get_active_subscription(user_id)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=app.config['STRIPE_PORT'])

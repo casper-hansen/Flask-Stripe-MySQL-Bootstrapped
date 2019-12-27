@@ -1,15 +1,11 @@
 from flask import Flask, current_app
 from flask_login import current_user
 from sqlalchemy.exc import IntegrityError
-import stripe
-import json
-import sys
-import os
+import stripe, json, sys, os, traceback, time, requests
 from datetime import timedelta, datetime
-import traceback
-import time
 from flask_bcrypt import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
+from types import SimpleNamespace
 
 class FrontendAction():
     def __init__(self, db, app, User, Notifications, Stripe):
@@ -18,6 +14,7 @@ class FrontendAction():
         self.Stripe = Stripe
         self.db = db
         self.app = app
+        self.stripe_service = 'http://localhost:' + app.config['STRIPE_PORT'] + '/'
 
     def is_user_subscription_active(self, billing_page = True):
         timestamp = time.time()
@@ -26,7 +23,15 @@ class FrontendAction():
         show_reactivate = None
         sub_cancelled_at = None
 
-        stripe_obj = self.Stripe.query.filter_by(user_id=current_user.id, subscription_active=True).first()
+        # Get stripe object from stripe service
+        r = requests.get(self.stripe_service + 'get_active_subscription/' + str(current_user.id))
+        
+        if r.status_code == 404:
+            return sub_active, show_reactivate, sub_cancelled_at
+
+        stripe_json = json.loads(r.text)
+        stripe_obj = SimpleNamespace(**stripe_json)
+        print(stripe_obj)
 
         if stripe_obj != None:
             if stripe_obj.subscription_cancelled_at != None and timestamp < stripe_obj.subscription_cancelled_at:

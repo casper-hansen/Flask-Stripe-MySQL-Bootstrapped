@@ -1,4 +1,4 @@
-from flask import Flask, current_app
+from flask import Flask, current_app, jsonify
 from flask_login import current_user
 from sqlalchemy.exc import IntegrityError
 import stripe, json, sys, os, traceback, requests
@@ -208,6 +208,14 @@ class StripeAction():
             stacktrace = traceback.format_exc()
             print(stacktrace)
             return str(stacktrace), 500
+
+    def get_active_subscription(self, user_id):
+        stripe_obj = db_access.get_stripe(user_id=user_id, as_dict=True)
+
+        if stripe_obj != None:
+            return jsonify(stripe_obj), 200
+        else:
+            return json.dumps({'message':'User was not found'}), 404
 
     def _validate_stripe_data(self, request, webhook_from_config):
         '''
