@@ -11,7 +11,7 @@ db_access = StripeAccess()
 class StripeAction():
     def __init__(self, app):
         self.app = app
-        self.user_service = 'http://localhost:' + app.config['USER_PORT'] + '/'
+        self.user_service = 'http://127.0.0.1:' + app.config['USER_PORT'] + '/'
 
         stripe.api_key = app.config['STRIPE_SECRET_KEY']  
 

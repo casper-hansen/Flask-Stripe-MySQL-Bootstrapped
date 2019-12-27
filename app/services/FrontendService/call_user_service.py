@@ -10,7 +10,7 @@ user_api = Blueprint('user_api', __name__)
 def signup():
     data = request.get_json(force=True)
 
-    r = requests.post('http://localhost:5003/signup', json=data)
+    r = requests.post('http://127.0.0.1:5003/signup', json=data)
 
     return r.text, r.status_code
 
@@ -18,7 +18,7 @@ def signup():
 def login():
     data = request.get_json(force=True)
 
-    r = requests.post('http://localhost:5003/login', json=data)
+    r = requests.post('http://127.0.0.1:5003/login', json=data)
 
     if r.status_code == 200:
         user = User.query.filter_by(email=data['email']).first()

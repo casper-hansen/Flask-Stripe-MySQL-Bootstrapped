@@ -10,6 +10,6 @@ notification_api = Blueprint('notification_api', __name__)
 def notification_read():
     data = request.get_json(force=True)
 
-    r = requests.put('http://localhost:5002/notification_read', json=data)
+    r = requests.put('http://127.0.0.1:5002/notification_read', json=data)
 
     return r.text, r.status_code

@@ -27,7 +27,10 @@ class FrontendAction():
         r = requests.get(self.stripe_service + 'get_active_subscription/' + str(current_user.id))
         
         if r.status_code == 404:
-            return sub_active, show_reactivate, sub_cancelled_at
+            if billing_page:
+                return sub_active, show_reactivate, sub_cancelled_at
+            else:
+                return False
 
         stripe_json = json.loads(r.text)
         stripe_obj = SimpleNamespace(**stripe_json)
