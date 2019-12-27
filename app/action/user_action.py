@@ -1,4 +1,4 @@
-from flask import Flask, current_app
+from flask import Flask, current_app, jsonify
 from flask_login import current_user
 from sqlalchemy.exc import IntegrityError
 import stripe
@@ -47,6 +47,14 @@ class UserAction():
             stacktrace = traceback.format_exc()
             print(stacktrace)
             return json.dumps({'message':'Unknown error, we apologize'}), 500
+
+    def get_user_by_user_id(self, user_id):
+        user = db_access.get_user(id=user_id, as_dict=True)
+
+        if user != None:
+            return jsonify(user), 200
+        else:
+            return json.dumps({'message':'User was not found'}), 401
 
     def _check_user_data(self, user, password, email):
         # If user exists, check if email and password matches

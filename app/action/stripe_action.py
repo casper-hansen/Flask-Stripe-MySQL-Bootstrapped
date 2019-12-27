@@ -1,15 +1,13 @@
 from flask import Flask, current_app
 from flask_login import current_user
 from sqlalchemy.exc import IntegrityError
-import stripe
-import json
-import sys
-import os
+import stripe, json, sys, os, traceback, requests
 from datetime import timedelta, datetime
-import traceback
 from data_access.stripe_db import StripeAccess
+from types import SimpleNamespace
 
 db_access = StripeAccess()
+
 
 class StripeAction():
     def __init__(self, Stripe, db, app, User):
@@ -17,9 +15,10 @@ class StripeAction():
         self.User = User
         self.db = db
         self.app = app
+        self.user_service = 'http://localhost:' + app.config['USER_PORT'] + '/'
 
-        stripe.api_key = app.config['STRIPE_SECRET_KEY']
-    
+        stripe.api_key = app.config['STRIPE_SECRET_KEY']  
+
     def setup_payment(self, request):
         try:
             # Get the data from AJAX request
@@ -28,9 +27,16 @@ class StripeAction():
             # Find the plan id in the config file
             plan = self.app.config['STRIPE_PLAN_' + data['plan']]
 
+            # Get stripe obj from database
             stripe_obj = db_access.get_stripe(user_id=data['user_id'])
-            
-            user = self.User.query.filter_by(id=data['user_id']).first()
+
+            # Get user object from user service
+            r = requests.get(self.user_service + 'getuser/' + str(data['user_id']))
+            if r.status_code != 200:
+                return json.dumps({'message': 'something went wrong'})
+                
+            user_json = json.loads(r.text)
+            user = SimpleNamespace(**user_json)
 
             customer_id = None
             if stripe_obj != None and stripe_obj.customer_id != None:
@@ -65,7 +71,7 @@ class StripeAction():
     def cancel_subscription(self, request):
         try:
             data = request.get_json(force=True)
-            stripe_obj, is_present = self._is_subscription_id_present_in_user(data['user_id'], data['sub_id'])
+            stripe_id, is_present = self._is_subscription_id_present_in_user(data['user_id'], data['sub_id'])
 
             if not is_present:
                 return json.dumps({'message':'User does not have subscription id'}), 401
@@ -79,8 +85,8 @@ class StripeAction():
 
             timestamp = session['cancel_at']
             subscription_ends = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-            stripe_obj.subscription_cancelled_at = int(timestamp)
-            self.db.session.commit()
+            stripe_update = dict(subscription_cancelled_at=int(timestamp))
+            db_access.update_stripe_by_dict(stripe_id, stripe_update)
 
             variables = dict(message='Success. You unsubscribed and will not be billed anymore. Your subscription will last until ' + subscription_ends)
 
@@ -93,7 +99,7 @@ class StripeAction():
     def reactivate_subscription(self, request):
         try:
             data = request.get_json(force=True)
-            stripe_obj, is_present = self._is_subscription_id_present_in_user(data['user_id'], data['sub_id'])
+            stripe_id, is_present = self._is_subscription_id_present_in_user(data['user_id'], data['sub_id'])
 
             if not is_present:
                 return json.dumps({'message':'User does not have subscription id'}), 401
@@ -103,8 +109,8 @@ class StripeAction():
                 cancel_at_period_end=False
             )
 
-            stripe_obj.subscription_cancelled_at = None
-            self.db.session.commit()
+            stripe_update = dict(subscription_cancelled_at=None)
+            db_access.update_stripe_by_dict(stripe_id, stripe_update)
 
             variables = dict(message='Success. You will automatically be billed every month.')
 
@@ -301,11 +307,11 @@ class StripeAction():
             the provided subscription id.
             Returns the row in database where the subscription id exists
         '''
-        stripe_obj = self.Stripe.query.filter_by(user_id=user_id).all()
+        stripe_obj = db_access.get_stripe(user_id=user_id, get_all=True)
 
         # If the provided subscription id exists, return the row
         for row in stripe_obj:
             if row.subscription_id == sub_id:
-                return row, True
+                return row.id, True
             
         return None, False

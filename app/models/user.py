@@ -17,6 +17,9 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return 'id: '.join([str(id)])
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
     def update(self, **kwargs):
         for key, value in kwargs.items():
             if hasattr(self, key):

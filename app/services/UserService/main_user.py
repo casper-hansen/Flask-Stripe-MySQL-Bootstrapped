@@ -10,7 +10,7 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..')
 sys.path.append(base_dir)
 
 # Import all the things
-from setup_app import app, User, Notifications, Stripe
+from setup_app import app
 from action.user_action import UserAction
 
 action = UserAction(app)
@@ -52,6 +52,25 @@ def login():
         }
     '''
     return action.login(request)
+
+@app.route("/getuser/<user_id>", methods=["GET"])
+def get_user_by_user_id(user_id):
+    '''
+        Endpoint for getting a user by providing a user id.
+
+        Parameters
+        ----------
+        request : JSON data
+            Has to contain the user id.
+
+        Returns (JSON)
+        -------
+        {
+            message : string 
+                Returns the user object
+        }
+    '''
+    return action.get_user_by_user_id(user_id)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=app.config['USER_PORT'])

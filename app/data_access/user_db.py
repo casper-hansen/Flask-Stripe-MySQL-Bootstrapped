@@ -12,11 +12,17 @@ class UserAccess():
         self.User = User
         self.Notifications = Notifications
 
-    def get_user(self, id=None, email=None):
+    def get_user(self, id=None, email=None, as_dict=False):
         if id != None:
-            return self.User.query.filter_by(id=id).first()
+            user = self.User.query.filter_by(id=id).first()
+            
         elif email != None:
-            return self.User.query.filter_by(email=email).first()
+            user = self.User.query.filter_by(email=email).first()
+
+        if as_dict:
+            return self.User.as_dict(user)
+        else:
+            return user
 
     def create_user(self, email, password, name):
         try:
