@@ -10,11 +10,20 @@ class StripeAccess():
         self.db = db
         self.Stripe = Stripe
 
-    def get_stripe(self, user_id=None, subscription_id=None, get_all=False):
+    def create_stripe(self, stripe_dict):
+        stripe_row = self.Stripe(**stripe_dict)
+        self.db.session.add(stripe_row)
+        self.db.session.commit()
+
+    def get_stripe(self, 
+                    user_id=None, subscription_id=None, customer_id=None,
+                    get_all=False):
         if user_id != None:
             stripe_obj = self.Stripe.query.filter_by(user_id=user_id)
         elif subscription_id != None:
             stripe_obj = self.Stripe.query.filter_by(subscription_id=subscription_id)
+        elif customer_id != None:
+            stripe_obj = self.Stripe.query.filter_by(customer_id=customer_id)
 
         if get_all:
             return stripe_obj.all()

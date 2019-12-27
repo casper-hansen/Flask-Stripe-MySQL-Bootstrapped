@@ -72,5 +72,24 @@ def get_user_by_user_id(user_id):
     '''
     return action.get_user_by_user_id(user_id)
 
+@app.route("/getuser/email/<email>", methods=["GET"])
+def get_user_by_email(email):
+    '''
+        Endpoint for getting a user by providing a user id.
+
+        Parameters
+        ----------
+        request : JSON data
+            Has to contain the user id.
+
+        Returns (JSON)
+        -------
+        {
+            message : string 
+                Returns the user object
+        }
+    '''
+    return action.get_user_by_email(email)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=app.config['USER_PORT'])

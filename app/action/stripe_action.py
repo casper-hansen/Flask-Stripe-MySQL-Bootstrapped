@@ -8,12 +8,8 @@ from types import SimpleNamespace
 
 db_access = StripeAccess()
 
-
 class StripeAction():
-    def __init__(self, Stripe, db, app, User):
-        self.Stripe = Stripe
-        self.User = User
-        self.db = db
+    def __init__(self, app):
         self.app = app
         self.user_service = 'http://localhost:' + app.config['USER_PORT'] + '/'
 
@@ -128,7 +124,14 @@ class StripeAction():
             if data['type'] == 'checkout.session.completed':
                 # Find the data object and corresponding user
                 data_object = data['data']['object']
-                user = self.User.query.filter_by(email=data_object['customer_email']).first()
+                
+                # Get user object from user service
+                r = requests.get(self.user_service + 'getuser/email/' + data_object['customer_email'])
+                if r.status_code != 200:
+                    return json.dumps({'message': 'something went wrong'})
+                    
+                user_json = json.loads(r.text)
+                user = SimpleNamespace(**user_json)
 
                 if user != None:
                     # Get the stripe subscription
@@ -151,10 +154,7 @@ class StripeAction():
                                     current_period_end=current_period_end,
                                     subscription_cancelled_at=None)
 
-                    stripe_row = self.Stripe(**new_stripe)
-
-                    self.db.session.add(stripe_row)
-                    self.db.session.commit()
+                    db_access.create_stripe(new_stripe)
 
             return "", 200
         except IntegrityError:
@@ -191,11 +191,11 @@ class StripeAction():
             data_object = data['data']['object']
             if data_object['status'] == 'canceled':
                 sub_id = data_object['items']['data'][0]['subscription']
-                stripe_obj = self.Stripe.query.filter_by(subscription_id=sub_id).first()
+                stripe_obj = db_access.get_stripe(subscription_id=sub_id)
 
                 if stripe_obj != None:
-                    stripe_obj.subscription_active = False
-                    self.db.session.commit()
+                    stripe_update = dict(subscription_active=False)
+                    db_access.update_stripe_by_dict(stripe_obj.id, stripe_update)
 
                     return "", 200
                 else:
@@ -241,11 +241,11 @@ class StripeAction():
             if sub_id == None:
                 return "subscription_id was null", 402
 
-            stripe_obj = self.Stripe.query.filter_by(subscription_id=sub_id).first()
+            stripe_obj = db_access.get_stripe(subscription_id=sub_id)
             
             if stripe_obj != None:
                 # Find the new end of period
-                stripe_obj.current_period_end = data_object['lines']['data'][0]['period']['end']
+                stripe_update = dict(current_period_end=data_object['lines']['data'][0]['period']['end'])
 
                 # Get the payment method to setup the default payment method
                 pi = stripe.PaymentIntent.retrieve(data_object['payment_intent'])
@@ -258,7 +258,7 @@ class StripeAction():
                         invoice_settings={'default_payment_method': stripe_obj.payment_method_id}
                     )
 
-                self.db.session.commit()
+                db_access.update_stripe_by_dict(stripe_obj.id, stripe_update)
                 return "", 200
             else:
                 self._create_subscription_in_db(sub_id)
@@ -279,7 +279,7 @@ class StripeAction():
         customer_id = sub['customer']
 
         # Find the customer in db
-        stripe_obj = self.Stripe.query.filter_by(customer_id=customer_id).first()
+        stripe_obj = db_access.get_stripe(customer_id=customer_id)
 
         if stripe_obj != None:
             amount = sub['items']['data'][0]['plan']['amount']
@@ -296,10 +296,7 @@ class StripeAction():
                                 current_period_end=current_period_end,
                                 subscription_cancelled_at=None)
 
-            stripe_row = self.Stripe(**new_stripe)
-
-            self.db.session.add(stripe_row)
-            self.db.session.commit()
+            db_access.create_stripe(new_stripe)
 
     def _is_subscription_id_present_in_user(self, user_id, sub_id):
         '''

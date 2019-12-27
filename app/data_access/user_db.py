@@ -15,7 +15,6 @@ class UserAccess():
     def get_user(self, id=None, email=None, as_dict=False):
         if id != None:
             user = self.User.query.filter_by(id=id).first()
-            
         elif email != None:
             user = self.User.query.filter_by(email=email).first()
 
