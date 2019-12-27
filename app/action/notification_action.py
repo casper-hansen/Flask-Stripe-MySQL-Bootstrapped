@@ -1,13 +1,8 @@
-from flask import Flask, current_app
+from flask import Flask, current_app, jsonify
 from flask_login import current_user
 from sqlalchemy.exc import IntegrityError
-import stripe
-import json
-import sys
-import os
+import stripe, json, sys, os, traceback, time
 from datetime import timedelta, datetime
-import traceback
-import time
 from flask_bcrypt import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from data_access.notification_db import NotificationAccess
@@ -29,6 +24,19 @@ class NotificationAction():
             db_access.update_notification_by_dict(notification.id, notification_update)
 
             return json.dumps({'message':''}), 200
+        except Exception as ex:
+            stacktrace = traceback.format_exc()
+            print(stacktrace)
+            return json.dumps({'message':'Unknown error, we apologize'}), 500
+
+    def get_notifications(self, user_id):
+        try:
+            notification = db_access.get_notification(user_id=user_id, get_all=True, as_dict=True)
+
+            if notification != None:
+                return jsonify(notification), 200
+            else:
+                return json.dumps({'message':'Notification was not found'}), 404
         except Exception as ex:
             stacktrace = traceback.format_exc()
             print(stacktrace)

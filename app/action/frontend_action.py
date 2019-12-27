@@ -15,6 +15,7 @@ class FrontendAction():
         self.db = db
         self.app = app
         self.stripe_service = 'http://127.0.0.1:' + app.config['STRIPE_PORT'] + '/'
+        self.notifications_service = 'http://127.0.0.1:' + app.config['NOTIFICATION_PORT'] + '/'
 
     def is_user_subscription_active(self, billing_page = True):
         timestamp = time.time()
@@ -34,7 +35,6 @@ class FrontendAction():
 
         stripe_json = json.loads(r.text)
         stripe_obj = SimpleNamespace(**stripe_json)
-        print(stripe_obj)
 
         if stripe_obj != None:
             if stripe_obj.subscription_cancelled_at != None and timestamp < stripe_obj.subscription_cancelled_at:
@@ -102,10 +102,21 @@ class FrontendAction():
         return return_arr
 
     def get_notifications(self, user_id):
-        notifications = self.Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(self.Notifications.created_date.desc()).all()
-        notifactions_for_display = notifications[0:5]
+        # Get stripe object from stripe service
+        r = requests.get(self.notifications_service + 'get_notifications/' + str(current_user.id))
+        
+        if r.status_code == 200:
+            notification_json = json.loads(r.text)
 
-        return notifications, notifactions_for_display
+            if notification_json:
+                notification_obj = [SimpleNamespace(**noti) for noti in notification_json]
+                notifactions_for_display = notification_obj[0:5]
+
+                return notification_obj, notifactions_for_display
+            else:
+                return [], []
+        else:
+            return '', ''
 
     def get_all_notifications_by_user_id(self, user_id):
         notifications = self.Notifications.query.filter_by(user_id=user_id).order_by(self.Notifications.created_date.desc()).all()

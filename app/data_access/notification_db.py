@@ -5,14 +5,21 @@ class NotificationAccess():
         self.db = db
         self.Notification = Notifications
 
-    def get_notification(self, noti_id=None, get_all=False):
-        if noti_id != None:
+    def get_notification(self, user_id=None, noti_id=None, get_all=False, as_dict=False):
+        if user_id != None:
+            noti_obj = self.Notification.query.filter_by(user_id=user_id, isRead=False).order_by(self.Notification.created_date.desc())
+        elif noti_id != None:
             noti_obj = self.Notification.query.filter_by(id=noti_id)
 
         if get_all:
-            return noti_obj.all()
+            noti_obj = noti_obj.all()
         else:
-            return noti_obj.first()
+            noti_obj = noti_obj.first()
+
+        if as_dict and noti_obj != None:
+            return [self.Notification.as_dict(noti) for noti in noti_obj]
+        
+        return noti_obj
     
     def create_notification(self, notification_dict):
         notification_row = self.Notification(**notification_dict)
