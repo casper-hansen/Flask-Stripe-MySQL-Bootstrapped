@@ -10,10 +10,10 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..')
 sys.path.append(base_dir)
 
 # Import all the things
-from setup_app import app, db, User, Notifications, Stripe
+from setup_app import app, User, Notifications, Stripe
 from action.user_action import UserAction
 
-action = UserAction(db, app, User, Notifications, Stripe)
+action = UserAction(app, User, Notifications, Stripe)
 
 @app.route("/signup", methods=["POST"])
 def signup():
