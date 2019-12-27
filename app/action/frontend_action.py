@@ -92,3 +92,19 @@ class FrontendAction():
             return_arr.append(new_dict)
 
         return return_arr
+
+    def get_notifications(self, user_id):
+        notifications = self.Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(self.Notifications.created_date.desc()).all()
+        notifactions_for_display = notifications[0:5]
+
+        return notifications, notifactions_for_display
+
+    def get_all_notifications_by_user_id(self, user_id):
+        notifications = self.Notifications.query.filter_by(user_id=user_id).order_by(self.Notifications.created_date.desc()).all()
+
+        return notifications
+
+    def get_all_stripe_subscriptions_by_user_id(self, user_id):
+        subs = self.Stripe.query.filter_by(user_id=current_user.id).all()
+
+        return subs

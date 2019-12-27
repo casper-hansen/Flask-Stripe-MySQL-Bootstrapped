@@ -42,13 +42,12 @@ def dashboard():
 
     sub_active = action.is_user_subscription_active(False)
 
-    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
-    notifactions_for_display = notifications[0:5]
+    notifications, notifications_for_display = action.get_notifications(current_user.id)
 
     variables = dict(name=current_user.name,
                      expire_date=current_user.created_date + trial_period,
                      user_is_paying=sub_active,
-                     notifications=notifactions_for_display,
+                     notifications=notifications_for_display,
                      n_messages=len(notifications))
     
     return render_template('dashboard.html', **variables)
@@ -57,19 +56,18 @@ def dashboard():
 @login_required
 def billing():
     sub_active, show_reactivate, sub_cancelled_at = action.is_user_subscription_active()
-    stripe_obj = Stripe.query.filter_by(user_id=current_user.id).all()
+    stripe_objs = action.get_all_stripe_subscriptions_by_user_id(current_user.id)
 
-    sub_dict = action.subscriptions_to_json(stripe_obj)
+    sub_dict = action.subscriptions_to_json(stripe_objs)
 
-    notifications = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
-    notifactions_for_display = notifications[0:5]
+    notifications, notifications_for_display = action.get_notifications(current_user.id)
     
     variables = dict(subscription_active=sub_active,
                      name=current_user.name,
                      show_reactivate=show_reactivate,
                      subscription_cancelled_at=sub_cancelled_at,
                      subscription_data=sub_dict,
-                     notifications=notifactions_for_display,
+                     notifications=notifications_for_display,
                      n_messages=len(notifications))
     
     return render_template('billing.html', **variables)
@@ -77,14 +75,13 @@ def billing():
 @app.route("/notifications")
 @login_required
 def notifications_center():
-    notifications = Notifications.query.filter_by(user_id=current_user.id).order_by(Notifications.created_date.desc()).all()
-    unread = Notifications.query.filter_by(user_id=current_user.id, isRead=False).order_by(Notifications.created_date.desc()).all()
-    notifactions_for_display = unread[0:5]
+    all_notifications = action.get_all_notifications_by_user_id(current_user.id)
+    notifications, notifications_for_display = action.get_notifications(current_user.id)
 
     variables = dict(name=current_user.name,
-                     notifications=notifactions_for_display,
-                     all_notifications=notifications,
-                     n_messages=len(unread))
+                     notifications=notifications_for_display,
+                     all_notifications=all_notifications,
+                     n_messages=len(notifications))
 
     return render_template('notifications.html', **variables)
 
