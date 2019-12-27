@@ -5,11 +5,21 @@ class NotificationAccess():
         self.db = db
         self.Notification = Notifications
 
-    def get_notification(self, user_id=None, noti_id=None, get_all=False, as_dict=False):
+    def get_notification(self, user_id=None, noti_id=None, is_read=[False, False], get_all=False, as_dict=False):
+        '''
+            is_read[0] : if you want to use isRead as a filter
+            is_read[1] : if you want isRead to be true or false
+        '''
         if user_id != None:
-            noti_obj = self.Notification.query.filter_by(user_id=user_id, isRead=False).order_by(self.Notification.created_date.desc())
+            if is_read[0]:
+                noti_obj = self.Notification.query.filter_by(user_id=user_id, isRead=is_read[1]).order_by(self.Notification.created_date.desc())
+            else:
+               noti_obj = self.Notification.query.filter_by(user_id=user_id).order_by(self.Notification.created_date.desc())
         elif noti_id != None:
-            noti_obj = self.Notification.query.filter_by(id=noti_id)
+            if is_read[0]:
+                noti_obj = self.Notification.query.filter_by(id=noti_id, isRead=is_read[1])
+            else:
+               noti_obj = self.Notification.query.filter_by(id=noti_id)
 
         if get_all:
             noti_obj = noti_obj.all()

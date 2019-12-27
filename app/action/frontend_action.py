@@ -103,7 +103,7 @@ class FrontendAction():
 
     def get_notifications(self, user_id):
         # Get stripe object from stripe service
-        r = requests.get(self.notifications_service + 'get_notifications/' + str(current_user.id))
+        r = requests.get(self.notifications_service + 'get_unread_notifications/' + str(current_user.id))
         
         if r.status_code == 200:
             notification_json = json.loads(r.text)
