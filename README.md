@@ -26,7 +26,9 @@ The frontend was purposely *NOT* made into microservices, e.g. serving the front
 
 Another piece of advice would be to use separate databases for each service, instead of separate tables as of right now.
 
-![System Overview](demo/system-overview.png)
+This is a simple overview of the system. Go to the app folder and see the technical README for a more detailed overview.
+
+![System Overview](demo/simple-system-overview.png)
 
 ## Todo
 
