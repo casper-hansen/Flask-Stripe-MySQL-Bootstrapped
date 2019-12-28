@@ -209,10 +209,19 @@ class StripeAction():
             print(stacktrace)
             return str(stacktrace), 500
 
-    def get_active_subscription(self, user_id):
-        stripe_obj = db_access.get_stripe(user_id=user_id, as_dict=True)
+    def get_subscriptions(self, user_id, get_all=False):
+        stripe_obj = db_access.get_stripe(user_id=user_id, as_dict=True, get_all=get_all)
 
         if stripe_obj != None:
+            return jsonify(stripe_obj), 200
+        else:
+            return json.dumps({'message':'User was not found'}), 404
+
+    def get_active_subscription(self, user_id):
+        stripe_obj = db_access.get_stripe(user_id=user_id, as_dict=True, only_active=True)
+
+        if stripe_obj != None:
+            print(stripe_obj)
             return jsonify(stripe_obj), 200
         else:
             return json.dumps({'message':'User was not found'}), 404

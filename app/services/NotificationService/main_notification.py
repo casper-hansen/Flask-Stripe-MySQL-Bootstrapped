@@ -18,9 +18,13 @@ action = NotificationAction(app)
 def notification_read():
     return action.notification_read(request)
 
-@app.route("/get_unread_notifications/<user_id>", methods=["GET"])
+@app.route("/get_notifications/<user_id>", methods=["GET"])
 def get_notifications(user_id):
     return action.get_notifications(user_id)
+
+@app.route("/get_unread_notifications/<user_id>", methods=["GET"])
+def get_unread_notifications(user_id):
+    return action.get_unread_notifications(user_id)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=app.config['NOTIFICATION_PORT'])

@@ -11,7 +11,7 @@ base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..')
 sys.path.append(base_dir)
 
 # Import all the things
-from setup_app import app, db, User, Notifications, Stripe
+from setup_app import app
 from action.frontend_action import FrontendAction
 from call_notifications_service import notification_api
 from call_user_service import user_api
@@ -22,7 +22,7 @@ app.register_blueprint(notification_api)
 app.register_blueprint(user_api)
 app.register_blueprint(stripe_api)
 
-action = FrontendAction(db, app, User, Notifications, Stripe)
+action = FrontendAction(app)
 
 @app.route("/")
 def home():
@@ -42,7 +42,7 @@ def dashboard():
 
     sub_active = action.is_user_subscription_active(False)
 
-    notifications, notifications_for_display = action.get_notifications(current_user.id)
+    notifications, notifications_for_display = action.get_unread_notifications(current_user.id)
 
     variables = dict(name=current_user.name,
                      expire_date=current_user.created_date + trial_period,
@@ -60,7 +60,7 @@ def billing():
 
     sub_dict = action.subscriptions_to_json(stripe_objs)
 
-    notifications, notifications_for_display = action.get_notifications(current_user.id)
+    notifications, notifications_for_display = action.get_unread_notifications(current_user.id)
     
     variables = dict(subscription_active=sub_active,
                      name=current_user.name,
@@ -76,7 +76,7 @@ def billing():
 @login_required
 def notifications_center():
     all_notifications = action.get_all_notifications_by_user_id(current_user.id)
-    notifications, notifications_for_display = action.get_notifications(current_user.id)
+    notifications, notifications_for_display = action.get_unread_notifications(current_user.id)
 
     variables = dict(name=current_user.name,
                      notifications=notifications_for_display,

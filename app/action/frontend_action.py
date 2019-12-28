@@ -8,11 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from types import SimpleNamespace
 
 class FrontendAction():
-    def __init__(self, db, app, User, Notifications, Stripe):
-        self.User = User
-        self.Notifications = Notifications
-        self.Stripe = Stripe
-        self.db = db
+    def __init__(self, app):
         self.app = app
         self.stripe_service = 'http://127.0.0.1:' + app.config['STRIPE_PORT'] + '/'
         self.notifications_service = 'http://127.0.0.1:' + app.config['NOTIFICATION_PORT'] + '/'
@@ -32,7 +28,7 @@ class FrontendAction():
                 return sub_active, show_reactivate, sub_cancelled_at
             else:
                 return False
-
+        
         stripe_json = json.loads(r.text)
         stripe_obj = SimpleNamespace(**stripe_json)
 
@@ -101,7 +97,7 @@ class FrontendAction():
 
         return return_arr
 
-    def get_notifications(self, user_id):
+    def get_unread_notifications(self, user_id):
         # Get stripe object from stripe service
         r = requests.get(self.notifications_service + 'get_unread_notifications/' + str(current_user.id))
         
@@ -120,11 +116,23 @@ class FrontendAction():
             return '', ''
 
     def get_all_notifications_by_user_id(self, user_id):
-        notifications = self.Notifications.query.filter_by(user_id=user_id).order_by(self.Notifications.created_date.desc()).all()
+        r = requests.get(self.notifications_service + 'get_notifications/' + str(current_user.id))
 
-        return notifications
+        if r.status_code == 200:
+            notification_json = json.loads(r.text)
+            notification_obj = [SimpleNamespace(**noti) for noti in notification_json]
+
+            return notification_obj
+        else:
+            return []
 
     def get_all_stripe_subscriptions_by_user_id(self, user_id):
-        subs = self.Stripe.query.filter_by(user_id=current_user.id).all()
+        r = requests.get(self.stripe_service + 'get_all_stripe_subscriptions/' + str(current_user.id))
+        print(r.text)
+        if r.status_code == 200:
+            notification_json = json.loads(r.text)
+            notification_obj = [SimpleNamespace(**noti) for noti in notification_json]
 
-        return subs
+            return notification_obj
+        else:
+            return []

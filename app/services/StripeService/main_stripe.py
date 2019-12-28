@@ -161,6 +161,10 @@ def subscription_ended():
     '''
     return action.subscription_ended(request)
 
+@app.route("/get_all_stripe_subscriptions/<user_id>", methods=["GET"])
+def get_all_stripe_subscriptions(user_id):
+    return action.get_subscriptions(user_id, get_all=True)
+
 @app.route("/get_active_subscription/<user_id>", methods=["GET"])
 def get_active_subscription(user_id):
     return action.get_active_subscription(user_id)
