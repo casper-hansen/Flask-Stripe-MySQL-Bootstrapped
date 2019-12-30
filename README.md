@@ -37,14 +37,15 @@ This is a simple overview of the system. Go to the app folder and see the techni
 - Add billing information (invoice date, description, amount, was it paid)
 - Variable builder
 
-# After Installation
+# How To Run The Application (After Installation, See Below)
 
-You can at any point login to your MySQL database, containing multiple databases.
+1. Run the docker containers, for an example:
 
-1. See login instructions in the installation section
-2. Once logged in, you can do `USE UserDB;`
-3. Then you can do `DESCRIBE user;`
-4. And you can also look at all your users `SELECT * FROM user;`
+```
+cd ~/app
+docker build -t test:0.1 -f services/FrontendService/Dockerfile .
+docker run -it -d -p 5000:5000 9a6aef873074
+```
 
 # Installation
 
@@ -54,15 +55,7 @@ You can at any point login to your MySQL database, containing multiple databases
 - Windows: See Windows section below
 - Mac/Linux: See Mac and Linux section below
 4. Configure your connector in `app/setup_app/config.py`. I configured MySQL to run on port 5001, but the default port is 3306, which you can easily switch the port to in the code.
-
-```python
-conn = connect(
-    host="localhost",
-    port='3306',
-    user="root",
-    passwd="rootpw"
-)
-```
+5. Install Docker
 
 ## Windows
 
@@ -101,6 +94,6 @@ You can always restart or stop the service, e.g. if the service is running and y
 - `brew services restart mysql`
 - `brew services stop mysql`
 
-### Login to MySQL database
+### Login to MySQL database from Mac and Linux
 
 Type in `mysqladmin -u root -p` and press enter. It will ask for your password, then you are in.

@@ -1,4 +1,4 @@
-MODE='Live'
+MODE='Debug'
 
 if MODE == 'Live':
     MYSQL_HOST="host.docker.internal"
