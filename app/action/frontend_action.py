@@ -128,7 +128,7 @@ class FrontendAction():
 
     def get_all_stripe_subscriptions_by_user_id(self, user_id):
         r = requests.get(self.stripe_service + 'get_all_stripe_subscriptions/' + str(current_user.id))
-        print(r.text)
+        
         if r.status_code == 200:
             notification_json = json.loads(r.text)
             notification_obj = [SimpleNamespace(**noti) for noti in notification_json]

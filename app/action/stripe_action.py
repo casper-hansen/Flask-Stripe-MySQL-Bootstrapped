@@ -221,7 +221,6 @@ class StripeAction():
         stripe_obj = db_access.get_stripe(user_id=user_id, as_dict=True, only_active=True)
 
         if stripe_obj != None:
-            print(stripe_obj)
             return jsonify(stripe_obj), 200
         else:
             return json.dumps({'message':'User was not found'}), 404

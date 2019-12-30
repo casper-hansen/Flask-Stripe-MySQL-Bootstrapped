@@ -19,7 +19,6 @@ class NotificationAction():
             noti_id = data['noti_id']
 
             notification = db_access.get_notification(noti_id=noti_id)
-            print(notification)
 
             notification_update = dict(isRead=True)
             db_access.update_notification_by_dict(notification.id, notification_update)
