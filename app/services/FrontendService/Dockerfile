@@ -1,17 +1,19 @@
+# Your current directory must be in /app
+# docker build -t test:0.1 -f services/FrontendService/Dockerfile .
 FROM python:3.7
 
-COPY ./../../../requirements.txt /app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
 WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-ADD ./../../setup_app /setup_app
-ADD ./../../models /models
-ADD ./../../static /static
-ADD ./../../templates /templates
-ADD ./../FrontendService /services/FrontendService
-ADD ./../../action/frontend_action.py /action/frontend_action.py
+ADD ./setup_app /setup_app
+ADD ./models /models
+ADD ./static /static
+ADD ./templates /templates
+ADD ./services/FrontendService /services/FrontendService
+ADD ./action/frontend_action.py /action/frontend_action.py
 
 WORKDIR /services/FrontendService
 
