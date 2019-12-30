@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  frontend:
+    image: frontend:0.2
+    build:
+      context: .
+      dockerfile: ./services/FrontendService/Dockerfile
+    ports:
+      - "5000:5000"
+  notification:
+    image: notification:0.2
+    build:   
+      context: .
+      dockerfile: './services/NotificationService/Dockerfile'
+    ports:
+      - "5002:5002"
+  user:
+    image: user:0.2
+    build: 
+      context: .
+      dockerfile: './services/UserService/Dockerfile'
+    ports:
+      - "5003:5003"
+  stripe:
+    image: stripe:0.2
+    build:   
+      context: .
+      dockerfile: './services/StripeService/Dockerfile'
+    ports:
+      - "5004:5004"
