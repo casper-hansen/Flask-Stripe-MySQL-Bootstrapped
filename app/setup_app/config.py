@@ -1,13 +1,21 @@
+MODE='Live'
+
+if MODE == 'Live':
+    MYSQL_HOST="host.docker.internal"
+else:
+    MYSQL_HOST="localhost"
+
+MYSQL_PORT='5001'
+MYSQL_USER="root"
+MYSQL_PASSWORD="rootpw"
+MYSQL_DB_NAME="UserDB"
+
 DEBUG=True
 TRIAL_LENGTH_DAYS=1
 SQLALCHEMY_TRACK_MODIFICATIONS=False
 PROTOCOL='http'
 BASE_URL='localhost:5000'
-MYSQL_HOST="localhost"
-MYSQL_PORT='5001'
-MYSQL_USER="root"
-MYSQL_PASSWORD="rootpw"
-MYSQL_DB_NAME="UserDB"
+
 SECRET_KEY='super secret string'
 STRIPE_PLAN_STARTER='plan_GLXg9InyA37U3l'
 STRIPE_PLAN_GROWTH='plan_GLXgiOgfPpscMY'
