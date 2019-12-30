@@ -10,8 +10,8 @@ from types import SimpleNamespace
 class FrontendAction():
     def __init__(self, app):
         self.app = app
-        self.stripe_service = 'http://127.0.0.1:' + app.config['STRIPE_PORT'] + '/'
-        self.notifications_service = 'http://127.0.0.1:' + app.config['NOTIFICATION_PORT'] + '/'
+        self.stripe_service = 'http://' + self.app.config['BASE_URL'] + ':' + app.config['STRIPE_PORT'] + '/'
+        self.notifications_service = 'http://' + self.app.config['BASE_URL'] + ':' + app.config['NOTIFICATION_PORT'] + '/'
 
     def is_user_subscription_active(self, billing_page = True):
         timestamp = time.time()

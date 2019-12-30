@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, request
+from flask import Flask, Blueprint, request, current_app
 from flask_login import current_user, login_required
 from models.stripe import Stripe, db
 import json, requests
@@ -11,7 +11,7 @@ def setup_payment():
     data = request.get_json(force=True)
     data['user_id'] = current_user.id
 
-    r = requests.post('http://127.0.0.1:5004/setup_payment', json=data)
+    r = requests.post('http://' +  + current_app.config['BASE_URL'] + ':5004/setup_payment', json=data)
 
     return r.text, r.status_code
 
@@ -21,7 +21,7 @@ def cancel_subscription():
     data = request.get_json(force=True)
     data['user_id'] = current_user.id
 
-    r = requests.put('http://127.0.0.1:5004/cancel_subscription', json=data)
+    r = requests.put('http://' +  + current_app.config['BASE_URL'] + ':5004/cancel_subscription', json=data)
 
     return r.text, r.status_code
 
@@ -31,6 +31,6 @@ def reactivate_subscription():
     data = request.get_json(force=True)
     data['user_id'] = current_user.id
 
-    r = requests.put('http://127.0.0.1:5004/reactivate_subscription', json=data)
+    r = requests.put('http://' +  + current_app.config['BASE_URL'] + ':5004/reactivate_subscription', json=data)
 
     return r.text, r.status_code

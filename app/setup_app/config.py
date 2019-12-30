@@ -2,8 +2,12 @@ MODE='Debug'
 
 if MODE == 'Live':
     MYSQL_HOST="host.docker.internal"
+    BASE_URL='host.docker.internal'
 else:
     MYSQL_HOST="localhost"
+    BASE_URL='localhost:5000'
+
+BASE_PORT = ':5000'
 
 MYSQL_PORT='5001'
 MYSQL_USER="root"
@@ -14,7 +18,6 @@ DEBUG=True
 TRIAL_LENGTH_DAYS=1
 SQLALCHEMY_TRACK_MODIFICATIONS=False
 PROTOCOL='http'
-BASE_URL='localhost:5000'
 
 SECRET_KEY='super secret string'
 STRIPE_PLAN_STARTER='plan_GLXg9InyA37U3l'
