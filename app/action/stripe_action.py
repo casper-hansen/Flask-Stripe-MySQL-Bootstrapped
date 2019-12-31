@@ -119,7 +119,7 @@ class StripeAction():
     def succesful_payment(self, request):
         try:
             # Validate if the request is a valid request received from Stripe
-            data = self._validate_stripe_data(request, 'WEBHOOK_SUBSCRIPTION_SUCCESS')
+            data = self._validate_stripe_data(request, 'WEBHOOK_CHECKOUT_SESSION_COMPLETED')
 
             if data['type'] == 'checkout.session.completed':
                 # Find the data object and corresponding user
@@ -170,7 +170,7 @@ class StripeAction():
 
     def invoice_paid(self, request):
         try:
-            data = self._validate_stripe_data(request, 'WEBHOOK_NEW_INVOICE')
+            data = self._validate_stripe_data(request, 'WEBHOOK_INVOICE_PAYMENT_SUCCEEDED')
             return self._update_subscription_when_paid(data)
 
         except IntegrityError:
@@ -186,7 +186,7 @@ class StripeAction():
 
     def subscription_ended(self, request):
         try:
-            data = self._validate_stripe_data(request, 'WEBHOOK_SUBSCRIPTION_ENDED')
+            data = self._validate_stripe_data(request, 'WEBHOOK_CUSTOMER_SUBSCRIPTION_DELETED')
 
             data_object = data['data']['object']
             if data_object['status'] == 'canceled':

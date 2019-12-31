@@ -50,7 +50,7 @@ You should make sure that your database is running first and foremost, else the 
 2. Run `docker-compose build` for your first build and when you have made changes.
 3. Run `docker-compose up` to run all the services.
 
-But this is not all, if you wish to use this template, you must get change the config from the default values. You can find the config file in `~/app/setup_app/config.py`. I recommend making a mode for development and production (staging if necessary) with all the needed credentials. The file is very easy to extend with new config secrets.
+Please configure `~/app/setup_app/config.py` as needed. I recommend making a mode for development and production (staging if necessary) with all the needed credentials. The file is very easy to extend with new config secrets.
 
 Note that scaling is very easy, you can just convert your `docker-compose.yml` file to Kubernetes files, and you can easily get set up and running in Google Cloud Platform or Amazon Web Services. [Read this tutorial for more](https://kubernetes.io/docs/tasks/configure-pod-container/translate-compose-kubernetes/).
 
