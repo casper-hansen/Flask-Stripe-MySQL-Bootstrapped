@@ -8,6 +8,7 @@ This template is ready for scaling and is easy to deploy.
 - [x] Python & Flask & MySQL Database
 - [x] Stripe Subscriptions (Create, Cancel, Reactivate, Update supported)
 - [x] Bootstrapped theme [Creative](https://startbootstrap.com/themes/creative/) and [SB Admin 2](https://startbootstrap.com/themes/sb-admin-2/)
+- [x] Docker: Fully split into microservices. Runs with Docker Compose, but can **[easily be translated to Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/translate-compose-kubernetes/)**
 - [x] User sign up and login (Facebook & Google integration in progress)
 - [x] 3 Pricing Tiers included (Starter, Growth, Scale)
 - [x] Base templates: Index, Dashboard and Pages
@@ -17,14 +18,19 @@ This template is ready for scaling and is easy to deploy.
 - [ ] Feedback button: Easily gather feedback from users
 - [ ] Email validation
 - [ ] Multiprocessing with Gunicorn, for SQLAlchemy and MySQL
-- [ ] Docker: Fully split into microservices with Docker (Gunicorn -> Flask)
 - [ ] Admin account: View feedback, logs, errors, etc.
 
 ## Future Work
 
-The frontend was purposely *NOT* made into microservices, e.g. serving the front page and dashboard from two different services. If this app needs a heavy and larger frontend, I would advice to serve different pieces of frontend from different services (for *true* scaling). This should not be an issue at all, unless you add way more static files for serving - but even then, adding more nodes/pods into a Kubernetes service/deployment is probably more feasible. Martin Fowler has a [great article](https://martinfowler.com/articles/micro-frontends.html) on his website by Cam Jackson on exactly this issue.
+1. Scaling the frontend.
 
-Another piece of advice would be to use separate databases for each service, instead of separate tables as of right now.
+Check out Martin Fowler's website with this [great article](https://martinfowler.com/articles/micro-frontends.html) by Cam Jackson on splitting your frontend into microservices. Probably not necessary for most (99%), but consider it.
+
+2. Scaling the databases
+
+Start separating into databases instead of tables; right now, there exists one table for each service. You should definitely think about scaling the database, a cloud option is a great option here.
+
+## System Overview
 
 This is a simple overview of the system. Go to the app folder and see the technical README for a more detailed overview.
 
@@ -32,22 +38,23 @@ This is a simple overview of the system. Go to the app folder and see the techni
 
 ## Todo
 
-- Make frontend service only access database through the other services
 - Move on to upgrading/downgrading monthly and yearly plans
 - Add billing information (invoice date, description, amount, was it paid)
 - Variable builder
 
-# How To Run The Application (After Installation, See Below)
+# How To Run The Application (After Installation)
 
-1. Run the docker containers, for an example:
+You should make sure that your database is running first and foremost, else the following will fail. Look under installation for Windows or Mac/Linux for how to run the database locally. It just needs to be running in the background, all the databases and tables are created programmatically.
 
-```
-cd ~/app
-docker build -t test:0.1 -f services/FrontendService/Dockerfile .
-docker run -it -d -p 5000:5000 9a6aef873074
-```
+1. Simply navigate (in a terminal) into the ~/app folder.
+2. Run `docker-compose build` for your first build and when you have made changes.
+3. Run `docker-compose up` to run all the services.
 
-# Installation
+But this is not all, if you wish to use this template, you must get change the config from the default values. You can find the config file in `~/app/setup_app/config.py`. I recommend making a mode for development and production (staging if necessary) with all the needed credentials. The file is very easy to extend with new config secrets.
+
+Note that scaling is very easy, you can just convert your `docker-compose.yml` file to Kubernetes files, and you can easily get set up and running in Google Cloud Platform or Amazon Web Services. [Read this tutorial for more](https://kubernetes.io/docs/tasks/configure-pod-container/translate-compose-kubernetes/).
+
+# Installation (Development)
 
 1. Install Python (3.7 was used for this project)
 2. Install the package requirements `pip install -r requirements.txt`

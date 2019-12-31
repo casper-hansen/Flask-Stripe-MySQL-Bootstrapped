@@ -1,6 +1,7 @@
-MODE='Live'
+MODE='Testing'
 
-if MODE == 'Live':
+if MODE == 'Testing':
+    # For MacOS, this fixes an issue where you can't reach other endpoints on localhost
     MYSQL_HOST="host.docker.internal"
     BASE_URL='host.docker.internal'
 else:
