@@ -54,6 +54,16 @@ Please configure `~/app/setup_app/config.py` as needed. I recommend making a mod
 
 Note that scaling is very easy, you can just convert your `docker-compose.yml` file to Kubernetes files, and you can easily get set up and running in Google Cloud Platform or Amazon Web Services. [Read this tutorial for more](https://kubernetes.io/docs/tasks/configure-pod-container/translate-compose-kubernetes/).
 
+## Receiving webhooks from Stripe
+
+For payments, Stripe needs to be able to send you webhooks. You can enable Stripe's test mode to make sure your setup is correct. I have used [ngrok](https://ngrok.com/) (free) to do this. It's really simple, you just navigate to the folder and run `./ngrok http 5004` or whichever port the Stripe service is running on.
+
+Other choices are:
+
+https://localtunnel.github.io/www/
+
+http://localhost.run/
+
 # Installation (Development)
 
 1. Install Python (3.7 was used for this project)
