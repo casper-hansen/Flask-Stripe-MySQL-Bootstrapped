@@ -108,7 +108,7 @@ Use Homebrew to install mysql. Installing homebrew is the first step:
 2. Install mysql `brew install mysql`
 3. Check it's installed `mysql -V`
 4. Locate your mysql config file. Mine was under `/usr/local/etc/my.cnf`, but check `/etc/my.cnf` or `/etc/mysql/my.cnf` or `~/.my.cnf` if you can't find it. For Ubuntu 18.04, I found it under `/etc/mysql/mysql.conf.d/mysqld.cnf`
-5. (you can skip this, but I prefer it) Change your default port from 3306 by opening `my.cnf`. Add a new line with `port=5001`
+5. (you can skip this, but I prefer it) Change your default port from 3306 by opening `my.cnf` or `mysqld.conf.d`. Add or find the line with `port=5001`, and optionally `bind-address=0.0.0.0`.
 6. Start mysql `brew services start mysql` (starts every time you boot computer)
 7. Configure your password `mysqladmin -u root password 'yourpassword'`. This password should be strong if used in production.
 
@@ -119,4 +119,4 @@ You can always restart or stop the service, e.g. if the service is running and y
 
 ### Login to MySQL database from Mac and Linux
 
-Type in `mysqladmin -u root -p` and press enter. It will ask for your password, then you are in.
+Type in `mysql -u root -p` and press enter. It will ask for your password, then you are in.
