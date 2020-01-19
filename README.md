@@ -30,6 +30,12 @@ Check out Martin Fowler's website with this [great article](https://martinfowler
 
 Start separating into databases instead of tables; right now, there exists one table for each service. You should definitely think about scaling the database, a cloud option is a great option here.
 
+3. Less coupling
+
+Currently, the different services knows about eachother (which means higher coupling). To remove this, we would want a centralized service that knows all the services, but the rest of the services don't know about eachother. All communication would go through this centralized service.
+
+Most of the work is done, and it would just be changing some endpoints, but if you want truly low coupling, this needs a migration.
+
 ## System Overview
 
 This is a simple overview of the system. Go to the app folder and see the technical README for a more detailed overview.
