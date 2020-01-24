@@ -5,14 +5,14 @@ services:
     image: frontend:0.2
     build:
       context: .
-      dockerfile: ./services/FrontendService/Dockerfile
+      dockerfile: './services/FrontendService/Dockerfile'
     ports:
       - "5000:5000"
   notification:
-    image: notification:0.2
-    build:   
+    image: notification:0.21
+    build:
       context: .
-      dockerfile: './services/NotificationService/Dockerfile'
+      dockerfile: './Docker/Dockerfile.notification'
     ports:
       - "5002:5002"
   user:
