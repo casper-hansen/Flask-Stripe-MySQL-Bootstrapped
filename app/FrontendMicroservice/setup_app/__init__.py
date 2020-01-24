@@ -4,6 +4,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import jinja2
+import requests, json
+from datetime import datetime
 
 # Finding all our directories for this template
 base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
@@ -55,7 +57,16 @@ login_manager.session_protection = 'basic'
 
 @login_manager.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    r = requests.get('http://' + app.config['BASE_URL'] + ':' +  app.config['USER_PORT'] + '/getuser/' + str(id))
+
+    if r.status_code == 200:
+        user_dict = json.loads(r.text)
+        user = User(**user_dict)
+        user.created_date = datetime.strptime(user.created_date, '%a, %d %b %Y %H:%M:%S %Z')
+
+        return user
+    else:
+        return None
 
 @app.after_request
 def add_security_headers(response):

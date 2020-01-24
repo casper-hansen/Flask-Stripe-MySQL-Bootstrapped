@@ -37,7 +37,7 @@ def dashboard():
     sub_active = action.is_user_subscription_active(False)
 
     notifications, notifications_for_display = action.get_unread_notifications(current_user.id)
-
+    
     variables = dict(name=current_user.name,
                      expire_date=current_user.created_date + trial_period,
                      user_is_paying=sub_active,
