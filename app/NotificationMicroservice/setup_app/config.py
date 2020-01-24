@@ -3,13 +3,11 @@ DEBUG=True
 
 if MODE == 'Testing':
     # For MacOS, this fixes an issue where you can't reach other endpoints on localhost
-    MYSQL_HOST="host.docker.internal"
+    MYSQL_HOST='host.docker.internal'
     BASE_URL='host.docker.internal'
 else:
-    MYSQL_HOST="localhost"
-    BASE_URL='localhost:5000'
-
-BASE_PORT = ':5000'
+    MYSQL_HOST='localhost'
+    BASE_URL='localhost'
 
 MYSQL_PORT='5001'
 MYSQL_USER="root"

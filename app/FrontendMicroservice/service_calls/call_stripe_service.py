@@ -10,8 +10,7 @@ stripe_api = Blueprint('stripe_api', __name__)
 def setup_payment():
     data = request.get_json(force=True)
     data['user_id'] = current_user.id
-
-    r = requests.post('http://' + current_app.config['BASE_URL'] + ':5004/setup_payment', json=data)
+    r = requests.post('http://' + current_app.config['BASE_URL'] + ':' +  current_app.config['STRIPE_PORT'] + '/setup_payment', json=data)
 
     return r.text, r.status_code
 
@@ -21,7 +20,7 @@ def cancel_subscription():
     data = request.get_json(force=True)
     data['user_id'] = current_user.id
 
-    r = requests.put('http://' + current_app.config['BASE_URL'] + ':5004/cancel_subscription', json=data)
+    r = requests.put('http://' + current_app.config['BASE_URL'] + ':' +  current_app.config['STRIPE_PORT'] + '/cancel_subscription', json=data)
 
     return r.text, r.status_code
 
@@ -31,6 +30,6 @@ def reactivate_subscription():
     data = request.get_json(force=True)
     data['user_id'] = current_user.id
 
-    r = requests.put('http://' + current_app.config['BASE_URL'] + ':5004/reactivate_subscription', json=data)
+    r = requests.put('http://' + current_app.config['BASE_URL'] + ':' +  current_app.config['STRIPE_PORT'] + '/reactivate_subscription', json=data)
 
     return r.text, r.status_code

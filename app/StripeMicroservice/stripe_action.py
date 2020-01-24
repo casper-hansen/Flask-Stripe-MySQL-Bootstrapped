@@ -38,7 +38,7 @@ class StripeAction():
             if stripe_obj != None and stripe_obj.customer_id != None:
                 customer_id = stripe_obj.customer_id
 
-            base_url = self.app.config['PROTOCOL'] + '://' + self.app.config['BASE_URL'] + self.app.config['BASE_PORT']
+            base_url = self.app.config['PROTOCOL'] + '://' + self.app.config['BASE_URL'] + ':' + self.app.config['FRONTEND_PORT']
             
             # Setup a Stripe session, completed with a webhook
             session = stripe.checkout.Session.create(
@@ -51,7 +51,7 @@ class StripeAction():
                     }],
                 },
                 success_url=base_url + '/billing',
-                cancel_url=base_url +'/dashboard',
+                cancel_url=base_url + '/dashboard',
             )
 
             # Used for redirect
