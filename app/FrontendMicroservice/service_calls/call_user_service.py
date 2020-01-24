@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, request, current_app
 from flask_login import login_user
-from models.notifications import Notifications, db
-from models.user import User
+from notifications import Notifications, db
+from user import User
 import json, requests
 
 user_api = Blueprint('user_api', __name__)

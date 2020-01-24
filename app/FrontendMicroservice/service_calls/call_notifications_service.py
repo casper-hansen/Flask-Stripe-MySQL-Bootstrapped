@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint, request, current_app
-from models.notifications import Notifications, db
+from notifications import Notifications, db
 from flask_login import current_user, login_required
 import json, requests
 

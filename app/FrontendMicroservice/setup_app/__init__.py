@@ -44,16 +44,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 db = SQLAlchemy(app)
 
 # Import user after setup (important)
-from models.user import User
-from models.stripe import Stripe
-from models.notifications import Notifications
+from user import User
+from stripe_obj import Stripe
+from notifications import Notifications
 
 # Within our app context, create all missing tables
-try:
-    db.create_all()
-except Exception as ex:
-    print(ex.with_traceback)
-
+db.create_all()
 login_manager = LoginManager(app)
 login_manager.session_protection = 'basic'
 

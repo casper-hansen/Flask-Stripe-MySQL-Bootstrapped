@@ -1,21 +1,15 @@
-import sys
-import json
-import os
-import stripe
+import sys, json, os, stripe
 from datetime import timedelta, datetime
 from flask import Flask, render_template, redirect, request, escape, jsonify, flash, current_app
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
 from flask_wtf import CSRFProtect
 
-base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..'))
-sys.path.append(base_dir)
-
 # Import all the things
 from setup_app import app
-from action.frontend_action import FrontendAction
-from call_notifications_service import notification_api
-from call_user_service import user_api
-from call_stripe_service import stripe_api
+from frontend_action import FrontendAction
+from service_calls.call_notifications_service import notification_api
+from service_calls.call_user_service import user_api
+from service_calls.call_stripe_service import stripe_api
 
 csrf = CSRFProtect(app)
 app.register_blueprint(notification_api)

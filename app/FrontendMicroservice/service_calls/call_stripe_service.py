@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, request, current_app
 from flask_login import current_user, login_required
-from models.stripe import Stripe, db
+from stripe_obj import Stripe, db
 import json, requests
 
 stripe_api = Blueprint('stripe_api', __name__)

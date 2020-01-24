@@ -1,14 +1,11 @@
 from setup_app import db, app
-from flask_login import UserMixin
-from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey, Text
+from sqlalchemy import Column, Integer, DateTime, String, Boolean, Text
 from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship,backref
 
 class Stripe(db.Model):
     __tablename__ = 'stripe'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'), unique=False, nullable=False)
-    user = relationship("User", backref=backref("user", uselist=False))
+    user_id = Column(Integer, unique=False, nullable=False)
 
     subscription_id = Column(String(256), unique=False, nullable=False)
     customer_id = Column(String(256), unique=False, nullable=False)

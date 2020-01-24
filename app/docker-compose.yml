@@ -2,10 +2,10 @@ version: '3'
 
 services:
   frontend:
-    image: frontend:0.2
+    image: frontend:0.21
     build:
       context: .
-      dockerfile: './services/FrontendService/Dockerfile'
+      dockerfile: './Docker/Dockerfile.frontend'
     ports:
       - "5000:5000"
   notification:
