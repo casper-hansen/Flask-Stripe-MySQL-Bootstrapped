@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship,backref
 class Notifications(db.Model):
     __tablename__  = 'notifications'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, unique=False, nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'), unique=False, nullable=False)
 
     color = Column(String(50))
     icon = Column(String(50))

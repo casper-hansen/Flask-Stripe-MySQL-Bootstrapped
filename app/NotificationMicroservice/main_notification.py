@@ -5,9 +5,6 @@ import stripe
 from flask import request
 import traceback
 
-base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', '..'))
-sys.path.append(base_dir)
-
 # Import all the things
 from setup_app import app
 from notification_action import NotificationAction

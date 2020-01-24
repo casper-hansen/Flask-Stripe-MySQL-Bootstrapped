@@ -17,10 +17,10 @@ class NotificationAction():
         try:
             data = request.get_json(force=True)
             noti_id = data['noti_id']
-
+            
             notification = db_access.get_notification(noti_id=noti_id)
-
             notification_update = dict(isRead=True)
+            
             db_access.update_notification_by_dict(notification.id, notification_update)
 
             return json.dumps({'message':''}), 200

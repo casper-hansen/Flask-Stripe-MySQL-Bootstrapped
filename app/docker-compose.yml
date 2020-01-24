@@ -16,10 +16,10 @@ services:
     ports:
       - "5002:5002"
   user:
-    image: user:0.2
+    image: user:0.21
     build: 
       context: .
-      dockerfile: './services/UserService/Dockerfile'
+      dockerfile: './Docker/Dockerfile.user'
     ports:
       - "5003:5003"
   stripe:

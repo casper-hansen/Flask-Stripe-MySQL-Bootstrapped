@@ -1,0 +1,13 @@
+pidfile = 'main_user.pid'
+worker_tmp_dir = '/dev/shm'
+worker_class = 'gthread'
+workers = 1
+worker_connections = 1000
+timeout = 30
+keepalive = 2
+threads = 2
+proc_name = 'main_user'
+bind = '0.0.0.0:5003'
+backlog = 2048
+accesslog = '-'
+errorlog = '-'

@@ -2,28 +2,10 @@ import os
 from sqlalchemy import create_engine
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 import jinja2
 
-# Finding all our directories for this template
-base_dir = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
-template_dir = os.path.join(base_dir, 'templates')
-static_dir = os.path.join(base_dir, 'static')
-base_template_dir = os.path.join(template_dir, 'base_templates')
-
 # Making the Flask app
-app = Flask(__name__,
-            static_url_path='', 
-            static_folder=static_dir)
-
-# Adding some of the directories to Jinja (for loading templates)
-my_loader = jinja2.ChoiceLoader([
-        app.jinja_loader,
-        jinja2.FileSystemLoader([template_dir, 
-                                 base_template_dir,
-                                 static_dir]),
-    ])
-app.jinja_loader = my_loader
+app = Flask(__name__)
 
 # Load the config file
 app.config.from_pyfile('config.py')
@@ -44,22 +26,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = app.config['CONN_STR_W_DB']
 db = SQLAlchemy(app)
 
 # Import user after setup (important)
-from models.user import User
-from models.stripe import Stripe
-from models.notifications import Notifications
+from user import User
+from notifications import Notifications
 
 # Within our app context, create all missing tables
-try:
-    db.create_all()
-except Exception as ex:
-    print(ex.with_traceback)
-
-login_manager = LoginManager(app)
-login_manager.session_protection = 'basic'
-
-@login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+db.create_all()
 
 @app.after_request
 def add_security_headers(response):

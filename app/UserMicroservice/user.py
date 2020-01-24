@@ -4,17 +4,15 @@ from sqlalchemy import Column, Integer, DateTime, String, Boolean, ForeignKey, T
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship,backref
 
-class Notifications(db.Model):
-    __tablename__  = 'notifications'
+class User(UserMixin, db.Model):
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, unique=False, nullable=False)
-
-    color = Column(String(50))
-    icon = Column(String(50))
-    message_preview = Column(String(160))
-    message = Column(Text)
+    email = Column(String(120), unique=True, nullable=False)
+    password_hash = Column(String(256), unique=False, nullable=False)
+    name = Column(String(50), nullable=False)
     created_date = Column(DateTime, server_default=func.now())
-    isRead = Column(Boolean, default=False, nullable=False)
+    
+    is_authenticated = True
 
     def __repr__(self):
         return 'id: '.join([str(id)])
