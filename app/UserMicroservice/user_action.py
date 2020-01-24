@@ -58,7 +58,7 @@ class UserAction():
 
     def get_user_by_email(self, email):
         user = db_access.get_user(email=email, as_dict=True)
-        
+
         if user != None:
             return jsonify(user), 200
         else:
