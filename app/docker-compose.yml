@@ -23,9 +23,9 @@ services:
     ports:
       - "5003:5003"
   stripe:
-    image: stripe:0.2
+    image: stripe:0.21
     build:   
       context: .
-      dockerfile: './services/StripeService/Dockerfile'
+      dockerfile: './Docker/Dockerfile.stripe'
     ports:
       - "5004:5004"

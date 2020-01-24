@@ -1,0 +1,15 @@
+FROM python:3.7
+
+COPY ./requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip install -r requirements.txt
+
+ADD ./Gunicorn/guni_stripe.py ./Gunicorn/guni_stripe.py
+ADD ./StripeMicroservice ./StripeMicroservice
+
+WORKDIR ./StripeMicroservice
+
+EXPOSE 5004
+CMD [ "gunicorn", "-c", "../Gunicorn/guni_stripe.py", "main_stripe:app" ]
